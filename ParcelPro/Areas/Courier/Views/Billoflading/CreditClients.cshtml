@@ -1,0 +1,199 @@
+﻿@using ParcelPro.Areas.Representatives.Dtos
+
+ @model MembersViewmodel
+@{
+    ViewData["Title"] = " مشتریان اعتباری";
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+}
+
+<div class="container">
+    <div class="page-header d-flex justify-content-between">
+        <h5>
+           مشتریان اعتباری
+        </h5>
+        <a href="javascript:void(0)" data-url="@Url.Action("AddPerson", "Persen", new { Area = "" })" class="btn btn-sm btn-primary callform">
+            <i class="tf-icons bx bx-plus"></i>
+            معرفی مشترک جدید
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="search-box persen-search-box mb-3">
+                <h4 class="card-title">فیلتر</h4>
+                <form asp-action="CreditClients" asp-controller="kp" asp-area="Billoflading" method="get" id="frmpersenFilter">
+                    <input type="hidden" asp-for="filter.PageSize" value="10" />
+                    <input type="hidden" asp-for="filter.CurrentPage" value="1" />
+                    <input type="hidden" asp-for="filter.IsCreditClient" value="true" />
+
+                    <div class="row">
+                        <div class="col-md-8 select2-dark">
+                            <label class="form-label">انتخاب مشترک اعتباری</label>
+                            <select asp-for="filter.PersonId" class="form-select select2" asp-items="@ViewBag.Clients">
+                                <option value="null"> همه</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <label class="form-label">شماره تماس</label>
+                            <input type="text" asp-for="filter.phone" class="form-control" />
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <label class="form-label">شماره / شناسه ملی</label>
+                            <input type="text" asp-for="filter.nationalId" class="form-control" />
+                        </div>
+
+                        <div class="col-md-8 d-grid p-2 mt-4">
+                            <input type="submit" class="btn btn-danger" value="فیلتر" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="search-box persen-search-box mb-3">
+                <h4 class="card-title">معرفی مشتری اعتباری جدید</h4>
+                <form asp-action="AddCreditClient" asp-controller="Persen" asp-area="" method="post">
+                    <div class="row">
+                        <div class="col-md-12 mb-2 select2-dark">
+                            <label class="form-label">شخص / شرکت</label>
+                            <select name="personId" class="form-select select2" asp-items="@ViewBag.persen">
+                                <option value="null"> همه</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 d-grid p-2 mt-4">
+                            <input type="button" class="btn btn-success modalByAjax" value="معرفی بعنوان مشتری اعتباری" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+ 
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">ردیف</th>
+                        <th class="text-center">نوع</th>
+                        <th class="text-center">نام</th>
+                        <th class="text-center">شماره / شناسه ملی</th>
+                        <th class="text-center">کد اقتصادی</th>
+                        <th class="text-center">شماره تماس</th>
+                        <th class="text-center">شماره تماس واحد مالی</th>
+                        <th class="text-center">آدرس ایمیل</th>
+                        <th class="text-center">سقف اعتبار</th>
+                         <th class="text-center">رابطین</th>
+                        <th class="text-center">نشانی</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (Model.Persen.Items.Count() > 0)
+                    {
+                        int row = 1;
+                        foreach (var x in Model.Persen.Items)
+                        {
+                            <tr>
+                                <td class="text-center">@row</td>
+                                <td class="text-center">@(x.LegalStatus == 2 ? "حقوقی" : "حقیقی")</td>
+                                <td>@x.Name</td>
+                                <td>@x.NationalId</td>
+                                <td>@x.EconomicCode</td>
+                                <td>@x.MobilePhone</td>
+                                <td>@x.CreditCus_Mobile</td>
+                                <td>@x.CreditCus_Email</td>
+                                <td>@x.CreditCus_CreditAmount.ToPrice()</td>
+                                <td class="text-center">
+                                    <a href="javascript:void(0)" data-url="@Url.Action("Representatives", "Persen", new { Area = "", id = x.Id })" class="btn btn-sm btn-warning callform">رابطین</a>
+                                </td>
+                                <td>@x.Address</td>
+                                <td class="row-btns text-center">
+                                    <a class="callform" href="javascript:void(0)" data-url="@Url.Action("UpdateClien", "Persen", new { Area = "", id = x.Id })"> <i class="bx bx-edit-alt text-info" title="ویرایش"></i></a>
+                                    @* <a href="javascript:void(0)" class="removeById" data-url="@Url.Action("DelPerson", "Persen", new { Area = "" })" data-target="@x.Id" title="اطلاعات مشترک حذف شود ؟"><i class="bx bx-trash-alt text-warning" title=""></i></a> *@
+                                </td>
+                            </tr>
+
+                            row++;
+                        }
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        @if (Model.Persen.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="pagin mt-3">
+                <ul class="pagination pagination-sm text-center">
+                    @if (Model.Persen.HasPreviousPage)
+                    {
+                        <li class="page-item prev">
+                            <a class="page-link" data-formid="frmpersenFilter" data-currentpage="@(Model.Persen.CurrentPage - 1)">
+                                <i class="tf-icon bx bx-chevrons-left"></i>
+                            </a>
+                        </li>
+                    }
+
+                    @{
+                        int totalPages = Model.Persen.TotalPages;
+                        int currentPage = Model.Persen.CurrentPage;
+                        int pageRange = 3; // تعداد صفحات قبل و بعد از صفحه فعلی
+
+                        int startPage = Math.Max(1, currentPage - pageRange);
+                        int endPage = Math.Min(totalPages, currentPage + pageRange);
+
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" data-formid="frmpersenFilter" data-currentpage="1">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                        }
+
+                        for (int i = startPage; i <= endPage; i++)
+                        {
+                            string strActive = currentPage == i ? "active" : "";
+                            <li class="page-item @strActive">
+                                <a class="page-link" data-formid="frmpersenFilter" data-currentpage="@i">@i</a>
+                            </li>
+                        }
+
+                        if (endPage < totalPages)
+                        {
+                            if (endPage < totalPages - 1)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" data-formid="frmpersenFilter" data-currentpage="@totalPages">@totalPages</a>
+                            </li>
+                        }
+                    }
+
+                    @if (Model.Persen.HasNextPage)
+                    {
+                        <li class="page-item next">
+                            <a class="page-link" data-formid="frmpersenFilter" data-currentpage="@(Model.Persen.CurrentPage + 1)">
+                                <i class="tf-icon bx bx-chevrons-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+
+</div>
+

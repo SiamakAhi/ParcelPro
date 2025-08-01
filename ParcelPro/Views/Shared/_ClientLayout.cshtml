@@ -1,0 +1,236 @@
+﻿@using ParcelPro.Areas.Client.ClientInterfacses
+@inject IClientPanelService _client
+@inject IAppIdentityUserManager _usermanager
+@inject SignInManager<AppIdentityUser> _sign
+
+@{
+    UserViewModel? user = new UserViewModel();
+    string userFullName = "کاربر لاگین نشده";
+    string avatarSrc = "~/img/avatars/1.png";
+    string userRole = "نامشخص";
+    string clientName = "";
+    if (_sign.IsSignedIn(User))
+    {
+        user = _usermanager.UserInfo(User.Identity.Name);
+        userFullName = user.FirstName + " " + user.LastName;
+        var contract = await _client.GetClientUserInfoAsync(user.Id);
+        if (contract != null)
+        {
+            clientName = contract.PartyName;
+        }
+        if (string.IsNullOrEmpty(user.Image))
+            avatarSrc = user.Gender == 1 ? "../../img/avatars/1.png" : "../../img/avatars/2.png";
+        else
+            avatarSrc = "../../img/avatars/" + user.Image;
+
+        var roles = await _usermanager.GetUserRolesVmAsync(user.UserName);
+        if (roles.Count > 0)
+            userRole = roles.Any(n => n.RoleName.Contains("Admin")) ? "مدیر" : roles.FirstOrDefault().RoleDescription;
+    }
+}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کیهان پست | @clientName</title>
+    <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+    <link rel="stylesheet" href="@Url.Content("~/vendor/fonts/fontawesome.css")">
+    <link href="~/css/bootsw/bootstrap-zephye.rtl.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="@Url.Content("~/vendor/libs/select2/select2.css")">
+    <link rel="stylesheet" href="@Url.Content("~/vendor/libs/sweetalert2/sweetalert2.css")">
+    <link href="@Url.Content("~/vendor/libs/flatpickr/flatpickr.css")" rel="stylesheet" />
+    <link href="~/css/clientpanelstyles.css" rel="stylesheet" />
+    <link href="~/css/font.css" rel="stylesheet" />
+    <style>
+       
+    </style>
+</head>
+<body>
+    <!-- هدر اصلی -->
+    <header class="header">
+        <div class="brand">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="user-section">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                <img src="@avatarSrc" />
+                </div>
+                <div class="user-info">
+                    <div class="user-name">@userFullName</div>
+                    <div class="user-role">@userRole</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- سایدبار -->
+    <aside class="sidebar" id="sidebar">
+        <!-- هدر سایدبار -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <img src="~/img/Logos/4.png" alt="Keyhan Post" />
+                   @*  <i class="fas fa-shipping-fast"></i> *@
+                </div>
+                <h3 class="sidebar-brand">کیهان پست</h3>
+            </div>
+
+            <div class="customer-info">
+                <div class="customer-name">@clientName</div>
+                <div class="customer-detail">
+                    <div class="customer-type">
+                        <i class="fas fa-crown"></i>
+                        <span>@userRole</span>
+                    </div>
+                    <div class="customer-date">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- منوی اصلی -->
+        <nav class="menu">
+            <div class="menu-title">منوی اصلی</div>
+            <ul class="menu-items">
+                <li class="menu-item">
+                    <a  class="menu-link active"
+                       asp-area="Client"
+                       asp-controller="ClientPanel"
+                       asp-action="UserPanel">
+                        <i class="fas fa-home"></i>
+                        <span>داشبـورد</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" asp-area="Client"
+                       asp-controller="ClientPanel"
+                       asp-action="ClientReports">
+                        <i class="fas fa-chart-line"></i>
+                        <span>گزارشات</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-box-open"></i>
+                        <span>مدیریت مرسولات</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>پیگیری مرسولات</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>صورتحساب‌ها</span>
+                    </a>
+                </li>
+               
+            </ul>
+        </nav>
+
+        <!-- منوی ثانویه -->
+        <nav class="menu">
+            <div class="menu-title">تنظیمات و پشتیبانی</div>
+            <ul class="menu-items">
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-cog"></i>
+                        <span>تنظیمات حساب</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-users"></i>
+                        <span>مشتریان</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="fas fa-headset"></i>
+                        <span>پشتیبانی</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a asp-action="SignOut" asp-controller="Account" asp-area="" class="menu-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>خروج از سیستم</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- فوتر سایدبار -->
+        <div class="sidebar-footer">
+            <div class="version">نسخه 0.0.1</div>
+            <a href="www.linkedin.com/in/siamak-ahi-b4942a6a" class="developer">توسعه داده شده  توسط فناوی اطلاعات <strong> گارنِت</strong></a>
+        </div>
+    </aside>
+
+    <!-- محتوای اصلی -->
+    <main class="main-content">
+       @RenderBody()
+    </main>
+
+    <script src="~/vendor/libs/jquery/jquery371.min.js"></script>
+    <script src="~/libs/b536/js/bootstrap.bundle.js"></script>
+    <script src="~/vendor/libs/sweetalert2/sweetalert2.js"></script>
+    <script src="~/vendor/libs/select2/select2.js"></script>
+    <script src="~/vendor/libs/jdate/jdate.js"></script>
+    <script src="~/vendor/libs/flatpickr/flatpickr-jdate.js"></script>
+    <script src="~/vendor/libs/flatpickr/l10n/fa-jdate.js"></script>
+
+    <script src="~/js/forms-pickers.js"></script>
+    <script src="~/js/forms-selects.js"></script>
+    <script src="~/appfunctions/clientpanel.main.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+
+
+              $(document).find('.flatpickr-input').flatpickr({
+                locale: 'fa',
+                altInput: true,
+                altFormat: 'Y/m/d',
+                allowInput: true,
+                disableMobile: true
+            });
+
+            // تغییر تم تاریک/روشن
+            $('#themeToggle').click(function() {
+                $('body').toggleClass('dark-mode');
+                if ($('body').hasClass('dark-mode')) {
+                    $(this).html('<i class="fas fa-sun"></i>');
+                } else {
+                    $(this).html('<i class="fas fa-moon"></i>');
+                }
+            });
+
+            // باز و بسته کردن سایدبار در حالت موبایل
+            $('#mobileMenuBtn').click(function() {
+                $('#sidebar').toggleClass('active');
+            });
+
+            // فعال کردن آیتم‌های منو
+            $('.menu-link').click(function(e) {
+                $('.menu-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+          
+        });
+    </script>
+</body>
+</html>

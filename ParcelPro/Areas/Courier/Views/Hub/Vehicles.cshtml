@@ -1,0 +1,83 @@
+﻿@model List<VehicleDto>
+@{
+    ViewData["Title"] = "کیهان پست هاب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header alert-secondary p-0">
+            <h5 class="custom-card-title">
+                <i class="bx bxs-category-alt text-warning"></i>
+                مدیریت خودروهای حمل
+            </h5>
+            <div class="section-nav">
+
+                <div class="nav-btnbox mb-2 ms-2">
+                    <a href="#" data-url="@Url.Action("AddVehicle", "Hub", new { Area = "Courier" })" class="btn btn-sm btn-secondary callform">
+                        معرفی خودروی جدید
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-body card-table">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ردیف</th>
+                            <th>نوع</th>
+                            <th>نام </th>
+                            <th>پلاک </th>
+                            <th>سال ساخت</th>
+                            <th>ظرفیت حمل</th>
+                            <th>فعال</th>
+                            <th>اقدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (Model?.Count() > 0)
+                        {
+                            int row = 1;
+                            foreach (var x in Model)
+                            {
+                                <tr>
+                                    <td>@row</td>
+                                    <td>@x.VehicleType</td>
+                                    <td>@x.Description</td>
+                                    <td>@x.PlateNumber</td>
+                                    <td>@x.Model</td>
+                                    <td>@x.LoadCapacityKg Kg</td>
+                                    <td>@(x.IsActive ?"فعال" : "غیرفعال" )</td>
+                                    <td class="row-btns text-center">
+                                        <a href="#" class="callform" data-url="@Url.Action("UpdateVehicle", "Hub", new { Area = "Courier", id = x.Id })"><i class="bx bx-edit-alt text-gray" title="ویرایش"></i></a>
+                                        <a href="#" class="removeById" data-url="@Url.Action("", "Hub", new { Area = "Courier" })" data-target="@x.Id"><i class="bx bx-trash text-warning" title="حذف"></i></a>
+                                    </td>
+                                </tr>
+
+                                row++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7">
+                                    خودرویی در سیستم ثبت نشده است
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="card-footer p-4">
+        </div>
+    </div>
+</div>
+

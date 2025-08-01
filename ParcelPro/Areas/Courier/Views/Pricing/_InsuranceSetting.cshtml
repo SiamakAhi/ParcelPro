@@ -1,0 +1,42 @@
+﻿ @model InsuranceSettingsDto
+
+
+<div class="modal-dialog garnet-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-warning">پرینت سند شماره <span class="text-info mx-1">@ViewBag.DocNumber</span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <form asp-action="InsuranceSetting" asp-controller="Pricing" asp-area="Courier" method="post" class="mt-2">
+                 <input type="hidden" asp-for="Id" value="@Model.Id" />
+                 <input type="hidden" asp-for="SellerId" value="@Model.SellerId" />
+              
+                <div class="garnet-section garnet-section-info">
+                    <div class="filter-controls-container p-2">
+                      
+                        <div class="col-12 mb-2">
+                            <label class="form-label" asp-for="BaseCost"></label>
+                            <input type="number" class="form-control" asp-for="BaseCost" />
+                        </div>
+                         <div class="col-12 mb-2">
+                            <label class="form-label" asp-for="IncrementPerUnit"></label>
+                            <input type="number" class="form-control" asp-for="IncrementPerUnit" />
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label" asp-for="ThresholdAmount"></label>
+                            <input type="number" class="form-control" asp-for="ThresholdAmount" />
+                        </div>
+
+                    </div>
+                </div>
+                <div class="d-grid p-2 mt-2 garnet-form-btncontainer">
+                    <a class="btn btn-warning accAjaxSubmit">ذخیــره تنظیمات</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>

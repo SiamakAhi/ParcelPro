@@ -1,0 +1,119 @@
+﻿  @model VmBillofladingPanel
+
+@{
+    ViewData["Title"] = "صدور بارنامه";
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+}
+
+
+<div class="container mb-5">
+    <h2 class="text-white">صدور بارنامه</h2>
+    <form asp-action="CreateBillofladingHeader" asp-controller="Billoflading" asp-area="Courier" method="post">
+
+        <input type="hidden" asp-for="BillOfLading.bill.Id" value="@Guid.NewGuid()" />
+        <input type="hidden" asp-for="BillOfLading.bill.userId" value="@ViewBag.UserId" />
+        <input type="hidden" asp-for="BillOfLading.bill.OriginHubId" value="@Model.Branch.HubId" />
+        <input type="hidden" asp-for="BillOfLading.bill.CreatedBy" value="@User.Identity.Name" />
+        <input type="hidden" asp-for="BillOfLading.bill.OriginBranchId" value="@Model.CurrentUser.BranchId" />
+        <input type="hidden" asp-for="BillOfLading.bill.OriginBranchCode" value="@Model.CurrentUser.BranchCode" />
+        <input type="hidden" asp-for="BillOfLading.bill.IssuanceDate" value="@DateTime.Now" />
+
+        <div class="row mt-2">
+            <div class="col-md-2 col-6 mb-2">
+                <label class="form-label">تاریخ صدور بارنامه</label>
+                <input type="text" class="form-control text-center bg-dark text-white" readonly asp-for="BillOfLading.bill.strIssuanceDate" value="@DateTime.Now.LatinToPersian()" />
+            </div>
+            <div class="col-md-2 col-6 mb-2">
+                <label class="form-label">شماره بارنامه</label>
+                <input type="text" class="form-control text-center bg-dark text-white" readonly asp-for="BillOfLading.bill.WaybillNumber" value="@ViewBag.BillNumber" />
+            </div>
+            <div class="col-md-2 col-xs-6 mb-2">
+                <label class="form-label">مقصد</label>
+                <select class="form-select form-select-sm select2" id="selectroute"
+                        data-url="@Url.Action("GetDistributers","Billoflading",new {Area="Courier"})"
+                        data-filltarget="#select-distributers"
+                        asp-for="BillOfLading.bill.RouteId" asp-items="ViewBag.routes">
+                    <option>انتخاب مسیر ..</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-xs-6 mb-2">
+                <label class="form-label">سرویس</label>
+                <select class="form-select form-select-sm" asp-for="BillOfLading.bill.ServiceId" asp-items="ViewBag.services">
+                </select>
+            </div>
+            <div class="col-md-3 col-xs-6 mb-2">
+                <label class="form-label">نماینده توزیع</label>
+                <select class="form-select form-select-sm select2" id="select-distributers" asp-for="BillOfLading.bill.DistributerRepresentativeId" asp-items="ViewBag.Distributers">
+                    <option value="@Guid.Empty">نماینده توزیع ..</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row mt-3 createBillForm">
+            <div class="col-md-4 mb-2 mt-2 createBill-personbox">
+                <h5 class="card-header"> فرستنــده</h5>
+
+                <div>
+                    <div class="control-top-toolbar">
+                        <a href="#" class="me-2 ms-3" tabindex="100"><i class="bx bx-search"></i></a>
+                        <a href="javascript:void(0)" data-url="@Url.Action("NewPerson", "Billoflading", new { Area = "Courier" })" class="callform" tabindex="100">
+                            <i class="tf-icons bx bx-plus"></i>
+                        </a>
+                    </div>
+                    <select class="form-select select2 gonext" asp-for="BillOfLading.bill.SenderId" id="ddlSender" asp-items="ViewBag.persen"
+                            data-url="@Url.Action("GetPersonInfo","basedata",new{Area=""})">
+                        <option value="null">انتخاب فرستنده ...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">تلفن همراه</label>
+                    <input type="text" asp-for="BillOfLading.bill.SenderPhone" id="senderMobile" class="form-control gonext" />
+                </div>
+                <div>
+                    <label class="form-label">آدرس</label>
+                    <textarea rows="4" asp-for="BillOfLading.bill.SenderAddress" id="senderAddress" class="form-control gonext"> </textarea>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2 mt-2 createBill-personbox">
+                <h5 class="card-header"> گیرنـده</h5>
+                <div>
+                    <div class="control-top-toolbar">
+                        <a href="#" class="me-2 ms-3" tabindex="100"><i class="bx bx-search"></i></a>
+                        <a href="javascript:void(0)" data-url="@Url.Action("NewPerson", "Billoflading", new { Area = "Courier" })" class="callform" tabindex="100">
+                            <i class="tf-icons bx bx-plus"></i>
+                        </a>
+                    </div>
+                    <select class="form-select select2 gonext" asp-for="BillOfLading.bill.ReceiverId" id="ddlReciver" asp-items="ViewBag.persen"
+                            data-url="@Url.Action("GetPersonInfo","basedata",new{Area=""})">
+                        <option value="null">انتخاب گیرنده ...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">تلفن همراه</label>
+                    <input type="text" asp-for="BillOfLading.bill.ReciverPhone" id="reciverMobile" class="form-control gonext" />
+                </div>
+                <div>
+                    <label class="form-label">آدرس</label>
+                    <textarea rows="4" asp-for="BillOfLading.bill.ReceiverAddress" id="reciverAddress" class="form-control gonext"></textarea>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2 mt-2 createBill-desc">
+                <h5 class="card-header mb-4"> توضیحات</h5>
+                <textarea rows="8" asp-for="BillOfLading.bill.Description" class="form-control mt-3 gonext"></textarea>
+                <div class="d-grid p-2 mt-3">
+                    <input type="button" class="btn btn-danger accAjaxSubmit" value="ثبت و افزودن مرسولات" />
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+<script>
+
+</script>
+
+
+
+

@@ -1,0 +1,234 @@
+﻿@model BillOfLadingDto
+
+<link rel="stylesheet" href="@Url.Content("~/css/billStyle.css")" />
+
+@{
+    long totalCost = (long)Model.bill.BillofLadingCosts.Sum(x => x.Amount);
+    long totalDiscount = (long)Model.Consigments.Sum(x => x.Discount);
+    long totalPrice = totalCost - totalDiscount;
+
+    string ReciverNum = Model.bill.SettelmentType == 1 ? Model.bill.SenderPhone : Model.bill.ReciverPhone;
+}
+
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h6 class="modal-title">مشاهده بارنامه</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="bill-container">
+                <div class="bill-header">
+                    <div class="bill-header-top">
+                        <img src="~/img/Logos/85.png" alt="کیهان پست" />
+                        <h5 class="text-primery">کیهان پست</h5>
+                        <p class="text-success">@Model.bill.OriginBranchName</p>
+                    </div>
+                    <div class="bill-header-right">
+                        <h4 class="text-success">بارنامه</h4>
+                        <div class="settel">
+                            <span class="text-white">@Model.bill.IssuanceDate.mdToLongPersianDate()</span>
+                        </div>
+                        <div class="billNumber bg-dark">
+                            <h4 class="text-white"> @Model.bill.WaybillNumber </h4>
+                        </div>
+                    </div>
+                    <div class="bill-header-left">
+                        <h4 class="text-success">تسویه حساب</h4>
+                        <div class="billPrice bg-dark">
+                            <h4 class="text-white"> @totalPrice.ToPrice() </h4>
+                            <small text-danger>ريال</small>
+                        </div>
+                        <div class="settel">
+                            <span class="text-white">@Model.Financials?.SettlementTypeId.ToSettelmentTypeName()</span>
+                            <span class="text-white">@Model.Financials.IsSetteled.ToIsSetteledName()</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- = Actions ================================= -->
+                @if (!User.IsInRole("CourierMan"))
+                {
+                    <div>
+                        <div class="quickAccessMenu_container">
+                            @if (Model.Financials?.IsSetteled == false && Model.Financials?.SettlementTypeId != 3)
+                            {
+                                <div class="quickAccessMenu_item card border-primary">
+                                    <a asp-action="RequestPayment" asp-controller="Payment" asp-area="Treasury"
+                                       asp-route-Amount="@Model.bill.FinalPrice" asp-route-FactorId="@Model.bill.WaybillNumber"
+                                       asp-route-Name="@Model.bill.SenderName" asp-route-Description="بابت تسویه حساب بارنامه">
+                                        <i class="bx bx-wallet-alt text-primary"></i>
+                                        <p>پرداخت آنلاین</p>
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="quickAccessMenu_item card bg-success">
+                                    <a href="javascript:void(0)">
+                                        <i class="bx bx-check text-white"></i>
+                                        <p>
+                                            @(Model.Financials?.SettlementTypeId != 3 ? "پرداخت شده" : "اعتباری")
+                                        </p>
+                                    </a>
+                                </div>
+                            }
+
+
+                            <div class="quickAccessMenu_item card border-danger">
+                                <a href="#">
+                                    <i class="bx bx-transfer-alt text-danger"></i>
+                                    <p>اعلام مغایرت</p>
+                                </a>
+                            </div>
+                            <div class="quickAccessMenu_item card border-info">
+                                <a href="#tracking">
+                                    <i class="bx bx-package text-info"></i>
+                                    <p>رهگیری</p>
+                                </a>
+                            </div>
+                            <div class="quickAccessMenu_item card border-success">
+                                <a asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@Model.bill.Id" target="_blank">
+                                    <i class="bx bx-printer text-success"></i>
+                                    <p>چاپ بارنامه</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+                <div>
+                    @if (User.IsInRole("CourierMan"))
+                    {
+                        <div class="mt-3">
+                            <div class="d-grid reciveBtnBox">
+                                @if (Model.bill.tg_DeliveryDate.HasValue && Model.bill.Delivered)
+                                {
+                                    <a href="#" class="btn btn-success mb-2">
+                                        مرسوله در تاریخ @Model.bill.tg_DeliveryDate?.LatinToPersian() توسط @Model.bill.tg_CourierManUserName تحویل @Model.bill.tg_Name شد.
+                                    </a>
+                                }
+                                else
+                                {
+                                    @* <a href="#" data-url="@Url.Action("SaveReceiverSign", "Billoflading", new { area = "Courier", id = Model.bill.Id })" class="btn btn-light mb-2 callform">تحویل مرسوله به تحویل گیرنده</a> *@
+                                    <a asp-action="SaveReceiverSign" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@Model.bill.Id" target="_blank" class="btn btn-light mb-2">تحویل مرسوله</a>
+
+                                }
+                                @if (Model.Financials?.IsSetteled == false && Model.Financials?.SettlementTypeId != 3)
+                                {
+                                    <a href="javascript:void(0)" data-url="@Url.Action("SendPayment", "Billoflading", new { area = "Courier", id = Model.bill.Id, trackingCode = Model.bill.WaybillNumber, reciverNumber = ReciverNum })" class="btn btn-light mb-2 callform">ارسال لینک پرداخت برای پرداخت کننده</a>
+                                }
+                                <a asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@Model.bill.Id" target="_blank" class="btn btn-light mb-2">چاپ بارنامه</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="bg-dark py-2 px-4 mt-3">
+                    <p>
+                        جزئیــات بارنامه
+                    </p>
+                </div>
+
+                <!-- == Sender and reciver ================================= -->
+                <p class="mt-2 ms-2 text-success">اطلاعات فرستنده و گیرنده</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="person-info-box right">
+                            <h5>فرستنده</h5>
+                            <div class="person-info">
+                                <div class="item">
+                                    <label>نام</label>
+                                    <span>@Model.bill.SenderName</span>
+                                </div>
+                                <div class="item">
+                                    <label>تلفن</label>
+                                    <span>@Model.bill.SenderPhone</span>
+                                </div>
+                                <div class="item">
+                                    <label>آدرس</label>
+                                    <span>@Model.bill.SenderAddress</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="person-info-box left">
+                            <h5>گیرنده</h5>
+                            <div class="person-info">
+                                <div class="item">
+                                    <label>نام</label>
+                                    <span>@Model.bill.ReciverName</span>
+                                </div>
+                                <div class="item">
+                                    <label>تلفن</label>
+                                    <span>@Model.bill.ReciverPhone</span>
+                                </div>
+                                <div class="item">
+                                    <label>آدرس</label>
+                                    <span>@Model.bill.ReceiverAddress</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- == Parcels =========================================== -->
+                <p class="mt-2 ms-2 text-success">مرسولات</p>
+                <ul class="parcels-ul p-2">
+                    @{
+                        int row = 1;
+                    }
+                    @foreach (var item in Model.Consigments)
+                    {
+
+                        string content = item.NatureName + " - " + item.ContentDescription;
+                        <li>
+                            <span class="rownum bg-success">@row</span>
+                            <div class="parcel-content">
+                                <div class="item packege">
+                                    <label>نوع بسته بندی</label>
+                                    <span>@item.Package</span>
+                                </div>
+                                <div class="item weight">
+                                    <label>وزن (Kg)</label>
+                                    <span>@item.Weight</span>
+                                </div>
+                                <div class="item price">
+                                    <label> مبلغ حمل بار (ريال)</label>
+                                    <span><strong>@item.TotalPrice.ToPrice()</strong></span>
+                                </div>
+                                <div class="item content">
+                                    <label>محتویات</label>
+                                    <span>@content </span>
+                                </div>
+                            </div>
+                        </li>
+                        row++;
+                    }
+                </ul>
+
+                <div class="bill-desc mt-3">
+                    <p class="mt-2 ms-2 text-success">توضیحات</p>
+                    @if (string.IsNullOrEmpty(Model.bill.Description))
+                    {
+                        <div class="form-control p-2">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-control p-2">
+                            @Html.Raw(Model.bill.Description.Replace("</br>", "\n"))
+                        </div>
+                    }
+
+                </div>
+
+               
+            </div>
+        </div>
+    </div>
+</div>
+

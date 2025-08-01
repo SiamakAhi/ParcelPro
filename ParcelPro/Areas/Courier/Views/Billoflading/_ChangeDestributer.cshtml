@@ -1,0 +1,42 @@
+﻿@model ChangeDestribiuterDto
+
+@{
+
+}
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">تغیر نماینده توزیع</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+        <div class="alert alert-dismissible alert-light m-4" style="max-width:500px;">
+           <h4 class="text-warning text-center mt-3">کاربر گرامی</h4>
+           <h6 class="text-center">شما در در حال تغیر نماینده توزیع بارنامه به صورت گروهی هستید. توجه داشته باشید که این عملیات غیرقابل بازگشت است ، بنابراین قبل از تبت و اعمال تغیرات، از صحت و درستی انجام کار اطمینان حاصل نمایید.</h6>
+        </div>
+        <div class="modal-body">
+            <form method="post" asp-action="ChangeDestributerInBulk" asp-controller="Billoflading" asp-area="Courier">
+                @if (Model.BillsId != null && Model.BillsId.Any())
+                {
+                    foreach (var item in Model.BillsId)
+                    {
+                        <input type="hidden" asp-for="BillsId" value="@item" />
+                    }
+                }
+              
+                <div class="mb-2">
+                    <label class="form-label">انتخاب شعبه / نماینده</label>
+                    <select class="form-select select2" asp-for="BranchId" asp-items="ViewBag.Branches">
+                       <option value="null">انتخاب نماینده ...</option>
+                    </select>
+                </div>
+
+                <div class="d-grid my-4 p-2">
+                    <button type="button" class="btn btn-warning accAjaxSubmit"> ثبت و اعمال تغیرات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/forms-selects.js"></script>
+
+

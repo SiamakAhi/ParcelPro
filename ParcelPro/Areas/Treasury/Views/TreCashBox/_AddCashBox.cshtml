@@ -1,0 +1,89 @@
+﻿@model ParcelPro.Areas.Treasury.Dto.TreCashBoxDto
+
+@{
+    string formAction = Model.Id == Guid.Empty ? "AddCashBox" : "EditCashBox";
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                @(Model.Id == Guid.Empty ? "افزودن صندوق نقدی" : "ویرایش صندوق نقدی")
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="mt-3" asp-action="@formAction" asp-controller="TreCashBox" asp-area="Treasury" method="post">
+                @if (Model.Id != Guid.Empty)
+                {
+                    @Html.HiddenFor(m => m.Id)
+                }
+
+               <input type="hidden" asp-for="CreatorUserName" value="@User.Identity.Name" />
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <label asp-for="RegisterName" class="form-label"></label>
+                        <input type="text" class="form-control form-control-sm" asp-for="RegisterName" />
+                        <span asp-validation-for="RegisterName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="BranchId" class="form-label"></label>
+                        <select class="form-select form-select-sm" asp-for="BranchId" asp-items="@ViewBag.Branches">
+                            <option>انتخاب کنید</option>
+                        </select>
+                        <span asp-validation-for="BranchId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="strOpeningDate" class="form-label"></label>
+                        <input type="date" class="form-control form-control-sm flatpickr-input gonext" asp-for="strOpeningDate" />
+                        <span asp-validation-for="strOpeningDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        <label asp-for="PhysicalLocation" class="form-label"></label>
+                        <input type="text" class="form-control form-control-sm" asp-for="PhysicalLocation" />
+                        <span asp-validation-for="PhysicalLocation" class="text-danger"></span>
+                    </div>
+                   
+                    <hr />
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="CurrencyId" class="form-label"></label>
+                        <select class="form-select form-select-sm" asp-for="CurrencyId" asp-items="@ViewBag.Currencies">
+                            <option >انتخاب کنید</option>
+                        </select>
+                        <span asp-validation-for="CurrencyId" class="text-danger"></span>
+                    </div> 
+                   
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="CurrencyRate" class="form-label"></label>
+                        <input type="number" class="form-select form-select-sm" asp-for="CurrencyRate" />
+                        <span asp-validation-for="CurrencyRate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 mb-2 select2-dark">
+                        <label asp-for="DetailedAccountId" class="form-label"></label>
+                        <select class="form-select form-select-sm select2" asp-for="DetailedAccountId" asp-items="@ViewBag.Tafsils">
+                            <option>انتخاب کنید</option>
+                        </select>
+                        <span asp-validation-for="DetailedAccountId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label class="switch">
+                            <input type="checkbox" asp-for="IsActive" class="switch-input">
+                            <span class="switch-toggle-slider">
+                                <span class="switch-on"></span>
+                                <span class="switch-off"></span>
+                            </span>
+                            <span class="switch-label">فعال</span>
+                        </label>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-grid mb-2 p-2 mt-4">
+                    <a href="#" class="btn btn-primary accAjaxSubmit">ثبت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/forms-selects.js"></script>

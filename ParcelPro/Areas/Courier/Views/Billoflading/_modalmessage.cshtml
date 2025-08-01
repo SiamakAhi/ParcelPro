@@ -1,0 +1,18 @@
+﻿@model MessageBoxDto
+
+<div class="modal-dialog messagebox">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                <i class='bx bx-message-rounded text-info'></i>
+                @Model.Title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body text-center">
+            <i class='bx bx-message-rounded text-info'></i>
+            <p class="text-center mt-2">@Model.Message</p>
+            <button type="button" class="btn btn-primary mt-3" data-bs-dismiss="modal">متوجه شدم</button>
+        </div>
+    </div>
+</div>

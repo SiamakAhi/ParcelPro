@@ -1,0 +1,115 @@
+﻿@model SaleManagementViewModel
+@{
+    ViewData["Title"] = "وضعیت حساب مشتریان اعتباری";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header alert-secondary search-box">
+            <h4 class="card-title">آخرین وضعیت حساب مشتریان اعتباری</h4>
+            <form asp-action="HandleCreditAccounts" asp-controller="AccSaleManagement" asp-area="Accounting" method="get" id="frmBillFilter">
+                <input type="hidden" asp-for="filter.PageSize" value="10000" />
+                <input type="hidden" asp-for="filter.CurrentPage" value="1" />
+                <div class="row">
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">از تاریخ</label>
+                        <input type="text" asp-for="filter.strFromDate" class="form-control flatpickr-input" />
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">تا تاریخ</label>
+                        <input type="text" asp-for="filter.strUntilDate" class="form-control flatpickr-input" />
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label class="form-label">طرف حساب</label>
+                        <select asp-for="filter.PartyId" class="form-select select2" asp-items="@ViewBag.Persen">
+                            <option value="null"> همه</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid p-2 mt-3">
+                        <input type="submit" class="btn btn-danger" value="نمایش" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive text-nowrap height-vh80">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ردیف</th>
+                        <th>عملیات</th>
+                        <th>طرف حساب</th>
+                        <th>از تاریخ</th>
+                        <th>تا تاریخ</th>
+                        <th>تعداد</th>
+                        <th>بدهی</th>
+                        <th>پرداخت شده</th>
+                        <th>مانده حساب</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CreditSaleCurrentDebt.Any())
+                    {
+                        int rowNo = 1;
+                        foreach (var x in Model.CreditSaleCurrentDebt)
+                        {
+                            <tr>
+                                <td class="text-center">@rowNo</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ...
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <a class="dropdown-item"
+                                               asp-route-id="@x.PartyId"
+                                               asp-action="thePartyBills"
+                                               asp-controller="AccSaleManagement"
+                                               asp-area="Accounting"><i class="fa fa-eye me-3 text-warning"></i>صورتحساب</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ارسال صورتحساب الکترونیکی</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ثبت تسویه حساب</a>
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <td>@x.PartyName</td>
+                                <td>@x.FirstDate.LatinToPersian()</td>
+                                <td>@x.LastDate.LatinToPersian()</td>
+                                <td>@x.QtyBill</td>
+                                <td>@x.Bed.ToPrice()</td>
+                                <td>@x.Bes.ToPrice()</td>
+                                <td>@x.Balance.ToPrice()</td>
+                            </tr>
+                            rowNo++;
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="card-footer alert-secondary">
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
+                    <tr>
+                        <th colspan="5"></th>
+                        <th>جمع فروش</th>
+                        <th>پرداخت شده</th>
+                        <th>مانده حساب مشتریان اعتباری</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr lass="table-secondary">
+                        <td colspan="5"></td>
+                        <td class="text-center"><strong> @Model.CreditSaleCurrentDebt.Sum(n => n.Bed).ToPrice()</strong></td>
+                        <td class="text-center"><strong>@Model.CreditSaleCurrentDebt.Sum(n => n.Bes).ToPrice()</strong></td>
+                        <td class="text-center"><strong>@Model.CreditSaleCurrentDebt.Sum(n => n.Balance).ToPrice()</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

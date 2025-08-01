@@ -1,0 +1,356 @@
+﻿@model BillOfLadingDto
+
+@{
+    Layout = null;
+    long totalPrice = (long)Model.bill.BillofLadingCosts.Where(n => n.Code != "9990").Sum(g => g.Amount);
+    long totalOtherCost = (long)Model.bill.BillofLadingCosts.Where(n => n.Code == "9990").Sum(g => g.Amount);
+    long totalDiscout = (long)Model.Consigments.Sum(d => d.Discount);
+    long finalPrice = totalPrice - totalDiscout;
+}
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بارنامه حمل کالا - @Model.bill.WaybillNumber</title>
+    <link rel="stylesheet" href="~/css/billPrintStyle.css">
+    <link rel="stylesheet" href="~/css/font.css">
+    <meta name="description" content="نرم افزار حسابداری گارنت و سامانه مودیان گارنت - طراحی و توسعه توسط فناوری اطلاعات گارنت، به مدیریت سیامک آهی (Siamak Ahi)، ارائه‌دهنده راهکارهای جامع مالی و نرم‌افزاری">
+    <meta name="keywords" content="سامانه مودیان گارنت, فناوری اطلاعات گارنت, نرم افزار حسابداری گارنت, توسعه نرم افزار, طراحی وب سایت, Garnet, سیامک آهی, Siamak Ahi">
+    <meta name="author" content="سیامک آهی - Siamak Ahi">
+    <meta property="og:title" content="نرم افزار حسابداری و سامانه مودیان گارنت | فناوری اطلاعات گارنت">
+    <meta property="og:description" content="سامانه مودیان گارنت و نرم افزار حسابداری گارنت، محصول فناوری اطلاعات گارنت با مدیریت سیامک آهی (Siamak Ahi)">
+    <meta property="og:type" content="http://garnetApp.ir">
+    <meta property="og:site_name" content="فناوری اطلاعات گارنت - Garnet">/>
+    <script src="~/vendor/jspdf-master/jspdf.umd.min.js"></script>
+    <script src="~/vendor/html2canvas-1.4.1/html2canvas.js"></script>
+    <script src="~/vendor/qrcodejs-master/qrcode.min.js"></script>
+    <script src="~/vendor/jsbarcode-master/jsbarcode.all.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        @if (Model.bill.BillOfLadingStatusId == 15)
+        {
+            <h1 class="cancelationwatermark">باطل شده</h1>
+        }
+        <div class="barcode-container" style="margin-top:10px; text-align:center;">
+            <svg id="waybillBarcode"></svg>
+        </div>
+
+        <div class="header">
+            <div class="logo">
+                <img src="~/img/Logos/2.png" alt="سیامک آهی">
+            </div>
+            <h3>پیام کیهان پارس</h3>
+
+        </div>
+
+        <div class="billnumber">
+            <h3> بارنامه: @Model.bill.WaybillNumber</h3>
+            @if (!string.IsNullOrEmpty(Model.bill.ReferenceCode))
+            {
+                <small> بارنامه مرجع : @Model.bill.ReferenceCode</small>
+            }
+            <p>تاریخ صدور: @Model.bill.IssuanceDate.LatinToPersian()</p>
+        </div>
+        <div class="flex-container">
+            <div class="sender-receiver">
+                <h3>فرستنده:</h3>
+                <p>@Model.bill.SenderName</p>
+                <p>@Model.bill.SenderAddress</p>
+                <p>@Model.bill.SenderPhone</p>
+                <p><span class="me-2">شماره ملی : </span> @Model.bill.SenderNationalCode</p>
+
+            </div>
+
+            <div class="sender-receiver">
+                <h3>گیرنده:</h3>
+                <p>@Model.bill.ReciverName</p>
+                <p>@Model.bill.ReceiverAddress</p>
+                <p>@Model.bill.ReciverPhone</p>
+            </div>
+        </div>
+
+        <div class="bordered-box">
+            <p><strong>مسیر :</strong>@Model.bill.OriginCity - @Model.bill.DestinationCity</p>
+            <p><strong>ارزش کالا:</strong> @(Model.Consigments.Sum(n => n.Value) > 0 ? Model.Consigments.Sum(n => n.Value).ToPrice() : "(ارزشی برای کالا اظهار نشد)")</p>
+        </div>
+
+        <div class="details-section">
+            <div class="details-box">
+                <h3>مرسوله (ها)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>محتویات</th>
+                            <th>ابعاد</th>
+                            <th>وزن حجمی</th>
+                            <th>وزن (کیلو)</th>
+                            <th>مبلغ (ریال)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Consigments?.Count > 0)
+                        {
+                            int row = 1;
+                            foreach (var x in Model.Consigments)
+                            {
+
+                                float wgt = ((x.Length * x.Width * x.Height) / 6000);
+                                string wight = wgt > 0 ? wgt.ToString("0.###") : "-";
+                                string volume = wgt > 0 ? $"{x.Length} x {x.Width} x {x.Height}" : "-";
+
+                                <tr>
+                                    <td>@row</td>
+                                    <td>@x.NatureName - @x.ContentDescription</td>
+                                    <td class="text-left col-vol">@volume </td>
+                                    <td>@wight</td>
+                                    <td>@x.Weight.ToString("0.###") </td>
+                                    <td class="highlight">@x.TotalPrice.ToPrice()</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="details-box2">
+                <div class="details-box2-right">
+                    <div class="payment-section">
+                        <div class="settelment">
+                            <p><strong>نوع تسویه حساب:</strong> @Model.bill.SettelmentType.ToSettelmentTypeName()</p>
+                            <p><strong>وضعیت تسویه حساب:</strong> @(Model.bill.Setteled ? "پرداخت شده" : "پرداخت نشده")</p>
+                        </div>
+                        <div class="delivery-confirmation bordered-box">
+                            <p>اینجانب با صدور و مبلغ نهایی مندرج در این بارنامه موافق بوده و تایید میکنم که این محموله جزو کالاهای خطرناک و ممنوعه نمیباشد و کلیه شرایط حمل را می پذیرم. هرگونه کشف فساد عهده صاحب کالا می باشد.</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="details-box2-left">
+                    <h3>جزئیات هزینه</h3>
+                    @if (Model.bill.BillofLadingCosts.Count > 0)
+                    {
+                        <ul class="billingList">
+                            @if (Model.bill.BillofLadingCosts.Count > 0)
+                            {
+                                foreach (var x in Model.bill.BillofLadingCosts.Where(n => n.Code != "9990").ToList())
+                                {
+                                    <li>
+                                        <label>@x.CostName</label>
+                                        <span>@x.Amount.ToPrice() <span class="me-2">ريال</span></span>
+                                    </li>
+                                }
+                                @if (totalDiscout > 0)
+                                {
+                                    <li>
+                                        <label>جمع تخفیفات</label>
+                                        <span>@totalDiscout.ToPrice() <span class="me-2">ريال</span></span>
+                                    </li>
+                                }
+
+                                if (totalOtherCost > 0)
+                                {
+
+                                    <li class="totalbillprice">
+                                        <label>مبلغ بارنامه : </label>
+                                        <span class="amount">
+                                            @finalPrice.ToPrice()
+                                            <span class="ms-2 text-white">ريال</span>
+                                        </span>
+                                    </li>
+
+                                    <li class="othercost">
+                                        <label>پیک و سایر خدمات مبدأ :</label>
+                                        <span>@totalOtherCost.ToPrice() <span class="me-2">ريال</span></span>
+                                    </li>
+
+                                    <li class="total">
+                                        <label>جمع صورتحساب : </label>
+                                        <span class="amount">
+                                            @((finalPrice + totalOtherCost).ToPrice())
+                                            <span class="ms-2 text-white">ريال</span>
+                                        </span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="total">
+                                        <label>جمع صورتحساب : </label>
+                                        <span class="amount">
+                                            @finalPrice.ToPrice()
+                                            <span class="ms-2 text-white">ريال</span>
+                                        </span>
+                                    </li>
+                                }
+
+                            }
+                        </ul>
+                    }
+                </div>
+
+
+            </div>
+
+            <div class="details-box2">
+                <div class="details-box2-right">
+                    <div class="sendersign">
+                        <p> امضاء فرستنده : </p>
+                    </div>
+                    <div class="reciversign">
+
+                        <p>
+                            اینجانب @Model.bill.tg_Name  در تاریخ @Model.bill.tg_DeliveryDate?.LatinToPersian() ساعت  <span class="mx-1">@Model.bill.tg_DeliveryTime</span>  کالای مشروحه فوق را بصورت صحیح و سالم دریافت نمودم.
+                        </p>
+
+                        <p>کد ملی تحویل گیرنده  : @Model.bill.tg_NationalityCode </p>
+                        <p>
+                            امضاء تحویل گیرنده :
+                        </p>
+                        <div class="reciversignature">
+                            @if (Model.bill.tg_SignatureData != null)
+                            {
+                                <img src="data:image/png;base64,@Convert.ToBase64String(Model.bill.tg_SignatureData)" />
+                            }
+                        </div>
+
+                    </div>
+                </div>
+                <div class="details-box2-left">
+                    <h3>اطلاعات صدور</h3>
+                    @if (Model.bill.BusinessPartnerId.HasValue)
+                    {
+                        <p> صادر کننده : @Model.bill.BusinessPartnerName</p>
+                        <p> توزیع کننده : شرکت پیام کیهان پارس</p>
+                    }
+                    else
+                    {
+                        <p> صادر کننده : شرکت پیام کیهان پارس</p>
+
+                    }
+                    <p>کاربر : <strong class="issuername">@Model.bill.CreatedByFullName</strong> </p>
+                    <div class="digital-seal">
+                        <img src="~/img/Logos/Mohr.png" alt="مهر الکترونیکی">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p>وبسایت: www.keyhanpost.ir - کد رهگیری: <strong>@Model.bill.WaybillNumber</strong></p>
+        </div>
+
+        <div class="action-buttons">
+            <button onclick="printWaybill()" class="print-btn">چاپ بارنامه</button>
+            <button onclick="sharePDF()" class="share-btn">دانلود PDF</button>
+            <button onclick="shareWaybillPDF()" class="share-btn">اشتراک گذاری PDF</button>
+        </div>
+
+    </div>
+
+
+    <script>
+               // تابع پرینت مستقیم بارنامه
+        function printWaybill() {
+            window.print();
+        }
+
+        // تابع ایجاد و دانلود PDF بارنامه
+        async function sharePDF() {
+            const { jsPDF } = window.jspdf;
+
+            // گرفتن عناصر دکمه‌ها و مخفی کردن آن‌ها موقتاً
+            const buttons = document.querySelector('.action-buttons');
+            buttons.style.display = 'none';
+
+            const billElement = document.querySelector('.container');
+
+            const canvas = await html2canvas(billElement, { scale: 2 });
+
+            // بعد از گرفتن تصویر مجدد دکمه‌ها را نمایش می‌دهیم
+            buttons.style.display = 'flex';
+
+            const imgData = canvas.toDataURL('image/png');
+
+            const pdf = new jsPDF({
+                unit: 'mm',
+                format: 'a5',
+                orientation: 'portrait'
+            });
+
+            const pdfWidth = 148;
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+            const waybillNumber = document.querySelector('.billnumber p').innerText.split(':')[1].trim();
+
+            pdf.save(`Waybill-${waybillNumber}.pdf`);
+        }
+
+        // تابع اشتراک گذاری PDF از طریق Web Share API
+        async function shareWaybillPDF() {
+            const { jsPDF } = window.jspdf;
+
+            const buttons = document.querySelector('.action-buttons');
+            buttons.style.display = 'none';
+
+            const billElement = document.querySelector('.container');
+
+            const canvas = await html2canvas(billElement, { scale: 2 });
+
+            buttons.style.display = 'flex';
+
+            const imgData = canvas.toDataURL('image/png');
+
+            const pdf = new jsPDF({
+                unit: 'mm',
+                format: 'a5',
+                orientation: 'portrait'
+            });
+
+            const pdfWidth = 148;
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+            const waybillNumber = document.querySelector('.billnumber p').innerText.split(':')[1].trim();
+
+            const pdfBlob = pdf.output('blob');
+
+            const pdfFile = new File([pdfBlob], `Waybill-${waybillNumber}.pdf`, { type: 'application/pdf' });
+
+            if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                try {
+                    await navigator.share({
+                        files: [pdfFile],
+                        title: 'بارنامه',
+                        text: `بارنامه شماره ${waybillNumber}`
+                    });
+                } catch (error) {
+                    alert('اشتراک گذاری لغو شد یا پشتیبانی نمی‌شود.');
+                }
+            } else {
+                alert('مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند.');
+            }
+        }
+
+             document.addEventListener("DOMContentLoaded", function () {
+            JsBarcode("#waybillBarcode", "@Model.bill.WaybillNumber", {
+                format: "CODE128",
+                lineColor: "#000",
+                width: 2,
+                height: 25,
+                displayValue: true,
+                fontSize: 12,
+                textMargin: 4,
+                margin: 2
+            });
+        });
+
+    </script>
+</body>
+</html>

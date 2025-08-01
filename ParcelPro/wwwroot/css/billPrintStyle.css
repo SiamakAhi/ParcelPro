@@ -1,0 +1,362 @@
+﻿
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    padding: 0px;
+    background-color: #f5f5f5;
+    font-size: 8pt;
+    line-height: 1.4;
+    color: #333;
+    direction: rtl;
+}
+
+
+.container {
+    width: 148mm;
+    height: 210mm;
+    margin: 0 auto;
+    background: white;
+    padding: 8mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.barcode-container {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.header {
+    text-align: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 2mm;
+    margin-top: -5mm;
+}
+
+.logo {
+    margin-bottom: -5px;
+}
+
+    .logo img {
+        max-width: 100px;
+        height: auto;
+    }
+
+.qr-barcode {
+    display: flex;
+    justify-content: center;
+    gap: 10mm;
+    margin: 2mm 0;
+}
+
+.qr-code {
+    width: 20mm;
+    height: 20mm;
+}
+
+.barcode {
+    width: 40mm;
+    height: 10mm;
+}
+
+.header h1 {
+    font-size: 12pt;
+    margin-bottom: 2mm;
+}
+
+.header p {
+    font-size: 8pt;
+    color: #666;
+}
+.billnumber {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    color: #000 !important;
+}
+    .billnumber > p {
+        color: #000 !important;
+        font-weight:bold;
+        font-size:12px;
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+.sender-receiver {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 3mm;
+}
+
+    .sender-receiver h3 {
+        font-size: 10pt;
+        color: #444;
+    }
+
+    .sender-receiver p {
+        font-size: 8pt;
+        margin: 1mm 0;
+    }
+
+.bordered-box {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    padding: 1px 10px;
+}
+
+
+    .bordered-box p {
+        font-size: 8pt;
+        margin: 1mm 0;
+    }
+
+.details-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.details-box {
+    border: 1px solid #ddd;
+}
+
+    .details-box h3 {
+        font-size: 8pt;
+        padding: 4px 10px;
+        color: #444;
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8pt;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 2px 4px;
+    text-align: center;
+}
+
+th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+}
+.col-vol{
+    direction:ltr;
+}
+
+.highlight {
+    color: #d32f2f;
+    font-weight: bold;
+}
+.totalbillprice {
+    font-weight: bold;
+    border-top:1px dashed #333 !important;
+    border-bottom:none !important;
+    margin-bottom:5px !important;
+}
+.total-amount {
+    font-size: 9pt;
+    margin: 3mm 0;
+    text-align: left;
+    font-weight: bold;
+}
+
+.payment-section {
+    margin: 3mm 0;
+}
+
+.bottom-section {
+    display: flex;
+    gap: 5mm;
+    margin-top: 5mm;
+    padding-top: 5mm;
+    border-top: 1px solid #444;
+}
+
+.delivery-confirmation {
+    flex: 1;
+    padding: 3mm;
+    border: 1px solid #ddd;
+    border-radius: 2mm;
+    font-size: 7pt;
+    line-height: 1.6;
+}
+
+.digital-seal {
+    text-align: left;
+    margin-right:15px;
+}
+
+    .digital-seal img {
+        max-width: 150px;
+        transform: rotate(3deg);
+        margin-left: 15px;
+    }
+
+    .digital-seal p {
+        font-size: 7pt;
+        color: #666;
+    }
+
+.details-box2{
+    padding:0;
+    margin:0;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+
+}
+.details-box2-right {
+    border: 1px solid #ddd;
+}
+.settelment {
+    margin:0;
+    padding: 2px 10px;
+    font-size: 9pt;
+    border-bottom: 1px solid #ddd;
+}
+
+.details-box2-left {
+    padding: 5px 10px;
+    font-size: 9pt;
+    border: 1px solid #ddd;
+}
+    .details-box2-left h3{
+        margin-block:5px;
+    }
+    .details-box2-left ul {
+        margin: 0;
+    }
+        .details-box2-left ul li {
+            display: flex;
+            justify-content: space-between;
+            margin:0px;
+            border-bottom:1px dashed #ddd;
+            padding-block:3px
+        }
+            .details-box2-left ul li.total{
+                margin-top:20px;
+                background:#ddd;
+                padding:6px 4px;
+                border-radius:4px;
+                font-weight:bold;
+            }
+
+            .footer {
+                margin-top: 5mm;
+                font-size: 7pt;
+                color: #666;
+                text-align: center;
+            }
+.delivery-confirmation.bordered-box{
+    border:none;
+}
+
+.sendersign {
+    padding: 10px;
+    font-size: 9pt;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+.reciversign {
+    padding: 10px;
+    font-size: 7pt;
+    line-height:18px;
+    text-align:justify;
+    font-weight: bold;
+}
+
+    .reciversign img {
+        max-width: 100px;
+        margin-top: -20px;
+    }
+.reciversignature {
+    text-align:left;
+    margin-top:-30px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+
+button {
+    padding: 2mm 5mm;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 8pt;
+    transition: all 0.3s ease;
+}
+
+.print-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.share-btn {
+    background-color: #2ecc71;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+.issuername{
+    margin-right:5px;
+}
+
+.cancelationwatermark{
+    position:absolute;
+    text-align:center;
+    width:unset;
+    transform:rotate(-45deg);
+    top:35%;
+    right:100px;
+    font-size:90px;
+    opacity:0.25
+}
+@media print {
+    body {
+        padding: 0;
+        background-color: white;
+        display: block;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .container {
+        box-shadow: none;
+        padding: 10mm;
+        margin: 0;
+        width: 148mm;
+        height: 210mm;
+    }
+
+    .action-buttons {
+        display: none;
+    }
+
+    @page {
+        size: A5 portrait;
+        margin: 0;
+    }
+}

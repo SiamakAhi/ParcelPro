@@ -1,0 +1,56 @@
+﻿
+
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">ارسال لینک</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+            <form id="frmCashPay" method="post" asp-action="SendPaymentLink" asp-controller="Billoflading" asp-area="Courier">
+                <input type="hidden" name="id" value="@ViewBag.Id" />
+                <input type="hidden" name="trackingCode" value="@ViewBag.Tracking" />
+                <div class="row p-3">
+                    <div class="">
+                        <h4 class="text-light text-center">ارسال لینک پرداخت بارنامه</h4>
+                        <h5 class="text-info text-center">@ViewBag.Tracking</h5>
+
+                        <div class="sendlink-controls">
+                            <label class="text-light">شماره موبایل گیرنده را وارد کنید</label>
+                            <input type="tel" name="reciverNumber" id="reciverNumber" class="form-control" value="@ViewBag.Reciver" placeholder="مثلاً: 0912xxxxxxx" pattern="^09\d{9}$" required />
+                            <div class="invalid-feedback">
+                                لطفاً شماره موبایل معتبر وارد کنید (مانند: 09121234567).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid mb-2 p-2">
+                        <button type="button" class="btn btn-danger accAjaxSubmit">ارسال لینک پرداخت</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        'use strict';
+        const form = document.querySelector('#frmCashPay');
+        const mobileInput = document.querySelector('#reciverNumber');
+
+        mobileInput.addEventListener('input', () => {
+            mobileInput.value = mobileInput.value.replace(/[^0-9]/g, '').substring(0, 11);
+        });
+
+        const submitBtn = document.querySelector('.accAjaxSubmit');
+        submitBtn.addEventListener('click', () => {
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+            }
+        });
+    })();
+</script>
+
+
+

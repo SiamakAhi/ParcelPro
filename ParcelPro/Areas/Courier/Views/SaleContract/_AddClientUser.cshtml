@@ -1,0 +1,89 @@
+﻿  @model AddClientUserDto
+
+<div class="modal-dialog garnet-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"> ایجاد حساب کاربری مشتریان اعتباری</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="mt-3" asp-action="AddClientUser" asp-controller="SaleContract" asp-area="Courier" method="post">
+                <input type="hidden" asp-for="SellerId" value="@Model.SellerId" />
+                <input type="hidden" asp-for="CustomerId" value="@Model.CustomerId" />
+                <input type="hidden" asp-for="DepartmentCode" value="@Model.DepartmentCode" />
+
+                <div class="garnet-section garnet-section-info">
+                    <div class="garnet-section-header">
+                        <h6>مشخصات فردی </h6>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label asp-for="ContractId" class="form-label"></label>
+                            <select class="form-select form-select-sm" asp-for="ContractId" asp-items="@ViewBag.Contracts">
+                              <option value="">-- انتخاب --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input type="text" class="form-control form-control-sm" asp-for="Name" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Family" class="form-label"></label>
+                            <input type="text" class="form-control form-control-sm" asp-for="Family" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input type="email" class="form-control form-control-sm" asp-for="Email" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Mobile" class="form-label"></label>
+                            <input type="tel" class="form-control form-control-sm" asp-for="Mobile" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Gender" class="form-label"></label>
+                            <select class="form-select form-select-sm" asp-for="Gender">
+                                <option value="1" selected>آقا</option>
+                                <option value="2">بانو</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Role" class="form-label">نقش کاربر</label>
+                            <select class="form-select form-select-sm" asp-for="Role">
+                                <option value="AdminUser" selected>کاربر مدیر</option>
+                                <option value="ReadUser">کاربر عادی</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="garnet-section garnet-section-info">
+                    <div class="garnet-section-header">
+                        <h6>اطلاعات کاربری</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label asp-for="UserName" class="form-label"></label>
+                            <input type="text" class="form-control" asp-for="UserName" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input type="text" class="form-control " asp-for="Password" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input type="text" class="form-control"  asp-for="ConfirmPassword" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="garnet-section-footer">
+                    <a href="#" class="btn btn-warning accAjaxSubmit"> ایجاد کاربر</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

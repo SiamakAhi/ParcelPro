@@ -1,0 +1,357 @@
+﻿/* تنظیمات عمومی و ریست */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+h1, h2, h3, h4, h5, h6, p{
+    margin-bottom:0 !important;
+}
+
+.bill-container{
+    max-width:800px;
+    margin:auto;
+    padding-bottom:100px;
+}
+.bill-header-top{
+    text-align:center;
+    padding-top:10px;
+}
+.bill-header-top img {
+    width: 140px;
+    flex-grow: 1;
+}
+
+.bill-header-right {
+    float:right;
+    min-width: 55%;
+    margin-top:-10px;
+}
+    .bill-header-right h4{
+        margin-right:10px;
+    }
+    .settel {
+        display: flex;
+        justify-content: space-between;
+        padding: 2px 15px;
+        font-size: 13px;
+    }
+.billNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+
+.bill-header-left {
+    min-width: 55%;
+    float: left;
+    margin-top: -5px;
+}
+.bill-header-left > h4{
+    text-align:left;
+    margin-left:10px;
+}
+
+    .billPrice {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+.billPrice small {
+    font-size: 12px;
+    margin-right: 2px;
+    color: whitesmoke;
+}
+
+/* ----------------------------------------- */
+
+.quickAccessMenu_container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* دو ستون با عرض مساوی */
+    gap: 8px; /* فاصله بین عناصر */
+    padding: 15px;
+    width:100%;
+    margin-top:180px;
+}
+
+
+.quickAccessMenu_item {
+    border-radius: 6px;
+    overflow: hidden; /* برای جلوگیری از خروج محتوا از کادر */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* افزودن سایه برای ظاهر بهتر */
+}
+
+    .quickAccessMenu_item a {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        color: #fff; /* رنگ متن بدون تغییر */
+        padding: 5px;
+        height: 100%; /* پر کردن تمام ارتفاع کارت */
+    }
+
+        .quickAccessMenu_item a > i {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .quickAccessMenu_item a > h4 {
+            font-size: 16px;
+            text-align: center;
+            font-weight:400;
+        }
+    .quickAccessMenu_item:hover{
+        background-color:white;
+        color:#000;
+    }
+        .quickAccessMenu_item:hover p {
+            color: #000;
+        }
+        /* Person Info*/
+        .person-info-box {
+        padding: 20px;
+    }
+    .person-info-box.left{
+        float:left;
+    }
+    .person-info {
+        border-right: 1px dashed gray;
+        padding-right: 10px;
+        margin-bottom: 10px;
+    }
+    .person-info span{
+        color:whitesmoke;
+        margin-right:5px;
+    }
+    /* ---------------------------------------------------- */
+    .parcels-ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    .parcels-ul li {
+        display: flex;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 14px rgba(38, 60, 85, 0.16);
+        margin-bottom:10px;
+    }
+
+        .parcels-ul li .rownum {
+            display: flex;
+            align-items: center;
+            background: #4f8a4f;
+            font-size: 20px;
+            color: #fff;
+            padding: 15px
+        }
+
+        .parcels-ul li > .parcel-content {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+            .parcels-ul li > .parcel-content > .item {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                padding: 5px 15px;
+                background: whitesmoke;
+            }
+
+                .parcels-ul li > .parcel-content > .item > label {
+                    font-size: 12px;
+                    margin-bottom: 4px;
+                }
+
+                .parcels-ul li > .parcel-content > .item > span {
+                    color: #000;
+                }
+
+.bill-desc{
+    padding:8px;
+}
+/* --- Tracking Section ------- */
+/* Timeline Container */
+.tracking-section {
+    background: #d33682;
+    margin-top: 50px;
+    width: 358px;
+    margin-inline: auto;
+    padding: 5px 20px;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 10px 10px 0 10px;
+    margin-bottom: -12px;
+}
+.timeline {
+    margin: auto;
+    padding: 0 20px;
+}
+
+.outer {
+    margin:auto;
+    width:fit-content;
+}
+
+/* Card container */
+.timeline-card {
+    position: relative;
+    width: 360px;
+}
+
+    /* setting padding based on even or odd */
+    .timeline-card:nth-child(odd) {
+        padding: 30px 30px 30px 0;
+    }
+
+    .timeline-card:nth-child(even) {
+        padding: 30px 0px 30px 30px;
+        
+    }
+    /* Global ::before */
+    .timeline-card::before {
+        content: "";
+        position: absolute;
+        width: 50%;
+        border: solid orangered;
+    }
+
+    /* Setting the border of top, bottom, left */
+    .timeline-card:nth-child(odd)::before {
+        right: 0px;
+        top: -4.5px;
+        bottom: -4.5px;
+        border-width: 5px 5px 5px 0px;
+        border-radius: 0px 0 0px 0px;
+        border-color: #d33682;
+    }
+
+/* Setting the top and bottom to "-5px" because earlier it was out of a pixel in mobile devices */
+@media only screen and (max-width: 400px) {
+    .timeline-card:nth-child(odd)::before {
+        top: -5px;
+        bottom: -5px;
+    }
+}
+
+/* Setting the border of top, bottom, right */
+.timeline-card:nth-child(even)::before {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    border-width: 5px 0px 5px 5px;
+    border-radius: 50px 0px 0px 0;
+    border-color: #d33682;
+}
+
+/* Removing the border if it is the first card */
+.timeline-card:first-child::before {
+    border-top: 0;
+    border-top-left-radius: 0;
+}
+
+/* Removing the border if it is the last card  and it's odd */
+.timeline-card:last-child:nth-child(odd)::before {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Removing the border if it is the last card  and it's even */
+.timeline-card:last-child:nth-child(even)::before {
+    border-bottom: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Information about the timeline */
+.info {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: gray;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Title of the card */
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #d33682;
+    position: relative;
+    font-size: 14px;
+    padding-bottom: 15px;
+}
+    .title .time{
+        margin-inline:10px;
+        font-size:12px;
+        color:gray;
+    }
+    /* Timeline dot  */
+    .title::before {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 999px;
+        border: 3px solid #d33682;
+    }
+
+.info h6{
+    color:#000;
+}
+/* text right if the card is even  */
+.timeline-card:nth-child(even) > .info > .title {
+    flex-direction: row-reverse;
+}
+
+/* setting dot to the left if the card is odd */
+.timeline-card:nth-child(odd) > .info > .title::before {
+    right: -45px;
+}
+
+/* setting dot to the right if the card is odd */
+.timeline-card:nth-child(even) > .info > .title::before {
+    left: -45px;
+}
+
+
+/* ----------------------------------------- */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #bill, #bill * {
+        visibility: visible;
+    }
+
+    #bill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+/* ----------------------------------------- */
+.reciveBtnBox{
+    margin:auto;
+    padding:50px 25px 25px 25px;
+    width:100%;
+}
+

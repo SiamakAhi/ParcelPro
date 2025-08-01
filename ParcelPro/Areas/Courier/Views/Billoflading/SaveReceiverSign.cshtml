@@ -1,0 +1,221 @@
+﻿@model ParcelDeliveryDto
+@{
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+}
+
+
+
+<div class="container">
+    <div class="ReceiverSign">
+        <div class="ReceiverSign-header text-center">
+            <h3 class="modal-title text-white">تحویل مرسوله </h3>
+            <h4 text-success>@Model.WayBillNumber</h4>
+        </div>
+        <div class="ReceiverSign-body">
+            <form id="frmDelivery" method="post" asp-action="SaveReceiverSign" asp-controller="Billoflading" asp-area="Courier" enctype="multipart/form-data">
+                @Html.HiddenFor(m => m.BillOfLadingId)
+                @Html.HiddenFor(m => m.SellerId)
+                @Html.HiddenFor(m => m.SenderUserName)
+                @Html.HiddenFor(m => m.DeliveryDateTime)
+                @Html.HiddenFor(m => m.SenderUserName)
+                @Html.HiddenFor(m => m.UserId)
+                <input type="hidden" id="signatureImage" name="SignatureImage" />
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <label asp-for="ReceiverName" class="form-label"></label>
+                            <input asp-for="ReceiverName" class="form-control form-control-sm" required />
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="ReceiverNationalCode" class="form-label"></label>
+                            <input asp-for="ReceiverNationalCode" class="form-control form-control-sm" />
+                        </div>
+                        <div class="mb-2">
+                            <label asp-for="ReceiverMobile" class="form-label"></label>
+                            <input asp-for="ReceiverMobile" class="form-control form-control-sm" required />
+                        </div>
+
+                        <div class="mb-2">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea rows="5" asp-for="Description" class="form-control form-control-sm"></textarea>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="button" class="btn btn-success ajaxSubmit">ثبت تحویل و امضا</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-1">
+                            <label class="form-label">امضای تحویل‌گیرنده</label>
+                            <div class="border p-2 rounded bg-light">
+                                <canvas id="signatureCanvas" width="400" height="300" class="w-100" style="touch-action: none; border: 1px solid #ccc;"></canvas>
+                            </div>
+                            <div class="mt-3">
+                                <button type="button" id="clearSignature" class="btn btn-danger">پاک کردن امضا</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- بارگذاری کتابخانه SignaturePad از CDN -->
+@* <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script> *@
+<script src="~/vendor/signature_pad/signature_pad.umd.min.js"></script>
+<script src="~/vendor/libs/jquery/jquery.js"></script>
+<script>
+    // تنظیم اندازه canvas
+    const canvas = document.getElementById("signatureCanvas");
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // ایجاد نمونه SignaturePad با تنظیمات حرفه‌ای و زمینه شفاف
+    const signaturePad = new SignaturePad(canvas, {
+        penColor: "rgb(0, 0, 0)",
+        backgroundColor: "rgba(0, 0, 0, 0)", // زمینه شفاف
+        throttle: 16,
+        minWidth: 1,
+        maxWidth: 3
+    });
+
+    // تابع برای برش حاشیه‌های اضافی canvas
+    function trimCanvas(c) {
+        const ctx = c.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, c.width, c.height);
+        const pixels = imgData.data;
+        const len = pixels.length;
+        let bound = { top: null, left: null, right: null, bottom: null };
+
+        for (let i = 0; i < len; i += 4) {
+            const alpha = pixels[i + 3];
+            if (alpha !== 0) { // پیکسل غیر شفاف پیدا شده
+                const x = (i / 4) % c.width;
+                const y = Math.floor((i / 4) / c.width);
+                if (bound.top === null) {
+                    bound.top = y;
+                }
+                if (bound.left === null || x < bound.left) {
+                    bound.left = x;
+                }
+                if (bound.right === null || x > bound.right) {
+                    bound.right = x;
+                }
+                if (bound.bottom === null || y > bound.bottom) {
+                    bound.bottom = y;
+                }
+            }
+        }
+
+        // اگر هیچ پیکسل غیر شفاف پیدا نشد، همان canvas را برگردانید
+        if (bound.top === null) {
+            return c;
+        }
+
+        const trimWidth = bound.right - bound.left;
+        const trimHeight = bound.bottom - bound.top;
+        const trimmedCanvas = document.createElement('canvas');
+        trimmedCanvas.width = trimWidth;
+        trimmedCanvas.height = trimHeight;
+        const trimmedCtx = trimmedCanvas.getContext('2d');
+        trimmedCtx.putImageData(ctx.getImageData(bound.left, bound.top, trimWidth, trimHeight), 0, 0);
+        return trimmedCanvas;
+    }
+
+    // دکمه پاک کردن امضا
+    document.getElementById("clearSignature").addEventListener("click", function() {
+        signaturePad.clear();
+        document.getElementById("signatureImage").value = "";
+    });
+
+    // ارسال فرم با Ajax
+    $(document).on('click', '.ajaxSubmit', function () {
+        let btn = $(this);
+        let frm = btn.closest('form');
+
+        if (!signaturePad.isEmpty()){
+            // برش canvas جهت حذف حاشیه‌های اضافی
+            let trimmedCanvas = trimCanvas(canvas);
+            const imageData = trimmedCanvas.toDataURL("image/png"); // خروجی به صورت PNG با زمینه شفاف
+            frm.find('#signatureImage').val(imageData);
+        } else {
+            Swal.fire({
+                title: 'خطا!',
+                text: 'امضا خالی است. لطفاً امضا را وارد کنید.',
+                icon: 'error',
+                confirmButtonText: 'باشه'
+            });
+            return;
+        }
+
+        let actionUrl = frm.attr('action');
+        let dataToSend = new FormData(frm.get(0));
+
+        $.ajax({
+            url: actionUrl,
+            type: 'POST',
+            data: dataToSend,
+            processData: false,
+            contentType: false
+        }).done(function (data) {
+          let result = JSON.parse(data);
+
+            if (result['Success'] === true) {
+
+                if (result['ShowMessage'] === true) {
+                    Swal.fire({
+                        title: 'کاربـر گـرامی !',
+                        html: result['Message'],
+                        icon: 'success',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        },
+                        confirmButtonText: 'متوجه شدم',
+                        buttonsStyling: false
+                    });
+                }
+
+                $(this).delay(1000).queue(function () {
+                    if (parseInt(result['updateType']) === 1) {
+                        if (result['returnUrl']) window.location.href = result['returnUrl'];
+                    }
+                    else {
+                        if (result['returnUrl']) {
+                            var getUrl = result['returnUrl'];
+                            var target = result['updateTargetId'];
+
+                            $.get(getUrl).done(function (newData) {
+                                $(document).find(target).html(newData);
+                                var modalTarge = $(document).find('#accmodal');
+                                modalTarge.modal('hide');
+                                $(document).find('.select2').select2();
+                            });
+                        }
+                    }
+                })
+            }
+            else {
+                Swal.fire({
+                    title: 'کاربـر گـرامی !',
+                    html: result['Message'],
+                    icon: 'warning',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
+                    },
+                    confirmButtonText: 'باشه',
+                    buttonsStyling: false
+                });
+            }
+        }).fail(function (xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا!',
+                text: 'در ثبت تحویل مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.'
+            });
+        });
+    });
+</script>
+

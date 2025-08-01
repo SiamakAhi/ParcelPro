@@ -1,0 +1,92 @@
+﻿
+@media print {
+    @page {
+        size: 8cm 8cm;
+        margin: 0;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Tahoma, sans-serif;
+}
+
+.label {
+    width: 8cm;
+    height: 8cm;
+    box-sizing: border-box;
+    border: 2px solid #000;
+    border-radius: 5px;
+}
+
+    .header h2 {
+        padding: 0;
+        text-align: center;
+        margin: 5px 0;
+    }
+
+.tracking {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    margin-bottom: 0;
+}
+
+.barcode {
+    text-align: center;
+    border-bottom: 1px solid #000;
+}
+
+.info {
+    display:flex;
+    font-size: 13px;
+    text-align: center;
+    flex-wrap:nowrap;
+}
+.info-item {
+    flex-grow: 1;
+    padding-block: 15px;
+    border-bottom: 1px solid #000;
+    width: 50%;
+    max-width: 50%;
+}
+    .info-item:first-child {
+        border-right: 1px solid #000;
+    }
+
+.footer {
+    display: flex;
+    flex-direction:row-reverse;
+    justify-content:center;
+}
+.footer-item {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 13px;
+    padding-top: 10px;
+    max-width: 50%;
+}
+    .footer-item > div {
+        display: flex;
+        justify-content: space-around;
+        direction: rtl;
+    }
+        
+        .footer-item > div > label, .footer-item > div > strong {
+            padding: 5px
+        }
+        .footer-item:first-child {
+            border-left: 1px solid #000;
+        }
+
+    small{
+        text-align:center;
+        display:block;
+    }
+

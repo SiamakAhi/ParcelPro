@@ -1,0 +1,178 @@
+﻿@model BillCashPayDto
+
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"> تسویه حساب بارنامه</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+        <div class="modal-body">
+
+            <form id="frmCashPay" method="post" asp-action="BillCashPay" asp-controller="Payment" asp-area="Treasury">
+                @* Hidden Fields *@
+                <input type="hidden" asp-for="Id" value="@Guid.NewGuid()" />
+                @Html.HiddenFor(m => m.TransactionTypeId)
+                @Html.HiddenFor(m => m.SellerId)
+                @Html.HiddenFor(m => m.BillOfLadingId)
+                @Html.HiddenFor(m => m.BillFinancialtransactionId)
+                @Html.HiddenFor(m => m.BillNumber)
+                @Html.HiddenFor(m => m.BranchId)
+                @Html.HiddenFor(m => m.UserId)
+                @Html.HiddenFor(m => m.AccountPartyId)
+                @Html.HiddenFor(m => m.Amount)
+                @Html.HiddenFor(m => m.CreditAmount)
+                @Html.HiddenFor(m => m.DebitAmount)
+                @Html.HiddenFor(m => m.SettelmentType)
+
+                <div class="row p-3">
+                    <div class="col-md-5">
+                        <div class="payInfo">
+                            <h3 class="text-success">اطلاعات پرداخت</h3>
+                            <h4 class="text-light">@Model.BillNumber</h4>
+
+                            <ul>
+                                <li>
+                                    <label>تاریخ ایجاد بارنامه </label>
+                                    <span>@Model.BillCreateDate.LatinToPersian()</span>
+                                </li>
+                                <li>
+                                    <label>طرف حساب </label>
+                                    <span>@Model.PartyName</span>
+                                </li>
+                                <li>
+                                    <label> همراه طرف حساب</label>
+                                    <span>@Model.PartyMobile</span>
+                                </li>
+                                <li>
+                                    <label>نوع تسویه</label>
+                                    <span>@Model.SettelmentType.ToSettelmentTypeName()</span>
+                                </li>
+                                <li>
+                                    <label>مبلغ بارنامه</label>
+                                    <span>@Model.Amount.ToPrice() <span>ريال</span></span>
+                                </li>
+                                <li>
+                                    <label>پرداخت شده</label>
+                                    <span>@Model.CreditAmount.ToPrice() <span>ريال</span></span>
+                                </li>
+                                <li class="finalPrice">
+                                    <label>قابل پرداخت</label>
+                                    <span>@Model.DebitAmount.ToPrice() <span>ريال</span></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-7 p-2">
+                        <div class="row">
+
+                            <div class="col-md-6 mb-2">
+                                <label asp-for="OperationId" class="form-label"></label>
+                                <select asp-for="OperationId" class="form-select form-select-sm  gonext">
+                                    <option>انتخاب ...</option>
+                                    <option value="1">وجه نقد</option>
+                                    <option value="2">کارت خوان</option>
+                                    <option value="3">حواله بانکی</option>
+                                    <option value="601">ارسال لینک پرداخت</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label asp-for="strTransactionDate" class="form-label">تاریخ دریافت</label>
+                                <input type="text" asp-for="strTransactionDate" class="form-control form-control-sm flatpickr-input gonext" value="@DateTime.Now.LatinToPersianForDatepicker()" />
+                            </div>
+                            <div class="col-md-4 mb-2" >
+                                <label asp-for="strPayAmount" class="form-label"></label>
+                                <input type="text" asp-for="strPayAmount" class="form-control form-control-sm numberInput gonext" value="@Model.DebitAmount" />
+                            </div>
+                            <div class="col-md-8 mb-2">
+                                <label asp-for="Description" class="form-label"></label>
+                                <input asp-for="Description" class="form-control form-control-sm gonext" />
+                            </div>
+                            <div class="col-md-6 mb-2" id="dposId">
+                                <label asp-for="PosId" class="form-label"></label>
+                                <select asp-for="PosId" id="PosId" class="form-select form-select-sm gonext" asp-items="ViewBag.Pos">
+                                    <option value="">انتخاب کارت‌خوان</option>
+                                </select>
+                            </div>
+                           
+                            <div class="col-md-6 mb-2" id="dtransferNumber">
+                                <label asp-for="TransferNumber" class="form-label"></label>
+                                <input asp-for="TransferNumber" id="TransferNumber" class="form-control form-control-sm" />
+                            </div>
+                            <div class="col-md-12 mb-2" id="dbankAccountId">
+                                <label asp-for="BankAccountId" class="form-label">حساب بانکی</label>
+                                <select asp-for="BankAccountId" id="BankAccountId" class="form-select  form-select-sm gonext" asp-items="ViewBag.BankAccounts">
+                                    <option value="">انتخاب حساب بانکی</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="d-grid mb-2 p-2">
+                            <button type="button"  class="btn btn-primary accAjaxSubmit">ثبت دریافت وجه</button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+
+            <div>
+                <hr />
+                <p class="ms-2">سوابق پرداخت بارنامه @Model.BillNumber</p>
+                <div class="table-responsive mb-5 mt-3">
+                    <table class="table table-bordered table-hover table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ردیف</th>
+                                <th>شماره بارنامه</th>
+                                <th>تاریخ</th>
+                                <th>ساعت</th>
+                                <th>مبلغ</th>
+                                <th>روش پرداخت</th>
+                                <th>شماره رسید</th>
+                                <th>کارت‌خوان</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.PaymentList != null && Model.PaymentList.Any())
+                            {
+                                int row = 1;
+                                foreach (var pay in Model.PaymentList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@row</td>
+                                        <td class="text-center">@pay.BillNumber</td>
+                                        <td class="text-center">@pay.PayedDate.LatinToPersian()</td>
+                                        <td class="text-center">@pay.PayedTime</td>
+                                        <td>@pay.Amount.ToString("N0")</td>
+                                        <td>@pay.PaymentMethod</td>
+                                        <td>@pay.ReciptNumber</td>
+                                        <td>@pay.PosName</td>
+                                    </tr>
+                                    row++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted">پرداختی برای این بارنامه ثبت نشده است.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).find('.flatpickr-input').flatpickr({
+               locale: 'fa',
+               altInput: true,
+               altFormat: 'Y/m/d',
+               allowInput: true,
+               disableMobile: true
+           });
+</script>

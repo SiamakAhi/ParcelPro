@@ -1,0 +1,90 @@
+﻿@model List<ParcelPro.Areas.Treasury.Dto.TreCashBoxDto>
+@{
+    ViewData["Title"] = "مدیریت خزانه - مدیریت صندوق‌های نقدی";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header-search">
+        <h5 class="card-header heading-color">
+            مدیریت صندوق‌های نقدی
+        </h5>
+        <div class="btn-toolbar demo-inline-spacing" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group" aria-label="First group">
+                <a href="#" data-url="@Url.Action("AddCashBox", "TreCashBox", new { Area = "Treasury" })" class="btn btn-primary iconpng callform">
+                    <i class="tf-icons bx bx-plus"></i>
+                    جــدید
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body card-table">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">ردیف</th>
+                        <th>نام صندوق</th>
+                        <th>مربوط به شعبه</th>
+                        <th>کد حساب تفصیلی</th>
+                        <th>نام حساب تفصیلی</th>
+                        <th>ارز</th>
+                        <th>محل فیزیکی</th>
+                        <th>تاریخ افتتاح</th>
+                        <th>فعال</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (Model.Any())
+                    {
+                        int row = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@row</td>
+                                <td>@item.RegisterName</td>
+                                <td>@item.BranchName</td>
+                                <td>@item.TafsilCode</td>
+                                <td>@item.TafsilName</td>
+                                <td>@item.CurrencyName</td>
+                                <td>@item.PhysicalLocation</td>
+                                <td>@item.OpeningDate.ToShortDateString()</td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <i class="bx bx-check text-success"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bx bx-x text-danger"></i>
+                                    }
+                                </td>
+                                <td class="row-btns text-center">
+                                    <a class="callform" href="#" data-url="@Url.Action("EditCashBox", "TreCashBox", new { Area = "Treasury", id = item.Id })">
+                                        <i class="bx bx-edit-alt text-info" title="ویرایش صندوق نقدی"></i>
+                                    </a>
+                                    <a href="#" data-url="@Url.Action("DeleteCashBox", "TreCashBox", new { Area = "Treasury", id = item.Id })">
+                                        <i class="bx bx-trash-alt text-warning" title="حذف صندوق نقدی"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            row++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10">
+                                <div class="alert alert-primary my-3 text-center" role="alert">
+                                    صندوق نقدی در سیستم تعریف نشده است. برای تعریف صندوق از دکمه <strong class="text-warning p-1">جدید</strong> استفاده نمایید.
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

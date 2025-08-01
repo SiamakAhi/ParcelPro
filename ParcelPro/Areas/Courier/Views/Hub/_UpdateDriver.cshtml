@@ -1,0 +1,71 @@
+﻿@model DriverDto
+<div class="modal-dialog garnet-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class=""> ویرایش اطلاعات راننده حمل </span>
+        </div>
+        <div class="modal-body">
+            <form asp-action="UpdateDriver" asp-controller="Hub" asp-area="Courier" method="post">
+                <input type="hidden" asp-for="Id" value="@Model.Id" />
+                <input type="hidden" asp-for="CreatedBy" value="@Model.CreatedBy" />
+                <div class="row">
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="FullName" class="form-label">نام و نام خانوادگی</label>
+                        <input type="text" class="form-control form-control-sm" asp-for="FullName" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="PhoneNumber" class="form-label">شماره همراه</label>
+                        <input type="text" class="form-control form-control-sm" asp-for="PhoneNumber" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="NationalCode" class="form-label">کد ملی</label>
+                        <input type="text" class="form-control form-control-sm" asp-for="NationalCode" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="LicenseNumber" class="form-label">شماره گواهینامه</label>
+                        <input type="text" min="0" class="form-control form-control-sm" asp-for="LicenseNumber" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="LicenseExpiryDate" class="form-label">تاریخ اعتبار گواهینامه</label>
+                        <input type="text" class="form-control form-control-sm flatpickr-input" asp-for="LicenseExpiryDate" />
+                    </div>
+                    <hr />
+                    <div class="col-md-12 mb-2 mt-3 select2-dark">
+                        <label asp-for="MoeinId" class="form-label">حساب معین</label>
+                        <select class="form-select form-select-sm select2" asp-for="MoeinId" asp-items="@ViewBag.Moeins">
+                            <option value="0">انتخاب کنید</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 mb-2 select2-dark">
+                        <label asp-for="TafsilId" class="form-label">حساب تفصیلی</label>
+                        <select class="form-select form-select-sm select2" asp-for="TafsilId" asp-items="@ViewBag.Tafsils">
+                            <option value="0">انتخاب کنید</option>
+                        </select>
+                    </div>
+                    <hr />
+                    <div class="col-md-12 p-3 mb-2">
+                        <label class="switch">
+                            <input type="checkbox" asp-for="IsActive" class="switch-input">
+                            <span class="switch-toggle-slider">
+                                <span class="switch-on"></span>
+                                <span class="switch-off"></span>
+                            </span>
+                            <span class="switch-label">فعال</span>
+                        </label>
+                    </div>
+                </div>
+                <div class=" dataentry-buttons-container container-row">
+                    <div class="dataentry-buttons">
+                        <a href="javascript:void(0)" class="btn btn-primary accAjaxSubmit"> ذخیـره</a>
+                        <button type="reset" class="btn btn-warning" data-bs-dismiss="modal" aria-label="Close">
+                            انصراف
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/js/forms-selects.js"></script>

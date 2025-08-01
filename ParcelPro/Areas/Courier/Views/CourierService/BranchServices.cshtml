@@ -1,0 +1,88 @@
+﻿@model List<BranchServiceDto>
+@{
+    ViewData["Title"] = "کیهان پست هاب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string branchname = ViewBag.BranchName;
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header alert-secondary p-0">
+            <h5 class="custom-card-title text-center">
+                <i class="bx bxs-category-alt text-warning"></i>
+                سرویس های مجاز برای شعبه </<br /> <strong class="text-primary">@branchname</strong>
+            </h5>
+
+          
+        
+        </div>
+         <div class="card-body card-table">
+            <div class="row">
+                <div class="col-md-4">
+                    <div>
+                        <form asp-action="AddServiceToBranch" asp-controller="CourierService" asp-area="Courier" method="post">
+                            <div class="row p-3">
+                                <input type="hidden" name="BranchId" value="@ViewBag.Id" />
+
+                                <div class="col-12">
+                                    <label for="serviceId"></label>
+                                    <select name="serviceId" class="form-select" asp-items="@ViewBag.services">
+                                        <option>انتخاب سرویس</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 d-grid mt-4">
+                                    <a class="btn btn-primary text-white btn-sm accAjaxSubmit">افزودن به سرویس های مجاز شعبه</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="table-responsive text-nowrap mt-3">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="td-row">ردیف</th>
+                                    <th>نام سرویس </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                @if (Model?.Count() > 0)
+                                {
+                                    int row = 1;
+                                    foreach (var x in Model)
+                                    {
+                                        <tr>
+                                            <td class="td-row">@row</td>
+                                            <td>@x.ServiceName</td>
+                                            <td class="row-btns text-center">
+                                                <a href="#" class="removeById" data-url="@Url.Action("RemoveService", "CourierService", new { Area = "Courier" })" data-target="@x.Id" title="مجوز استفاده از سرویط موردنظر را از این شعبه لغو می کنید ؟ "><i class="bx bx-trash text-warning"></i></a>
+                                            </td>
+                                        </tr>
+
+                                        row++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7">
+                                            سرویسی در سیستم ثبت نشده است
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+         </div>
+
+    </div>
+</div>
+
+

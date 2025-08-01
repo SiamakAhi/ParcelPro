@@ -1,0 +1,59 @@
+﻿@model ChangePartyDto
+
+<div class="modal-dialog fit mxw-500">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">تغییر طرف طرف حساب</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <form method="post" asp-action="ChangeBillParty" asp-controller="AccSaleManager" asp-area="Accounting">
+                <div class="row p-4">
+                    <div class="payInfo paymentrecords">
+                        <h3 class="text-success">اطلاعات بارنامه</h3>
+                        <ul>
+                            <li>
+                                <label>شماره بارنامه </label>
+                                <span>@Model.Billnumber</span>
+                            </li>
+                            <li>
+                                <label>فرستنده </label>
+                                <span>@Model.Sender</span>
+                            </li>
+                            <li>
+                                <label>گیرنده</label>
+                                <span>@Model.Reciver</span>
+                            </li>
+                            <li>
+                                <label>مبلغ بارنامه</label>
+                                <span>@Model.Price?.ToPrice() <span>ريال</span></span>
+                            </li>
+                            <li>
+                                <label>طرف حساب فعلی</label>
+                                <span>@Model.CurrentPartyName</span>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <input type="hidden" asp-for="BillId" value="@Model.BillId" />
+                    <div class="mb-2 mt-2">
+                        <div class="selectparty mb-2">
+                            <label class="mb-1">طرف حساب بارنامه را از لیست انتخاب کنید</label>
+                            <select class="form-select select2 gonext" asp-for="PartyId" id="ddlParty" asp-items="ViewBag.Clients">
+                                <option value="null">انتخاب طرف حساب ...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-grid mb-2 p-2">
+                        <button type="button" class="btn btn-warning accAjaxSubmit">بروزرسانی طرف حساب بارنامه </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/forms-selects.js"></script>

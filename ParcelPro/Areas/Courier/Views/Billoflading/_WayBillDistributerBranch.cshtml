@@ -1,0 +1,45 @@
+﻿@model WaybillDitributerUpdateDto
+
+
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">شعبه توزیع کننده بارنامه</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body px-5">
+            @if(Model!=null)
+            {
+                <form method="post" asp-action="WayBillDistributerBranch" asp-controller="Billoflading" asp-area="Courier">
+                    @Html.HiddenFor(n => n.Id)
+                    <div class="row p-2">
+                        <div class="">
+                            <h3 class="text-info text-center">@Model.WaybillNumber</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label mb-1">نماینده توزیع</label>
+                                <select class="form-select select2 px-2" asp-for="DistributerId" asp-items="ViewBag.Distributers">
+                                    <option value="@Guid.Empty">فاقد نماینده توزیع</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-grid mb-2 p-2">
+                            <button type="button" class="btn btn-warning accAjaxSubmit">ثبت</button>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-warning p-2 m-4">
+                    اطلاعات بارنامه یافت نشد.
+                </div>
+            } 
+           
+        </div>
+    </div>
+</div>
+<script src="~/js/forms-selects.js"></script>
+
+

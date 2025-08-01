@@ -1,0 +1,303 @@
+﻿  @model VmBillofladingPanel
+
+@{
+    ViewData["Title"] = $"بارنامه {Model.BillOfLading.bill.WaybillNumber}";
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+
+
+    long totalPrice = (long)Model.BillOfLading.bill.BillofLadingCosts.Sum(g => g.Amount);
+    long totalDiscout = (long)Model.BillOfLading.Consigments.Sum(d => d.Discount);
+    long finalPrice = totalPrice - totalDiscout;
+
+    string ReciverNum = Model.BillOfLading.bill.SettelmentType == 1 ? Model.BillOfLading.bill.SenderPhone : Model.BillOfLading.bill.ReciverPhone;
+
+}
+
+<div class="row px-3 m-0 billoflading-page">
+    <div class="col-md-3 card">
+        <h4 class="card-header">
+            اطلاعات بارنامه
+            <span class="badge bg-light">@Model.BillOfLading.bill.BillOfLadingStatusId.ToBillOfLadingStatusName()</span>
+        </h4>
+        <div class="card-body">
+            <div class="card-title d-flex justify-content-between align-items-center">
+                <h5 class="text-primary">@Model.BillOfLading.bill.WaybillNumber</h5>
+                <strong>@Model.BillOfLading.bill.IssuanceDate.LatinToPersian()</strong>
+            </div>
+            <ul class="billoflading-page--billInfo">
+                <li class="list-title">
+                    <h5 class="text-secondary">اطلاعات بارنامه</h5>
+                </li>
+                <li>
+                    <label>سرویس </label>
+                    <h6 class="text-info">@Model.BillOfLading.bill.ServiceName</h6>
+                </li>
+                <li>
+                    <label>مبدأ </label>
+                    <p>@Model.BillOfLading.bill.OriginCity</p>
+                </li>
+                <li>
+                    <label>مقصد</label>
+                    <p>@Model.BillOfLading.bill.DestinationCity</p>
+                </li>
+                <li>
+                    <label>شعبه صادر کننده</label>
+                    <p>@Model.BillOfLading.bill.OriginBranchName</p>
+                </li>
+                <li>
+                    <label>کاربر صادر کننده</label>
+                    <p>@Model.BillOfLading.bill.CreatedBy</p>
+                </li>
+            </ul>
+            <ul class="billoflading-page--sender">
+                <li class="list-title">
+                    <h5 class="text-secondary">فرستنده</h5>
+                    <div>
+                        <a href="javascript:(0)" class="callform" data-url="@Url.Action("ChangeSenderOrReciver", "BillOfLading", new { Area = "Courier", id = Model.BillOfLading.bill.Id, isSender = true })">
+                            <i class="fa fa-edit  text-secondary " title="ویرایش اطلاعات فرستنده" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <label>نام</label>
+                    <p>@Model.BillOfLading.bill.SenderName</p>
+                </li>
+                <li>
+                    <label>تلفن</label>
+                    <p>@Model.BillOfLading.bill.SenderPhone</p>
+                </li>
+                <li>
+                    <label>آدرس</label>
+                    <p>@Model.BillOfLading.bill.SenderAddress</p>
+                </li>
+            </ul>
+            <ul class="billoflading-page--sender">
+                <li class="list-title">
+                    <h5 class="text-secondary">گیرنده</h5>
+                    <div>
+                        <a href="javascript:(0)" class="callform" data-url="@Url.Action("ChangeSenderOrReciver", "BillOfLading", new { Area = "Courier", id = Model.BillOfLading.bill.Id, isSender = false })">
+                            <i class="fa fa-edit  text-secondary " title="ویرایش اطلاعات گیرنده" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <label>نام</label>
+                    <p>@Model.BillOfLading.bill.ReciverName</p>
+                </li>
+                <li>
+                    <label>تلفن</label>
+                    <p>@Model.BillOfLading.bill.ReciverPhone</p>
+                </li>
+                <li>
+                    <label>آدرس</label>
+                    <p>@Model.BillOfLading.bill.ReceiverAddress</p>
+                </li>
+            </ul>
+            <ul class="billoflading-page--sender">
+                <li class="list-title">
+                    <h5 class="text-secondary">نماینده توزیع</h5>
+                    <div>
+                        <a href="javascript:(0)" class="callform" data-url="@Url.Action("WayBillDistributerBranch", "BillOfLading", new { Area = "Courier", id = Model.BillOfLading.bill.Id })">
+                            @if (string.IsNullOrEmpty(Model.BillOfLading.bill.DistributerRepresentativeId.ToString()) || Model.BillOfLading.bill.DistributerRepresentativeId==Guid.Empty)
+                            {
+                                <i class="fa fa-plus  text-secondary " title="تعیین نماینده توزیع" aria-hidden="true"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-edit  text-secondary " title="تغییر نماینده توزیع" aria-hidden="true"></i>
+                            }
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <label>شعبه توزیع کننده :</label>
+                    <p>@Model.BillOfLading.bill.DistributerRepresentative</p>
+                </li>
+            </ul>
+            <ul class="billoflading-page--sender">
+                <li class="list-title">
+                    <h5 class="text-secondary">ملاحظات</h5>
+                    <div>
+                        <a href="javascript:(0)" class="callform" data-url="@Url.Action("", "BillOfLading", new { Area = "Courier", id = Model.BillOfLading.bill.Id, isSender = false })">
+                            <i class="fa fa-edit  text-secondary " title="بروزرسانی ملاحظات" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <textarea rows="6" class="form-control bg-dark p-2" asp-for="BillOfLading.bill.Description"></textarea>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 card">
+        <h4 class="card-header bil-parsels-header">
+            مرسولات
+            @if (Model.BillOfLading.bill.BillOfLadingStatusId <= 2)
+            {
+                <a href="#" class="ms-2 callform" data-url="@Url.Action("AddConsigment", "BillOfLading", new { Area = "Courier", id = Model.BillOfLading.bill.Id })">
+                    <i class="fa fa-plus-square text-primary" aria-hidden="true"></i>
+                </a>
+            }
+        </h4>
+        <div class="card-body">
+            <h4 class="card-title"></h4>
+            @if (Model.BillOfLading.Consigments.Count > 0)
+            {
+                int qty = Model.BillOfLading.Consigments.Count;
+                int row = 1;
+                <ul class="parcels">
+                    @foreach (var x in Model.BillOfLading.Consigments)
+                    {
+                        <li class="parcel">
+                            <div class="parcel-toolbox">
+                                <a href="#" class="ms-2 callform" title="ویرایش مرسوله" data-url="@Url.Action("UpdateConsigment", "Billoflading", new { Area = "Courier", id = x.Id })">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                </a>
+                                <a href="#" class="ms-2 removeById" title="از حذف مرسوله اطمینان دارید ؟" data-target="@x.Id" data-url="@Url.Action("delParcel", "Billoflading", new { Area = "Courier" })">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                            <div>
+                                <h6 class="text-primary waybillNumber"> @qty/@row</h6>
+                                <h4>@x.NatureName</h4>
+                                <p>@x.ContentDescription</p>
+                            </div>
+                            <div>
+                                <h6 class="text-secondary">وزن و ابعاد</h6>
+                                <ul>
+                                    <li><label class="me-2">طول، عرض، ارتفاع </label><span>@x.Length, @x.Width, @x.Length <span class="ms-1">Cm</span></span></li>
+                                    <li><label class="me-2">حجم</label><span>@x.Volume <span class="ms-1">Cm</span></span></li>
+                                    <li><label class="me-2">وزن</label><span>@x.Weight <span class="ms-1">Kg</span></span></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 class="text-secondary">هزینه</h6>
+                                @if (x.Costs.Count > 0)
+                                {
+                                    <ul>
+                                        @foreach (var c in x.Costs)
+                                        {
+                                            <li>
+                                                <label class="me-2">@c.CostName</label>
+                                                <span class="amount">@c.Amount.ToPrice() <span class="me-2">ريال</span></span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </li>
+                        row++;
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+    <div class="col-md-3 card">
+        <h4 class="card-header">صورتحساب</h4>
+        <div class="card-body">
+            <ul class="billingList">
+                @if (Model.BillOfLading.bill.BillofLadingCosts.Count > 0)
+                {
+                    foreach (var x in Model.BillOfLading.bill.BillofLadingCosts)
+                    {
+                        <li>
+                            <label>@x.CostName</label>
+                            <span>@x.Amount.ToPrice() <span class="me-2">ريال</span></span>
+                        </li>
+                    }
+                    @if (totalDiscout > 0)
+                    {
+                        <li>
+                            <label>جمع تخفیفات</label>
+                            <span>@totalDiscout.ToPrice() <span class="me-2">ريال</span></span>
+                        </li>
+                    }
+
+                    <li class="total">
+                        <label>جمع صورتحساب : </label>
+                        <span class="amount">
+                            @finalPrice.ToPrice()
+                            <span class="ms-2 text-white">ريال</span>
+                        </span>
+                    </li>
+                }
+            </ul>
+
+            @if (totalPrice > 0)
+            {
+                if (Model.BillOfLading.bill.BillOfLadingStatusId < 2)
+                {
+                    <form id="frmbilling" asp-action="BillSettelment" asp-controller="BillOfLading" asp-area="Courier" method="post">
+                        <input type="hidden" name="BillId" value="@Model.BillOfLading.bill.Id" />
+                        <input type="hidden" name="branchId" value="@Model.Branch.Id" />
+                        <div class="mb-2">
+                            <label>نوع تسویه حساب</label>
+                            <select class="form-select" name="SettelmentTypeId" id="select_SettelmentType">
+                                <option>انتخاب ... </option>
+                                <option value="1">نقدی</option>
+                                <option value="2">پسکرایه</option>
+                                @if (Model.Branch.IsOwnership)
+                                {
+                                    <option value="3">اعتباری</option>
+                                    <option value="4">تهاتر</option>
+                                }
+
+                            </select>
+                            <div class="selectparty mt-1">
+                                <label>طرف حساب اعتباری را از لیست زیر انتخاب کنید</label>
+                                <select class="form-select select2 gonext" name="partyId" id="ddlParty" asp-items="ViewBag.Clients">
+                                    <option value="null">انتخاب طرف حساب ...</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="javascript:void(0)" class="btn btn-danger ajaxgetModal" title="صدور بارنامه انجام شود ؟">
+                                صــدور بـارنـامـه
+                            </a>
+                        </div>
+                    </form>
+                }
+
+                if (Model.BillOfLading.bill.BillOfLadingStatusId >= 2)
+                {
+                    <div class="container p-2">
+                        <div class="row g-1">
+                            <div class="col-sm-6">
+                                <a class="btn btn-secondary w-100 callform"
+                                   data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = Model.BillOfLading.bill.Id })">
+                                    پرداخت
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-light w-100 callform"
+                                   data-url="@Url.Action("SendPayment", "Billoflading", new { area = "Courier", id = Model.BillOfLading.bill.Id, trackingCode = Model.BillOfLading.bill.WaybillNumber, reciverNumber = ReciverNum })">
+                                    ارسال لینک پرداخت
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-light w-100"
+                                   asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
+                                    چاپ بارنامه
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-secondary w-100"
+                                   asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
+                                    مشاهده بارنامه
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+
+

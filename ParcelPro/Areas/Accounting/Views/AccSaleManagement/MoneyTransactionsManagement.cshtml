@@ -1,0 +1,258 @@
+﻿@model SaleMoneyTransactionVM
+@{
+    ViewData["Title"] = "تراکنش های مالی فروش";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-panel">
+    <div class="card-panel-header">
+        <div><span class="card-panel-title">تراکنش های مالی فروش</span></div>
+        <div class="card-panel-navbar-container">
+          
+        </div>
+    </div>
+
+    <div>
+        <form asp-action="MoneyTransactionsManagement" asp-controller="AccSaleManagement" asp-area="Accounting" method="get" id="frmMoneyTre">
+            <input type="hidden" asp-for="filter.CurrentPage" value="@Model.filter.CurrentPage" />
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card-panel-section">
+                        <div class="card-header-panel-section-header">
+                            <span>فیلتـر</span>
+                        </div>
+                        <div class="card-header-panel-section-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label asp-for="filter.BiilOdLadingNumber">‌شماره بارنامه</label>
+                                        <input type="text" class="text-center" asp-for="filter.BiilOdLadingNumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label asp-for="filter.strFromDate">از تاریخ‌</label>
+                                        <input type="text" asp-for="filter.strFromDate" class="flatpickr-input" placeholder="YYYY/MM/DD" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label asp-for="filter.strUntilDate">تا تاریخ‌</label>
+                                        <input type="text" asp-for="filter.strUntilDate" class="flatpickr-input" placeholder="YYYY/MM/DD" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>کارتخوان</label>
+                                        <select asp-for="filter.PosId" asp-items="@ViewBag.Poses">
+                                            <option value="null" selected>همه</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>روش پرداخت</label>
+                                        <select asp-for="filter.PaymentMethod" asp-items="@ViewBag.PaymentMethod">
+                                            <option value="null" selected>همه</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>حساب بانکی</label>
+                                        <select asp-for="filter.BankAccountId" asp-items="@ViewBag.BankAccounts">
+                                            <option value="null" selected>همه</option>
+                                        </select>
+                                    </div>
+                                </div>
+                              
+                                <div class="col-md-6 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>حساب</label>
+                                        <select asp-for="filter.PartyId" class="select2" asp-items="@ViewBag.persen">
+                                            <option value="null" selected>همه</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>جستجو در شرح تراکنش </label>
+                                        <input type="text" class="text-center" asp-for="filter.Description">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="garnet-input-group1 garnet-input-group-light">
+                                        <label>تعداد ردیف در هر صفحه</label>
+                                        <input type="number" min="1" asp-for="filter.PageSize" value="@Model.filter.PageSize">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-panel-section">
+                        <div class="card-header-panel-section-header">
+                            <span>عملیات</span>
+                        </div>
+                        <div class="card-header-panel-section-body">
+                            <div class=" d-grid p-2">
+                                <input type="submit" class="garnet-btn garnet-btn-warning mb-2" value="نمایش" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+
+
+    <div class="card-body card-table">
+        <div class="table-responsive text-nowrap static-height-600">
+            <table class="table table-hover table-striped table-bordered dataTable" id="tblDocsList">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="row-chb">
+                            <input type="checkbox" id="SelectRows" />
+                            ردیف
+                        </th>
+                        <th> شماره بارنامه</th>
+                        <th>شماره تراکنش</th>
+                        <th>تاریخ</th>
+                        <th>زمان</th>
+                        <th>روش پرداخت</th>
+                        <th>طرف حساب</th>
+                        <th>مبلغ</th>
+                        <th>حساب بانکی</th>
+                        <th>گارتخوان</th>
+                        <th>شرح تراکنش</th>
+                        <th>کاربر</th>
+
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (Model.Transactions.Items.Any())
+                    {
+                        int row = 1;
+                        foreach (var x in Model.Transactions.Items)
+                        {
+                            <tr>
+                                <td class="row-chb">   @row  </td>
+                                <td>@x.WaybillNumber</td>
+                                <td>@x.TrackingNumber</td>
+                                <td>@x.TransactionDate.LatinToPersian()</td>
+                                <td>@x.TransactionTime</td>
+                                <td>@x.PaymentMethodName</td>
+                                <td>@x.PartyName</td>
+                                <td>@x.Amount.ToPrice()</td>
+                                <td>@x.BankAccountName</td>
+                                <td>@x.POSName</td>
+                                <td>@x.Desciption</td>
+                                <td>@x.Cashier</td>
+                            </tr>
+
+                            row++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="mb-2 bg-light p-4">
+           <label class="me-2">جمع مبالغ : </label>
+           <strong>@Model.Transactions.Items.ToList().Sum(n=>n.Amount).ToPrice()</strong>
+        </div>
+        @if (Model.Transactions.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="pagin mt-3">
+                <ul class="pagination pagination-sm text-center">
+                    @if (Model.Transactions.HasPreviousPage)
+                    {
+                        <li class="page-item prev">
+                            <a class="page-link" data-formid="frmMoneyTre" data-currentpage="@(Model.filter.CurrentPage - 1)">
+                                <i class="tf-icon bx bx-chevrons-left"></i>
+                            </a>
+                        </li>
+                    }
+
+                    @{
+                        int totalPages = Model.Transactions.TotalPages;
+                        int currentPage = Model.filter.CurrentPage;
+                        int pageRange = 3; // تعداد صفحات قبل و بعد از صفحه فعلی
+
+                        int startPage = Math.Max(1, currentPage - pageRange);
+                        int endPage = Math.Min(totalPages, currentPage + pageRange);
+
+                        if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" data-formid="frmMoneyTre" data-currentpage="1">1</a>
+                            </li>
+                            if (startPage > 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                        }
+
+                        for (int i = startPage; i <= endPage; i++)
+                        {
+                            string strActive = currentPage == i ? "active" : "";
+                            <li class="page-item @strActive">
+                                <a class="page-link" data-formid="frmMoneyTre" data-currentpage="@i">@i</a>
+                            </li>
+                        }
+
+                        if (endPage < totalPages)
+                        {
+                            if (endPage < totalPages - 1)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                            <li class="page-item">
+                                <a class="page-link" data-formid="frmMoneyTre" data-currentpage="@totalPages">@totalPages</a>
+                            </li>
+                        }
+                    }
+
+                    @if (Model.Transactions.HasNextPage)
+                    {
+                        <li class="page-item next">
+                            <a class="page-link" data-formid="frmMoneyTre" data-currentpage="@(Model.filter.CurrentPage + 1)">
+                                <i class="tf-icon bx bx-chevrons-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+        }
+    </div>
+
+</div>
+

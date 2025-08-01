@@ -1,0 +1,160 @@
+﻿@model ParcelDeliveryDto
+
+<!-- اضافه کردن کتابخانه Signature Pad -->
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">تحویل مرسوله و دریافت امضا</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+        <div class="modal-body">
+            <form id="frmDelivery" method="post" asp-action="SaveReceiverSign" asp-controller="Billoflading" asp-area="Courier" enctype="multipart/form-data">
+                @Html.HiddenFor(m => m.BillOfLadingId)
+                @Html.HiddenFor(m => m.SellerId)
+                @Html.HiddenFor(m => m.SenderUserName)
+                @Html.HiddenFor(m => m.DeliveryDateTime)
+                @Html.HiddenFor(m => m.SenderUserName)
+                @Html.HiddenFor(m => m.UserId)
+                <input type="hidden" id="signatureImage" name="SignatureImage" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ReceiverName" class="form-label"></label>
+                        <input asp-for="ReceiverName" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="ReceiverNationalCode" class="form-label"></label>
+                        <input asp-for="ReceiverNationalCode" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label asp-for="ReceiverMobile" class="form-label"></label>
+                        <input asp-for="ReceiverMobile" class="form-control form-control-sm" required />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea rows="3" asp-for="Description" class="form-control form-control-sm"></textarea>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">امضای تحویل‌گیرنده</label>
+                        <div class="border p-2 rounded bg-light">
+                            <canvas id="signaturePad" width="600" height="400"
+                                    style="width: 100%; height: 100%; touch-action: none;"></canvas>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button" id="clearSignature" class="btn btn-sm btn-outline-danger">پاک کردن امضا</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid mt-3">
+                    <button type="button" class="btn btn-success ajaxSubmit">ثبت تحویل و امضا</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Signature Pad
+        const canvas = document.getElementById('signaturePad');
+        const signaturePad = new SignaturePad(canvas, {
+            minWidth: 1.5,
+            maxWidth: 3,
+            penColor: "#000000",
+            backgroundColor: "rgba(255,255,255,0)",
+            onEnd: () => {
+                document.getElementById('signatureImage').value = signaturePad.toDataURL('image/png');
+            }
+        });
+
+        // Handle responsive canvas
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear();
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Clear signature button
+        document.getElementById('clearSignature').addEventListener('click', () => {
+            signaturePad.clear();
+            document.getElementById('signatureImage').value = '';
+        });
+
+        // Form submission handler
+        $(document).on('click', '.ajaxSubmit', function() {
+            if (signaturePad.isEmpty()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'هشدار!',
+                    text: 'لطفاً امضا را ثبت کنید.'
+                });
+                return;
+            }
+
+            let btn = $(this);
+            let frm = btn.closest('form');
+            let actionUrl = frm.attr('action');
+            let dataToSend = new FormData(frm.get(0));
+
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: dataToSend,
+                processData: false,
+                contentType: false
+            }).done(function(data) {
+                let result = typeof data === "string" ? JSON.parse(data) : data;
+
+                if (result['Success'] === true) {
+                    if (result['ShowMessage'] === true) {
+                        Swal.fire({
+                            title: 'کاربـر گـرامی !',
+                            html: result['Message'],
+                            icon: 'success',
+                            customClass: { confirmButton: 'btn btn-success' },
+                            confirmButtonText: 'متوجه شدم',
+                            buttonsStyling: false
+                        });
+                    }
+
+                    btn.delay(200).queue(function() {
+                        if (parseInt(result['updateType']) === 1) {
+                            if (result['returnUrl']) window.location.href = result['returnUrl'];
+                        } else {
+                            if (result['returnUrl']) {
+                                $.get(result['returnUrl']).done(function(newData) {
+                                    $(result['updateTargetId']).html(newData);
+                                    $('#accmodal').modal('hide');
+                                    $('.select2').select2();
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'کاربـر گـرامی !',
+                        html: result['Message'],
+                        icon: 'warning',
+                        customClass: { confirmButton: 'btn btn-primary' },
+                        confirmButtonText: 'باشه',
+                        buttonsStyling: false
+                    });
+                }
+            }).fail(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطا!',
+                    text: 'در ثبت تحویل مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.'
+                });
+            });
+        });
+    });
+</script>

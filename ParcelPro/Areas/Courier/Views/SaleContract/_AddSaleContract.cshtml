@@ -1,0 +1,57 @@
+﻿  @model SaleContractDto
+
+<div class="modal-dialog garnet-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title"> تعریف قرارداد همکاری لجستیک</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form class="py-4" asp-action="AddSaleContract" asp-controller="SaleContract" asp-area="Courier" method="post">
+
+                <div class="garnet-section garnet-section-info">
+                    <div class="garnet-section-header">
+                        <h6>مشخصات فردی </h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mb-2">
+                            <label asp-for="PartyId" class="form-label"></label>
+                            <select class="form-select form-control-sm select2" asp-for="PartyId" asp-items=" ViewBag.clients">
+                                <option value="">-- انتخاب --</option>
+                               
+                            </select>
+                        </div>
+                        <div class="col-md-12 mb-2">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input type="text" class="form-control form-control-sm" asp-for="Title" />
+                        </div>
+                        <div class="col-md-12 mb-2">
+                            <label asp-for="StartDate" class="form-label"></label>
+                            <input type="text" class="form-control form-control-sm flatpickr-input" asp-for="StartDate" />
+                        </div>
+                        <div class="form-check p-2 ms-2">
+                            <input class="form-check-input" type="checkbox"  asp-for="AccounIstActive" checked>
+                            <label class="form-check-label" asp-for="AccounIstActive">
+                               حساب کاربری طرف حساب فعال باشد
+                            </label>
+                        </div>
+                        <div class="form-check p-2 ms-2 mb-4">
+                            <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                            <label class="form-check-label" asp-for="IsActive">
+                             فعال
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="garnet-section-footer mt-2">
+                    <a href="#" class="btn btn-warning accAjaxSubmit">ثبت اطلاعات</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+

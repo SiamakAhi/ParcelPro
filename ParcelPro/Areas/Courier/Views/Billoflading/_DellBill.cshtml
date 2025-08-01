@@ -1,0 +1,88 @@
+﻿@model BillDataViewModel
+
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">حذف بارنامه</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <form id="frmCashPay" method="post" asp-action="DellBill" asp-controller="Billoflading" asp-area="Courier">
+                @* Hidden Fields *@
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.SellerId)
+                @Html.HiddenFor(m => m.WaybillNumber)
+                @Html.HiddenFor(m => m.IssuanceDate)
+                @Html.HiddenFor(m => m.RouteId)
+                @Html.HiddenFor(m => m.RouteName)
+                @Html.HiddenFor(m => m.ServiceId)
+                @Html.HiddenFor(m => m.ServiceName)
+                @Html.HiddenFor(m => m.SenderId)
+                @Html.HiddenFor(m => m.SenderAddress)
+                @Html.HiddenFor(m => m.SenderName)
+                @Html.HiddenFor(m => m.SenderNationalId)
+                @Html.HiddenFor(m => m.ReceiverId)
+                @Html.HiddenFor(m => m.ReceiverAddress)
+                @Html.HiddenFor(m => m.ReciverName)
+                @Html.HiddenFor(m => m.Description)
+                @Html.HiddenFor(m => m.UpdatedDate)
+                @Html.HiddenFor(m => m.UpdatedBy)
+                @Html.HiddenFor(m => m.Setteled)
+                @Html.HiddenFor(m => m.HasParcel)
+                @Html.HiddenFor(m => m.HasFinancialRecord)
+                @Html.HiddenFor(m => m.HasTreasuryRecord)
+                @Html.HiddenFor(m => m.IsSetteled)
+                @Html.HiddenFor(m => m.ParcelQty)
+                @Html.HiddenFor(m => m.TotalPrice)
+                @Html.HiddenFor(m => m.PayedAmount)
+                @Html.HiddenFor(m => m.RemindingAmout)
+                @Html.HiddenFor(m => m.SettelmentTYpeId)
+                @Html.HiddenFor(m => m.SettelmentTYpeName)
+                @Html.HiddenFor(m => m.StatusId)
+
+                <div class="row p-4">
+                    <div class="payInfo">
+                        <h3 class="text-success">اطلاعات بارنامه</h3>
+                        <h4 class="text-light">@Model.WaybillNumber</h4>
+                        <h4 class="text-danger">@Model.SettelmentTYpeId?.ToSettelmentTypeName()</h4>
+                        <ul>
+                            <li>
+                                <label>تاریخ ایجاد بارنامه </label>
+                                <span>@Model.IssuanceDate.LatinToPersian()</span>
+                            </li>
+                            <li>
+                                <label>مسیـر </label>
+                                <span>@Model.RouteName</span>
+                            </li>
+                            <li>
+                                <label>نوع سرویس </label>
+                                <span>@Model.ServiceName</span>
+                            </li>
+                            <li>
+                                <label>فرستنده </label>
+                                <span>@Model.SenderName</span>
+                            </li>
+                            <li>
+                                <label>گیرنده</label>
+                                <span>@Model.ReciverName</span>
+                            </li>
+                            <li>
+                                <label>مبلغ بارنامه</label>
+                                <span>@Model.TotalPrice.ToPrice() <span>ريال</span></span>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="d-grid mb-2 p-2">
+                        <button type="button" class="btn btn-warning accAjaxSubmit">حذف بارنامه </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,153 @@
+﻿@model PartyBillsViewModel
+@{
+    ViewData["Title"] = "صورتحساب مشتریان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="container-fluid">
+    <h4 class="text-info text-center">صورتحساب مشتریان </h4>
+    <div class="row p-3">
+        <div class="col-md-4">
+            <ul class="report-info-list">
+                <li>
+                    <label>
+                        طرف حساب :
+                        <a class="callform ms-2" href="javascript:void(0)" data-url="@Url.Action("UpdatePerson", "Persen", new { Area = "", id = Model.PartyInfo?.Id })"> <i class="bx bx-edit-alt text-info" title="ویرایش"></i></a>
+                    </label>
+                    <strong>@Model.PartyInfo?.Name</strong>
+                </li>
+                <li><label>شناسه ملی</label><strong>@Model.PartyInfo?.NationalId</strong></li>
+                <li><label>کد اقتصادی</label><strong>@Model.PartyInfo?.EconomicCode</strong></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <ul class="report-info-list">
+                <li><label>نماینده مالی طرف حساب :</label><strong>----</strong></li>
+                <li><label>شماره تماس :</label><strong>@Model.PartyInfo?.MobilePhone</strong></li>
+                <li><label>تاریخ تهیه صورتحساب :</label><strong>@DateTime.Now.LatinToPersian()</strong></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <form asp-action="SaleByClient" asp-controller="AccSaleManagement" asp-area="Accounting" method="get" id="frmBillFilter">
+                <div class="row">
+                    <div class="col-md-12 select2-primary mb-2">
+                        <label class="form-label">حساب</label>
+                        <select asp-for="filter.PartyId" class="form-select select2" asp-items="@ViewBag.Parties">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">از تاریخ</label>
+                        <input class="form-control form-control-sm flatpickr-input" asp-for="filter.strStartDate" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label class="form-label">تا تاریخ</label>
+                        <input type="text" class="form-control form-control-sm flatpickr-input" asp-for="filter.strEndDate" />
+                    </div>
+
+                    <div class="col-md-12 d-flex flex-wrap gap-1 p-2">
+                        <button type="submit" class="btn btn-secondary flex-grow-1">
+                            <i class="bx bx-list mx-1"></i>
+                            مشاهده
+                        </button>
+                        <a href="javascript:void(0)" class="btn btn-primary mb-1 billPrint"
+                           data-url="@Url.Action("PrintCreditCustomerBill", "AccPrint", new { Area = "Accounting" })">
+                            <i class="bx bx-printer mx-1"></i>
+                            چاپ صورتحساب
+                        </a>
+                        <a href="javascript:void(0)" data-formid="frmBillFilter" class="btn btn-primary mb-1 submitCustomForm"
+                           data-url="@Url.Action("ExportMoadianBill", "AccSaleManagement", new { Area = "Accounting" })">
+                            <i class="bx bx-printer mx-1"></i>
+                            خروجی برای سامانه مودیان
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-responsive text-nowrap">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ردیف</th>
+                    <th>
+                        عملیات
+                    </th>
+                    <th>تاریخ</th>
+                    <th>شماره بارنامه</th>
+                    <th>طرف حساب</th>
+                    <th>نوع تسویه</th>
+                    <th>مبلغ حمل بار</th>
+                    <th>جمع هزینه ها</th>
+                    <th>تخفیفات</th>
+                    <th>ارزش افزوده</th>
+                    <th>مبلغ بارنامه</th>
+                    <th>پرداخت شده</th>
+                    <th>باقیمانده</th>
+                    <th>شغبه صادر کننده</th>
+                    <th>کاربر صادر کننده</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Bills.Any())
+                {
+                    int rowNo = 1;
+                    foreach (var x in Model.Bills)
+                    {
+                        <tr>
+                            <td class="text-center">@rowNo</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        ...
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                        <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.BillId" target="_blank"><i class="fa fa-eye me-3 text-black"></i> مشاهده</a>
+                                        <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.BillId" target="_blank"><i class="fa fa-print me-3 text-black"></i>چاپ بارنامه</a>
+                                        @if (x.Payed > 0)
+                                        {
+                                            <a class="dropdown-item" href="#"><i class="fa fa-eye me-3"></i> اطلاعات پرداخت</a>
+                                        }
+                                    </div>
+
+                                </div>
+                            </td>
+                            <td>@x.Date.LatinToPersian()</td>
+                            <td>@x.Number</td>
+                            <td>@x.PartyName</td>
+                            <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                            <td>@x.BasePrice.ToPrice()</td>
+                            <td>@x.TotalCost.ToPrice()</td>
+                            <td>@x.TotalDiscount.ToPrice()</td>
+                            <td>@x.VatPrice.ToPrice()</td>
+                            <td>@x.FinalPrice.ToPrice()</td>
+                            <td>@x.Payed.ToPrice()</td>
+                            <td>@x.Balance.ToPrice()</td>
+                            <td>@x.IssuerBranch</td>
+                            <td>@x.IssuerUserName</td>
+                        </tr>
+                        rowNo++;
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-center"> جمع :</td>
+                    <td>
+                        <strong>@Model.Bills.Sum(n => n.BasePrice).ToPrice()</strong>
+                    </td>
+                    <td><strong>@Model.Bills.Sum(n => n.TotalCost).ToPrice()</strong></td>
+                    <td><strong>@Model.Bills.Sum(n => n.TotalDiscount).ToPrice()</strong></td>
+                    <td><strong>@Model.Bills.Sum(n => n.VatPrice).ToPrice()</strong></td>
+                    <td><strong>@Model.Bills.Sum(n => n.FinalPrice).ToPrice()</strong></td>
+                    <td><strong>@Model.Bills.Sum(n => n.Payed).ToPrice()</strong></td>
+                    <td><strong>@Model.Bills.Sum(n => n.Balance).ToPrice()</strong></td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+

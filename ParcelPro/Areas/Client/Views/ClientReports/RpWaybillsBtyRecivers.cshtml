@@ -1,0 +1,22 @@
+﻿@using Stimulsoft.Report.Mvc
+<link href="~/css/font.css" rel="stylesheet" />
+@{
+    Layout = null;
+    ViewData["Title"] = "گزارش بارنامه بر اساس گیرنده";
+}
+
+<div class="text-center printArea">
+
+    @Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
+{
+    Actions = {
+    GetReport="GetReport_RpWaybillsBtyRecivers",
+    ViewerEvent= "ViewerEvent",
+    },
+    Appearance ={
+    FullScreenMode=true,
+
+    }
+})
+
+</div>

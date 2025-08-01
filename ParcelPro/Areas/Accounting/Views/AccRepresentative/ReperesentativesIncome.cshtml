@@ -1,0 +1,107 @@
+﻿
+@model VmRepresentativeSalary
+@{
+    ViewData["Title"] = "کارکرد نمایندگان";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header alert-secondary search-box">
+            <h4 class="card-title">کارکرد نمایندگان از خدمات توزیع بار</h4>
+            <form asp-action="ReperesentativesIncome" asp-controller="AccRepresentative" asp-area="Accounting" method="get" id="frmBillFilter">
+                <input type="hidden" asp-for="filter.FromBody" value="@true" />
+                <div class="row">
+                    <div class="col-md-4 col-12">
+                        <label class="form-label">طرف حساب</label>
+                        <select asp-for="filter.BranchId" class="form-select select2" asp-items="@ViewBag.BranchesList">
+                            <option value="null"> همه</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">از تاریخ</label>
+                        <input type="text" asp-for="filter.StartDate" class="form-control flatpickr-input" />
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">تا تاریخ</label>
+                        <input type="text" asp-for="filter.UntilDate" class="form-control flatpickr-input" />
+                    </div>
+                    
+                    <div class="col-md-2 d-grid p-2 mt-3">
+                        <input type="submit" class="btn btn-danger" value="نمایش" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive text-nowrap height-vh80">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ردیف</th>
+                        <th></th>
+                        <th>نماینده</th>
+                        <th>از تاریخ</th>
+                        <th>تا تاریخ</th>
+                        <th>تعداد بارنامه</th>
+                        <th>جمع مبالغ بارنامه</th>
+                        <th>درصد نماینده</th>
+                        <th>سهم نماینده</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Reposrt!=null && Model.Reposrt.Any())
+                    {
+                        int rowNo = 1;
+                        foreach (var x in Model.Reposrt)
+                        {
+                            <tr>
+                                <td class="text-center">@rowNo</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ...
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <a class="dropdown-item"
+                                               asp-route-id=""
+                                               asp-action="thePartyBills"
+                                               asp-controller="AccSaleManagement"
+                                               asp-area="Accounting"><i class="fa fa-eye me-3 text-warning"></i>صورتحساب</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ارسال صورتحساب الکترونیکی</a>
+                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ثبت تسویه حساب</a>
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <td>@x.BranchName</td>
+                                <td>@x.StartDate?.LatinToPersian()</td>
+                                <td>@x.UntilDate?.LatinToPersian()</td>
+                                <td>@x.BillQty</td>
+                                <td>@x.BillTotalAmount.ToPrice()</td>
+                                <td>@x.Percentage.ToString("0.#")</td>
+                                <td>@x.BranchShareAmount.ToPrice()</td>
+                            </tr>
+                            rowNo++;
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr lass="table-secondary">
+                        <td colspan="8"></td>
+
+                        <td class="text-center"><strong>@Model.Reposrt?.Sum(n => n.BranchShareAmount).ToPrice()</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+        <div class="card-footer alert-secondary">
+            
+        </div>
+    </div>
+</div>
+
+

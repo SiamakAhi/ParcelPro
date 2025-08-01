@@ -1,0 +1,73 @@
+﻿@model BillCashPayDto
+
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">صدور بارنامه</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <form id="frmCashPay" method="post" asp-action="IssueBillOfLading" asp-controller="Billoflading" asp-area="Courier">
+                @* Hidden Fields *@
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.TransactionTypeId)
+                @Html.HiddenFor(m => m.SellerId)
+                @Html.HiddenFor(m => m.BillOfLadingId)
+                @Html.HiddenFor(m => m.BillFinancialtransactionId)
+                @Html.HiddenFor(m => m.BillNumber)
+                @Html.HiddenFor(m => m.BranchId)
+                @Html.HiddenFor(m => m.UserId)
+                @Html.HiddenFor(m => m.AccountPartyId)
+                @Html.HiddenFor(m => m.SettelmentType)
+
+
+
+                <div class="row p-4">
+                    <div class="payInfo">
+                        <h3 class="text-success">تأیید نحوه تسویه و صدور بارنامه</h3>
+                        <h4 class="text-light">@Model.BillNumber</h4>
+                        <h4 class="text-danger">@Model.SettelmentType.ToSettelmentTypeName()</h4>
+                        <ul>
+                            <li>
+                                <label>تاریخ ایجاد بارنامه </label>
+                                <span>@Model.BillCreateDate.LatinToPersian()</span>
+                            </li>
+                            <li>
+                                <label>فرستنده </label>
+                                <span>@Model.SenderName</span>
+                            </li>
+                            <li>
+                                <label>طرف حساب </label>
+                                <span>@Model.PartyName</span>
+                            </li>
+                            <li>
+                                <label> همراه فرستنده</label>
+                                <span>@Model.PartyMobile</span>
+                            </li>
+                            <li>
+                                <label>مبلغ بارنامه</label>
+                                <span>@Model.Amount.ToPrice() <span>ريال</span></span>
+                            </li>
+                            <li>
+                                <label>پرداخت شده</label>
+                                <span>@Model.CreditAmount.ToPrice() <span>ريال</span></span>
+                            </li>
+                            <li class="finalPrice">
+                                <label>قابل پرداخت</label>
+                                <span>@Model.DebitAmount.ToPrice() <span>ريال</span></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="d-grid mb-2 p-2">
+                        <button type="button" class="btn btn-light accAjaxSubmit">تأیید و صدور بارنامه</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+

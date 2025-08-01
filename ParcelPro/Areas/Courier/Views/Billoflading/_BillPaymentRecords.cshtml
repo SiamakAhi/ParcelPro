@@ -1,0 +1,115 @@
+﻿@model BillCashPayDto
+
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">سوابق پرداحت بارنامه <span class="text-light ms-2">@Model.BillNumber</span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="payInfo paymentrecords">
+                        <ul>
+                            <li>
+                                <label>تاریخ ایجاد بارنامه </label>
+                                <span>@Model.BillCreateDate.LatinToPersian()</span>
+                            </li>
+                            <li>
+                                <label>طرف حساب </label>
+                                <span>@Model.PartyName</span>
+                            </li>
+                            <li>
+                                <label> همراه طرف حساب</label>
+                                <span>@Model.PartyMobile</span>
+                            </li>
+                            <li>
+                                <label>نوع تسویه</label>
+                                <span>@Model.SettelmentType.ToSettelmentTypeName()</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="payInfo paymentrecords">
+                        <ul>
+                           
+                            <li>
+                                <label>مبلغ بارنامه</label>
+                                <span>@Model.Amount.ToPrice() <span>ريال</span></span>
+                            </li>
+                            <li>
+                                <label>پرداخت شده</label>
+                                <span>@Model.CreditAmount.ToPrice() <span>ريال</span></span>
+                            </li>
+                            <li class="finalPrice">
+                                <label>قابل پرداخت</label>
+                                <span>@Model.DebitAmount.ToPrice() <span>ريال</span></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h5 class="text-danger mt-2 ms-2">لیست تراکنش ها</h5>
+                <div class="table-responsive mb-5 mt-1">
+                    <table class="table table-bordered table-hover table-sm text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ردیف</th>
+                                <th>شماره بارنامه</th>
+                                <th>تاریخ</th>
+                                <th>ساعت</th>
+                                <th>مبلغ</th>
+                                <th>روش پرداخت</th>
+                                <th>شماره رسید</th>
+                                <th>شماره تراکنش درگاه</th>
+                                <th>کارت‌خوان</th>
+                                <th>صندوقدار/کاربر</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.PaymentList != null && Model.PaymentList.Any())
+                            {
+                                int row = 1;
+                                foreach (var pay in Model.PaymentList)
+                                {
+                                    <tr>
+                                        <td class="text-center">@row</td>
+                                        <td class="text-center">@pay.BillNumber</td>
+                                        <td class="text-center">@pay.PayedDate.LatinToPersian()</td>
+                                        <td class="text-center">@pay.PayedTime</td>
+                                        <td>@pay.Amount.ToString("N0")</td>
+                                        <td>@pay.PaymentMethod</td>
+                                        <td>@pay.ReciptNumber</td>
+                                        <td>@pay.GetwayTransactionNumber</td>
+                                        <td>@pay.PosName</td>
+                                        <td>@pay.Cashier</td>
+                                    </tr>
+                                    row++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="text-center text-danger p-3"><h4 class="text-light">پرداختی برای این بارنامه ثبت نشده است</h4></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).find('.flatpickr-input').flatpickr({
+               locale: 'fa',
+               altInput: true,
+               altFormat: 'Y/m/d',
+               allowInput: true,
+               disableMobile: true
+           });
+</script>

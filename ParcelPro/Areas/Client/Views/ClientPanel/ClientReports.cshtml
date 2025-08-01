@@ -1,0 +1,268 @@
+﻿  @model ClientPanelViewModel
+@{
+    ViewData["Title"] = "گزارش بارنامه ها";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+
+    int count = 0;
+    string weight = "0.0";
+    string totalPrice = "0";
+    string notdelivered = "0";
+
+    if (Model.Bills?.Items != null)
+    {
+        count = Model.Bills.Items.ToList().Sum(n => n.ConsigmentCount);
+        weight = Model.Bills.Items.ToList().Sum(n => n.TotalWeight).ToString("0.##");
+        totalPrice = Model.Bills.Items.ToList().Sum(n => n.BillPrice).ToPrice();
+        notdelivered = Model.Bills.Items.ToList().Where(n => n.BillOfLadingStatusId < 11).Count().ToString();
+    }
+}
+
+<div class="container-fluid garnet-container">
+    <div class="container-fluid">
+        <div class="headerbox">
+            <h4 class="headerbox-title">فیلتـر</h4>
+            <div class="headerbox-content">
+                <form asp-action="UserPanel" asp-controller="ClientPanel" asp-area="Client" method="get" id="frmBillFilter">
+                    <input type="hidden" asp-for="filter.CurrentPage" value="1" />
+                    <input type="hidden" asp-for="filter.IsFromBody" value="true" />
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="mb-2">
+                                        <label class="form-label">وضعیت</label>
+                                        <select asp-for="filter.SimpleStatus" class="form-select">
+                                            <option value="null"> همه</option>
+                                            <option value="1"> تحویل شده</option>
+                                            <option value="2"> تحویل نشده</option>
+                                            <option value="3"> باطل شده</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">از تاریخ</label>
+                                        <input type="text" asp-for="filter.strFromDate" class="form-control  flatpickr-input" />
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">تا تاریخ</label>
+                                        <input type="text" asp-for="filter.strUntilDate" class="form-control flatpickr-input" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="mb-2">
+                                                <label class="form-label select2-dark">استان</label>
+                                                <select asp-for="filter.DestinationProvinceId"
+                                                        data-url="@Url.Action("GetCities","ClientPanel",new{Area="Client"})"
+                                                        class="form-select select2"
+                                                        asp-items="@ViewBag.Provinces"
+                                                        id="selectProvince">
+                                                    <option value="null"> همه</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="mb-2">
+                                                <label class="form-label select2-dark">شهر</label>
+                                                <select asp-for="filter.DestinationCityId" class="form-select select2" asp-items="@ViewBag.Cities" id="SelectCity">
+                                                    <option value="null"> همه</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="select2-dark  mb-2">
+                                        <label class="form-label">گیرنده</label>
+                                        <select asp-for="filter.ReciverId" class="form-select select2" asp-items="@ViewBag.Customers">
+                                            <option value="null"> همه</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">تعداد ردیف در هر صفحه</label>
+                                        <input type="number" asp-for="filter.PageSize" class="form-control form-control-sm text-center" value="@Model.filter.PageSize" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-3 form-btn-container">
+                            <div class="row">
+                                <div class=" d-grid p-2 mb-1">
+                                    <input type="submit" class="btn btn-light" value="مشاهده" />
+                                </div>
+                                <div class="col-12 d-grid p-2 mb-1">
+                                    <a href="#" class="btn btn-light">گزارش به تفکیک گیرنده</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover  table-striped">
+            <thead>
+                <tr class="table-active">
+                    <th>#</th>
+                    <th class="w-150">شماره بارنامه</th>
+                    <th>تاریخ صدور</th>
+                    <th>زمان </th>
+                    <th>مسیر</th>
+                    <th>فرستنده</th>
+                    <th>گیرنده</th>
+                    <th>تعداد</th>
+                    <th>وزن</th>
+                    <th>مبلغ بارنامه</th>
+                    <th>توضیحات</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ تحویل</th>
+                    <th>زمان تحویل</th>
+                    <th>آدرس گیرنده</th>
+                    <th>کاربر</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Bills?.Items != null)
+                {
+                    int row = 1;
+
+                    foreach (var x in Model.Bills.Items)
+                    {
+                        string statusClass = "";
+                        if (x.BillOfLadingStatusId == 11)
+                            statusClass = "btn-success";
+                        else if (x.BillOfLadingStatusId < 11)
+                            statusClass = "btn-danger";
+                        else if (x.BillOfLadingStatusId == 15)
+                            statusClass = "btn-warning";
+
+                        string deliTime = "";
+                        if (x.tg_DeliveryDate.HasValue)
+                        {
+                            deliTime = new TimeSpan(x.tg_DeliveryDate.Value.Hour, x.tg_DeliveryDate.Value.Minute, x.tg_DeliveryDate.Value.Second).ToString();
+                        }
+                        <tr>
+                            <td class="text-center">@row</td>
+                            <td class="w-150">
+                                <div class="btn-group w-100" role="group" aria-label="Button group with nested dropdown">
+                                    <a href="#" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop5" style="">
+                                            <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                            <td class="td-time">@x.IssuanceTime</td>
+                            <td>@x.RouteName</td>
+                            <td>@x.SenderName</td>
+                            <td>@x.ReceiverName</td>
+                            <td class="text-center">@x.ConsigmentCount</td>
+                            <td class="col-price">@x.TotalWeight.ToString("0.##")</td>
+                            <td class="col-price">@x.BillPrice.ToPrice()</td>
+                            <td>@x.Description</td>
+                            <td>@x.BillOfLadingStatusId.ToSimpleStatusName()</td>
+                            <td>@x.tg_DeliveryDate?.LatinToPersian()</td>
+                            <td>@deliTime</td>
+                            <td>@x.ReceiverAddress</td>
+                            <td class="">@x.CreatedBy</td>
+                        </tr>
+                        row++;
+                    }
+                }
+
+            </tbody>
+            <tfoot>
+                @if (Model.Bills?.Items != null)
+                {
+                    <tr>
+                        <td colspan="6" class="text-left me-2">جمع صفحه : </td>
+                        <td class="text-center bg-secondary">@Model.Bills.Items.ToList().Sum(n => n.ConsigmentCount)</td>
+                        <td class="text-center bg-secondary">@Model.Bills.Items.ToList().Sum(n => n.TotalWeight).ToString("0.##")</td>
+                        <td class="text-center bg-secondary">@Model.Bills.Items.ToList().Sum(n => n.BillPrice).ToPrice()</td>
+                    </tr>
+                }
+
+            </tfoot>
+        </table>
+
+        <div>
+            <div class="pagin-box">
+                @if (Model.Bills?.TotalPages > 1)
+                {
+                    <ul class="pagination text-center">
+                        @if (Model.Bills.HasPreviousPage)
+                        {
+                            <li class="page-item prev">
+                                <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage - 1)">
+                                    <i class="tf-icon bx bx-chevrons-left"></i>
+                                </a>
+                            </li>
+                        }
+
+                        @{
+                            int totalPages = Model.Bills.TotalPages;
+                            int currentPage = Model.Bills.CurrentPage;
+                            int pageRange = 3;
+
+                            int startPage = Math.Max(1, currentPage - pageRange);
+                            int endPage = Math.Min(totalPages, currentPage + pageRange);
+
+                            if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="1">1</a>
+                                </li>
+                                if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            for (int i = startPage; i <= endPage; i++)
+                            {
+                                string strActive = currentPage == i ? "active" : "";
+                                <li class="page-item @strActive">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@i">@i</a>
+                                </li>
+                            }
+
+                            if (endPage < totalPages)
+                            {
+                                if (endPage < totalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@totalPages">@totalPages</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.Bills.HasNextPage)
+                        {
+                            <li class="page-item next">
+                                <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage + 1)">
+                                    <i class="tf-icon bx bx-chevrons-right"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/forms-selects.js"></script>
+

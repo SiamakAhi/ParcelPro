@@ -1,0 +1,24 @@
+﻿@using Stimulsoft.Report.Mvc
+<link href="~/css/font.css" rel="stylesheet" />
+@{
+    Layout = null;
+    ViewData["Title"] = "گزارش بارنامه ها";
+}
+
+<div class="text-center printArea">
+
+    @Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
+{
+    Actions = {
+    GetReport="GetPrint_RpWaybills",
+    ViewerEvent= "ViewerEvent",
+    },
+    Appearance ={
+    FullScreenMode=true,
+
+    }
+})
+
+</div>
+
+

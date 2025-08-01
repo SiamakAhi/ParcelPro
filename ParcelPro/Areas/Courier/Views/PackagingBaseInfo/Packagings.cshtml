@@ -1,0 +1,70 @@
+﻿@model List<PackagingDto>
+@{
+    ViewData["Title"] = "مدیریت بسته‌بندی‌ها";
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header alert-secondary p-0">
+            <h5 class="custom-card-title">
+                <i class="bx bxs-package text-warning"></i>
+                مدیریت بسته‌بندی‌ها
+            </h5>
+            <div class="section-nav">
+                <div class="nav-btnbox mb-2 ms-2">
+                    <a href="#" data-url="@Url.Action("AddPackaging", "PackagingBaseInfo", new { Area = "Courier" })" data-target="0" class="btn btn-sm btn-secondary callform">
+                        ایجاد بسته‌بندی جدید
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body card-table">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ردیف</th>
+                            <th>کد بسته‌بندی</th>
+                            <th>نام بسته‌بندی</th>
+                            <th>قیمت</th>
+                            <th>برای بار خارجی</th>
+                            <th>دسته‌بندی انبار</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (Model?.Count() > 0)
+                        {
+                            int row = 1;
+                            foreach (var x in Model)
+                            {
+                                <tr>
+                                    <td>@row</td>
+                                    <td>@x.PackageCode</td>
+                                    <td>@x.Name</td>
+                                    <td>@x.Price</td>
+                                    <td>@(x.ForExport ? "بله" : "خیر")</td>
+                                    <td>@x.WarehouseProductCategoryName</td>
+                                    <td class="row-btns text-center">
+                                        <a href="#" class="callform" data-url="@Url.Action("UpdatePackaging", "PackagingBaseInfo", new { Area = "Courier", id = x.Id })"><i class="bx bx-edit-alt text-gray" title="ویرایش"></i></a>
+                                        <a href="#" class="removeById" data-url="@Url.Action("DeletePackaging", "PackagingBaseInfo", new { Area = "Courier" })" data-target="@x.Id"><i class="bx bx-trash text-warning" title="حذف"></i></a>
+                                    </td>
+                                </tr>
+                                row++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7">
+                                    بسته‌بندی‌ای در سیستم ثبت نشده است.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer p-4">
+        </div>
+    </div>
+</div>

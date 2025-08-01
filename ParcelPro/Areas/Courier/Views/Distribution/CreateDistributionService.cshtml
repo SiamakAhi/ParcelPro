@@ -1,0 +1,167 @@
+﻿ @model AddDistriutionDto
+
+@{
+    ViewData["Title"] = "خدمات توزیع بار";
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+}
+
+
+
+<div class="container mb-5">
+    <h2 class="text-white p-0">خدمات توزیع بار</h2>
+    <span>بارنامه وارده غیرسیستمی</span>
+    <form asp-action="CreateDistributionService" asp-controller="Distribution" asp-area="Courier" method="post">
+
+        <input type="hidden" asp-for="Id" value="@Guid.NewGuid()" />
+        <input type="hidden" asp-for="userId" value="@ViewBag.UserId" />
+        <input type="hidden" asp-for="CreatedBy" value="@User.Identity.Name" />
+        <input type="hidden" asp-for="WayBillType" value="2" />
+        <input type="hidden" asp-for="OriginBranchId" value="@Guid.NewGuid()" />
+        <input type="hidden" asp-for="OriginHubId" value="@Guid.NewGuid()" />
+        <input type="hidden" asp-for="DistributerRepresentativeId" value="@Guid.NewGuid()" />
+        <input type="hidden" asp-for="RouteId" value="0" />
+
+        <div class="row mt-2">
+            <div class="col-md-4 mb-2">
+                <div class="row">
+                    <div class="col-md-6 col-6 mb-2">
+                        <label class="form-label">تاریخ صدور بارنامه</label>
+                        <input type="text" class="form-control text-center bg-dark text-white flatpickr-input" asp-for="strIssuanceDate" value="@DateTime.Now.AddDays(-1).LatinToPersian()" />
+                    </div>
+                    <div class="col-md-6 col-6 mb-2">
+                        <label class="form-label">شماره بارنامه مرجع</label>
+                        <input type="text" class="form-control text-center bg-dark text-white gonext" asp-for="ReferenceCode"  />
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-12  mb-2">
+                            <label class="form-label">صادرکننده بارنامه</label>
+                            <select class="form-select form-select-sm select2 gonext" asp-for="BusinessPartnerId" asp-items="ViewBag.IssuersBranch">
+                                <option>- انتخاب -</option>
+                            </select>
+                        </div>
+                    </div>
+                    <h5 class="card-header mt-4"> اطلاعات مرسوله</h5>
+                    <div class="col-md-6 col-6 mb-2">
+                        <label class="form-label">تعداد مرسولات</label>
+                        <input type="number" min="1" class="form-control text-center gonext" asp-for="qty" value="1" />
+                    </div>
+                    <div class="col-md-6 col-6 mb-2">
+                        <label class="form-label">وزن مجموع</label>
+                        <input type="number" min="0.1" class="form-control text-center gonext" asp-for="Weight" value="0" />
+                    </div>
+                    <div class="col-12 mb-2">
+                        <label class="form-label">محتویات</label>
+                        <textarea rows="3" class="form-control p-1 gonext" asp-for="Description"></textarea>
+                    </div>
+                     <div class="col-md-6 col-6 mb-2">
+                        <label class="form-label">ابعاد</label>
+                        <small>طول-عرض-ارتفاع</small>
+                        <input type="number" min="0.1" class="form-control text-center gonext" asp-for="Dimensions" placeholder="10-20-25" />
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">ماهیت</label>
+                        <select class="form-select form-select-sm gonext" asp-for="NatureId" asp-items="ViewBag.Natures">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 mb-2">
+                <div class="row createBillForm">
+                    <div class="col-md-6 mb-2 createBill-personbox2">
+                        <h5 class="card-header"> فرستنــده</h5>
+                        <div>
+                            <div class="control-top-toolbar">
+                                <a href="#" class="me-2 ms-3" tabindex="100"><i class="bx bx-search"></i></a>
+                                <a href="javascript:void(0)" data-url="@Url.Action("NewPerson", "Billoflading", new { Area = "Courier" })" class="callform" tabindex="100">
+                                    <i class="tf-icons bx bx-plus"></i>
+                                </a>
+                            </div>
+                            <select class="form-select select2 gonext" asp-for="SenderId" id="ddlSender" asp-items="ViewBag.persen"
+                                    data-url="@Url.Action("GetPersonInfo","basedata",new{Area=""})">
+                                <option value="null">انتخاب فرستنده ...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">تلفن همراه</label>
+                            <input type="text" asp-for="SenderPhone" id="senderMobile" class="form-control gonext" />
+                        </div>
+                        <div>
+                            <label class="form-label">آدرس</label>
+                            <textarea rows="1" asp-for="SenderAddress" id="senderAddress" class="form-control gonext"> </textarea>
+                        </div>
+
+                        <h5 class="card-header mt-2"> گیرنـده</h5>
+                        <div>
+                            <div class="control-top-toolbar">
+                                <a href="#" class="me-2 ms-3" tabindex="100"><i class="bx bx-search"></i></a>
+                                <a href="javascript:void(0)" data-url="@Url.Action("NewPerson", "Billoflading", new { Area = "Courier" })" class="callform" tabindex="100">
+                                    <i class="tf-icons bx bx-plus"></i>
+                                </a>
+                            </div>
+                            <select class="form-select select2 gonext" asp-for="ReceiverId" id="ddlReciver" asp-items="ViewBag.persen"
+                                    data-url="@Url.Action("GetPersonInfo","basedata",new{Area=""})">
+                                <option value="null">انتخاب گیرنده ...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">تلفن همراه</label>
+                            <input type="text" asp-for="ReciverPhone" id="reciverMobile" class="form-control gonext" />
+                        </div>
+                        <div>
+                            <label class="form-label">آدرس</label>
+                            <textarea rows="1" asp-for="ReceiverAddress" id="reciverAddress" class="form-control gonext"></textarea>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 mb-2 createBill-personbox2">
+                        <h5>تسویه حساب</h5>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <label class="form-label">مبلغ بارنامه</label>
+                                <input type="text" class="form-control text-center numberinput" asp-for="strBillPrice" />
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label">سهم شرکت از توزیغ</label>
+                                <input type="text" class="form-control text-center numberinput" asp-for="strSharePrice" />
+                            </div>
+                            <div class="col-12 mb-2">
+                                <label class="form-label">سایر هزینه های خارج از بارنامه</label>
+                                <input type="text" class="form-control text-center numberinput" asp-for="strOtherCost" />
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-2">
+                                    <label>نوع تسویه حساب</label>
+                                    <select class="form-select" asp-for="SettelmentType" id="select_SettelmentType">
+                                        <option>انتخاب ... </option>
+                                        <option value="1">نقدی</option>
+                                        <option value="2">پسکرایه</option>
+                                        <option value="3">اعتباری کیهان پست</option>
+                                    </select>
+                                    <div class="selectparty mt-1">
+                                        <label>طرف حساب اعتباری را از لیست زیر انتخاب کنید</label>
+                                        <select class="form-select select2 gonext" name="partyId" id="ddlParty" asp-items="ViewBag.Clients">
+                                            <option value="0">انتخاب طرف حساب ...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="d-grid p-2 mt-3">
+                            <input type="button" class="btn btn-danger accAjaxSubmit" value="ثبت و افزودن مرسولات" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script src="~/js/forms-pickers.js"></script>
+
+
+
+

@@ -1,0 +1,49 @@
+﻿@model ChangeSenderOrReciverDto
+
+@{
+    string senderOrReciver = Model.IsSender ? "فرستنده" : "گیرنده ";
+    string formTitle = $"ویرایش اطلاعات {senderOrReciver} در بارنامه";
+}
+<div class="modal-dialog fit">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">ویرایش هدر بارنامه</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+        </div>
+
+        <div class="modal-body">
+            <form method="post" asp-action="ChangeSenderOrReciver" asp-controller="Billoflading" asp-area="Courier">
+               @Html.HiddenFor(n=>n.BillId)
+               @Html.HiddenFor(n=>n.UserId)
+               @Html.HiddenFor(n=>n.UserName)
+               @Html.HiddenFor(n=>n.IsSender)
+
+                <div class="row p-3">
+                    <div class="">
+                        <h5 class="text-light text-center">@formTitle</h5>
+                        <h5 class="text-info text-center">@Model.WaybillNumber</h5>
+
+                        <div class="mb-2">
+                            <label class="form-label">انتخاب شخص</label>
+                            <select class="form-select select2" asp-for="PersonId" asp-items="ViewBag.persen"></select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">شماره تماس</label>
+                            <input class="form-control" asp-for="Phone" value="@Model.Phone"/>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">آدرس</label>
+                            <textarea rows="6" class="form-control" asp-for="Address" value="@Model.Address"></textarea>
+                        </div>
+                    </div>
+                    <div class="d-grid mb-2 p-2">
+                        <button type="button" class="btn btn-warning accAjaxSubmit">ثبت</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/forms-selects.js"></script>
+   
+    

@@ -1,0 +1,378 @@
+﻿/* تنظیمات عمومی و ریست */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.2;
+    padding: 20px;
+}
+
+h6, h5, h4, h3, h2, h1 {
+    font-family: 'YekanBakhFaNum-bold' !important;
+        margin:0;
+}
+    
+    /* کانتینر اصلی بارنامه */
+    .bill-container2 {
+        position: relative; /* برای موقعیت‌دهی المان‌های absolute داخل آن */
+        background-color: #fff;
+        padding: 20px;
+        margin: auto;
+        max-width: 800px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+/* QR Code: قرارگیری در گوشه بالا با ابعاد 180px */
+.qr-code {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+}
+
+    .qr-code img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+/* هدر و اطلاعات اولیه */
+.bill-header {
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.billPageLogo {
+    max-width: 180px;
+}
+
+.heading-section {
+    font-size: 24px;
+    margin-top: 0px;
+    color: #007bff;
+    padding: 0;
+}
+
+/* ==================================== actionbox    */
+.bill-actionbox {
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bill-actionItem {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    flex-grow:1;
+    align-items: center;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.paymentDone{
+    background:#4f8a4f;
+    color:#fff !important;
+}
+    .paymentDone > i {
+        color: #fff;
+    }
+    /* استایل‌های موبایل */
+    @media (max-width: 768px) {
+        .bill-actionbox {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        max-width: 100%;
+        padding: 10px;
+    }
+
+    .bill-actionItem {
+        width: 100%;
+        min-width: auto;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+        .bill-actionItem i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+}
+
+.bill-actionItem i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #495057;
+}
+
+.bill-actionItem:hover {
+    background-color: #dee2e6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: #000;
+}
+
+    .bill-actionItem:hover i {
+        color: #0d6efd;
+    }
+
+    /*====================================================*/
+
+.billheaderinf0 {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-top: -10px;
+}
+
+    .billheaderinf0 p {
+        font-weight: bold;
+        font-size: 18px;
+        color: #007bff;
+        margin: 0;
+    }
+
+    .billheaderinf0 span {
+        font-size: 13px;
+        color: #555;
+    }
+
+.person-info-box {
+
+    display: grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap: 10px;
+    padding: 0px 20px;
+    margin-bottom: 25px;
+}
+
+.personinfo {
+    padding: 15px;
+    border-right: 2px solid #4f8a4f;
+    min-width: 48%;
+    max-width: 48px;
+}
+
+@media (max-width: 550px) {
+    .person-info-box {
+        grid-template-columns: 1fr; /* در صفحات کوچک، یک ستون */
+    }
+}
+
+.parcels-ul {
+    padding: 0;
+    margin: 0;
+}
+
+    .parcels-ul li {
+        display: flex;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 14px rgba(38, 60, 85, 0.16);
+    }
+
+        .parcels-ul li .rownum {
+            display: flex;
+            align-items: center;
+            background: #4f8a4f;
+            font-size: 20px;
+            color: #fff;
+            padding: 15px
+        }
+
+        .parcels-ul li > .parcel-content {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+            .parcels-ul li > .parcel-content > .item {
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+                padding: 5px 15px;
+                background: whitesmoke;
+            }
+
+                .parcels-ul li > .parcel-content > .item > label {
+                    font-size: 12px;
+                    margin-bottom: 4px;
+                }
+
+                .parcels-ul li > .parcel-content > .item > span {
+                    color: #000;
+                }
+/* جعبه وضعیت تسویه */
+.settelmentbox {
+    margin-top: 10px;
+    text-align: center;
+}
+
+    .settelmentbox h3 {
+        color: green;
+    }
+
+.btn-payment {
+    background-color: #4f8a4f;
+    color: #fff;
+    border: none;
+    padding: 5px 75px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: -10px;
+    border: 1px dashed whitesmoke;
+}
+
+    .btn-payment:hover {
+        background: gray;
+        color: #fff;
+    }
+/* اطلاعات بارنامه */
+.billInfo {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+    .billInfo h6 {
+        font-size: 16px;
+        color: #555;
+    }
+
+/* استایل بخش فرستنده و گیرنده */
+.row > div {
+    padding: 10px;
+}
+
+.row h4 {
+    margin-bottom: 10px;
+    color: #17a2b8;
+}
+
+ul {
+    list-style: none;
+}
+
+    ul li {
+        margin-bottom: 8px;
+    }
+
+/* استایل جدول مرسولات */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+    table th,
+    table td {
+        padding: 8px;
+        border: 1px solid #dee2e6;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    table thead th {
+        background-color: #f1f1f1;
+    }
+
+
+/* استایل‌های رسپانسیو */
+@media (max-width: 768px) {
+    .bill-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .billheaderinf0 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .billheaderinf0 p,
+        .billheaderinf0 span {
+            margin-bottom: 5px;
+        }
+
+    .billInfo {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 550px) {
+    .billheaderinf0{
+        width:100%;
+    }
+    .billheaderinf0 > div {
+        max-width: 48%;
+    }
+}
+
+/* استایل چاپ برای برگه A4 */
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+
+    body {
+        padding: 0;
+        background: none;
+    }
+
+    .bill-container {
+        box-shadow: none;
+        margin: 0;
+        max-width: none;
+        padding: 0;
+    }
+
+    .btn-payment, .settelmentbox a {
+        display: none;
+    }
+
+    table th,
+    table td {
+        border: 1px solid #000;
+        font-size: 12pt;
+    }
+
+    .bill-header, .billInfo, ul, table {
+        page-break-inside: avoid;
+    }
+
+    .qr-code {
+        display: none;
+    }
+}
+
+.timeline .timeline-item .timeline-event {
+    background-color: aliceblue;
+}
+
+
+.timeline.timeline-center .timeline-item.timeline-item-left .timeline-event .timeline-event-time, .timeline.timeline-center .timeline-item:nth-of-type(odd):not(.timeline-item-left):not(.timeline-item-right) .timeline-event .timeline-event-time {
+    right: -12.5rem;
+}

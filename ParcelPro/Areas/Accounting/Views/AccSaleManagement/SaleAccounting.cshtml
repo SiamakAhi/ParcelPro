@@ -1,0 +1,367 @@
+﻿@model SaleManagementViewModel
+@{
+    ViewData["Title"] = "امور مالی فروش";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string totalPrice = Model.BillsPagin.Items.ToList().Sum(n => n.FinalPrice).ToPrice();
+    string Payed = Model.BillsPagin.Items.ToList().Sum(n => n.Payed).ToPrice();
+    string Balance = Model.BillsPagin.Items.ToList().Where(n => n.statusId != 15).Sum(n => n.Balance).ToPrice();
+}
+
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header alert-secondary search-box">
+            <h4 class="card-title">گزارش فروش</h4>
+            <form asp-action="SaleAccounting" asp-controller="AccSaleManagement" asp-area="Accounting" method="get" id="frmBillFilter">
+                <input type="hidden" asp-for="filter.CurrentPage" value="1" />
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <label class="form-label">شماره بارنامه</label>
+                                <input type="text" asp-for="filter.BiilOdLadingNumber" class="form-control" />
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label">از تاریخ</label>
+                                <input type="text" asp-for="filter.strFromDate" class="form-control flatpickr-input" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">تا تاریخ</label>
+                                <input type="text" asp-for="filter.strUntilDate" class="form-control flatpickr-input" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">مبــدأ</label>
+                                <select asp-for="filter.OriginCityId" class="form-select select2" asp-items="@ViewBag.Cities">
+                                    <option value=""> همه</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">مقصـد</label>
+                                <select asp-for="filter.DestinationCityId" class="form-select select2" asp-items="@ViewBag.Cities">
+                                    <option value=""> همه</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-1 d-flex justify-content-around mt-3">
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" asp-for="filter.personSearchtype" id="personSearchtype1" value="1" checked="">
+                                        <label class="form-check-label" for="personSearchtype1">
+                                            جستجو بر اساس شخص در : گیرنده و فرستنده
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" asp-for="filter.personSearchtype" id="personSearchtype2" value="2">
+                                        <label class="form-check-label" for="personSearchtype2">
+                                            گیرنده
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" asp-for="filter.personSearchtype" id="personSearchtype3" value="3">
+                                        <label class="form-check-label" for="personSearchtype3">
+                                            فرستنده
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 select2-dark">
+                                <select asp-for="filter.PersonId" class="form-select select2" asp-items="@ViewBag.Persen">
+                                    <option value="null"> همه</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">طرف حساب</label>
+                                <select asp-for="filter.PartyId" class="form-select select2" asp-items="@ViewBag.Persen">
+                                    <option value="null"> همه</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">نوع تسویه حساب</label>
+                                <select asp-for="filter.SettelmentType" class="form-select">
+                                    <option value="null"> همه</option>
+                                    <option value="1">نقدی</option>
+                                    <option value="2">پسکرایه</option>
+                                    <option value="3">اعتباری</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">وضعیت پرداخت</label>
+                                <select asp-for="filter.PaymentStatus" class="form-select">
+                                    <option value="null"> همه</option>
+                                    <option value="1">پرداخت شده</option>
+                                    <option value="2">پرداخت نشده</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="col-12">
+                            <label class="form-label">کاربر صادرکننده</label>
+                            <select asp-for="filter.Issuer" class="form-select select2" asp-items="@ViewBag.Issuers">
+                                <option value=""> همه</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">تعداد ردیف در صفحه</label>
+                            <input type="number" asp-for="filter.PageSize" class="form-control" />
+                        </div>
+                        <div class="d-grid p-2 mt-2">
+                            <input type="submit" class="btn btn-danger" value="نمایش" />
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row py-3">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card">
+                <div class="card-body overflow-hidden">
+                    <div class="d-flex justify-content-between" style="position: relative;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar">
+                                <span class="avatar-initial rounded-circle bg-label-info"><i class="bx bx-dollar fs-4"></i></span>
+                            </div>
+                            <div class="card-info">
+                                <h5 class="card-title mb-0 me-2 primary-font">@totalPrice</h5>
+                                <small class="text-muted">جمع مبالغ بارنامه</small>
+                            </div>
+                        </div>
+                        <div id="incomeChart" style="min-height: 40px;"><div id="apexchartsgid6xkoh" class="apexcharts-canvas apexchartsgid6xkoh apexcharts-theme-light" style="height: 40px;"><svg id="SvgjsSvg2331" height="40" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><g id="SvgjsG2333" class="apexcharts-inner apexcharts-graphical" transform="translate(10, 10)"><defs id="SvgjsDefs2332"><clipPath id="gridRectMaskgid6xkoh"><rect id="SvgjsRect2338" width="185" height="33" x="-3.5" y="-1.5" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMaskgid6xkoh"></clipPath><clipPath id="nonForecastMaskgid6xkoh"></clipPath><clipPath id="gridRectMarkerMaskgid6xkoh"><rect id="SvgjsRect2339" width="182" height="34" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><linearGradient id="SvgjsLinearGradient2344" x1="0" y1="1" x2="1" y2="1"><stop id="SvgjsStop2345" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="0"></stop><stop id="SvgjsStop2346" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.3"></stop><stop id="SvgjsStop2347" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.7"></stop><stop id="SvgjsStop2348" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="1"></stop></linearGradient></defs><line id="SvgjsLine2337" x1="0" y1="0" x2="0" y2="30" stroke="#b6b6b6" stroke-dasharray="3" stroke-linecap="butt" class="apexcharts-xcrosshairs" x="0" y="0" width="1" height="30" fill="#b1b9c4" filter="none" fill-opacity="0.9" stroke-width="1"></line><g id="SvgjsG2350" class="apexcharts-xaxis" transform="translate(0, 0)"><g id="SvgjsG2351" class="apexcharts-xaxis-texts-g" transform="translate(0, -4)"></g></g><g id="SvgjsG2359" class="apexcharts-grid"><g id="SvgjsG2360" class="apexcharts-gridlines-horizontal" style="display: none;"><line id="SvgjsLine2362" x1="0" y1="0" x2="178" y2="0" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2363" x1="0" y1="4.285714285714286" x2="178" y2="4.285714285714286" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2364" x1="0" y1="8.571428571428571" x2="178" y2="8.571428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2365" x1="0" y1="12.857142857142858" x2="178" y2="12.857142857142858" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2366" x1="0" y1="17.142857142857142" x2="178" y2="17.142857142857142" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2367" x1="0" y1="21.428571428571427" x2="178" y2="21.428571428571427" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2368" x1="0" y1="25.71428571428571" x2="178" y2="25.71428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2369" x1="0" y1="29.999999999999996" x2="178" y2="29.999999999999996" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line></g><g id="SvgjsG2361" class="apexcharts-gridlines-vertical" style="display: none;"></g><line id="SvgjsLine2371" x1="0" y1="30" x2="178" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line><line id="SvgjsLine2370" x1="0" y1="1" x2="0" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line></g><g id="SvgjsG2340" class="apexcharts-line-series apexcharts-plot-series"><g id="SvgjsG2341" class="apexcharts-series" seriesName="سریx1" data:longestSeries="true" rel="1" data:realIndex="0"><path id="SvgjsPath2349" d="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" fill="none" fill-opacity="1" stroke="url(#SvgjsLinearGradient2344)" stroke-opacity="1" stroke-linecap="butt" stroke-width="3" stroke-dasharray="0" class="apexcharts-line" index="0" clip-path="url(#gridRectMaskgid6xkoh)" pathTo="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" pathFrom="M -1 42.857142857142854L -1 42.857142857142854L 35.6 42.857142857142854L 71.2 42.857142857142854L 106.8 42.857142857142854L 142.4 42.857142857142854L 178 42.857142857142854"></path><g id="SvgjsG2342" class="apexcharts-series-markers-wrap" data:realIndex="0"></g></g><g id="SvgjsG2343" class="apexcharts-datalabels" data:realIndex="0"></g></g><line id="SvgjsLine2372" x1="0" y1="0" x2="178" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine2373" x1="0" y1="0" x2="178" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line><g id="SvgjsG2374" class="apexcharts-yaxis-annotations"></g><g id="SvgjsG2375" class="apexcharts-xaxis-annotations"></g><g id="SvgjsG2376" class="apexcharts-point-annotations"></g></g><rect id="SvgjsRect2336" width="0" height="0" x="0" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fefefe"></rect><g id="SvgjsG2358" class="apexcharts-yaxis" rel="0" transform="translate(-18, 0)"></g><g id="SvgjsG2334" class="apexcharts-annotations"></g></svg><div class="apexcharts-legend" style="max-height: 20px;"></div></div></div>
+                        <div class="resize-triggers"><div class="expand-trigger"><div style="width: 315px; height: 56px;"></div></div><div class="contract-trigger"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card">
+                <div class="card-body overflow-hidden">
+                    <div class="d-flex justify-content-between" style="position: relative;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar">
+                                <span class="avatar-initial rounded-circle bg-label-seccess"><i class="bx bx-dollar fs-4"></i></span>
+                            </div>
+                            <div class="card-info">
+                                <h5 class="card-title mb-0 me-2 primary-font">@Payed</h5>
+                                <small class="text-muted">پرداخت شده</small>
+                            </div>
+                        </div>
+                        <div id="incomeChart" style="min-height: 40px;"><div id="apexchartsgid6xkoh" class="apexcharts-canvas apexchartsgid6xkoh apexcharts-theme-light" style=" height: 40px;"><svg id="SvgjsSvg2331" height="40" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><g id="SvgjsG2333" class="apexcharts-inner apexcharts-graphical" transform="translate(10, 10)"><defs id="SvgjsDefs2332"><clipPath id="gridRectMaskgid6xkoh"><rect id="SvgjsRect2338" width="185" height="33" x="-3.5" y="-1.5" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMaskgid6xkoh"></clipPath><clipPath id="nonForecastMaskgid6xkoh"></clipPath><clipPath id="gridRectMarkerMaskgid6xkoh"><rect id="SvgjsRect2339" width="182" height="34" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><linearGradient id="SvgjsLinearGradient2344" x1="0" y1="1" x2="1" y2="1"><stop id="SvgjsStop2345" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="0"></stop><stop id="SvgjsStop2346" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.3"></stop><stop id="SvgjsStop2347" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.7"></stop><stop id="SvgjsStop2348" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="1"></stop></linearGradient></defs><line id="SvgjsLine2337" x1="0" y1="0" x2="0" y2="30" stroke="#b6b6b6" stroke-dasharray="3" stroke-linecap="butt" class="apexcharts-xcrosshairs" x="0" y="0" width="1" height="30" fill="#b1b9c4" filter="none" fill-opacity="0.9" stroke-width="1"></line><g id="SvgjsG2350" class="apexcharts-xaxis" transform="translate(0, 0)"><g id="SvgjsG2351" class="apexcharts-xaxis-texts-g" transform="translate(0, -4)"></g></g><g id="SvgjsG2359" class="apexcharts-grid"><g id="SvgjsG2360" class="apexcharts-gridlines-horizontal" style="display: none;"><line id="SvgjsLine2362" x1="0" y1="0" x2="178" y2="0" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2363" x1="0" y1="4.285714285714286" x2="178" y2="4.285714285714286" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2364" x1="0" y1="8.571428571428571" x2="178" y2="8.571428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2365" x1="0" y1="12.857142857142858" x2="178" y2="12.857142857142858" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2366" x1="0" y1="17.142857142857142" x2="178" y2="17.142857142857142" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2367" x1="0" y1="21.428571428571427" x2="178" y2="21.428571428571427" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2368" x1="0" y1="25.71428571428571" x2="178" y2="25.71428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2369" x1="0" y1="29.999999999999996" x2="178" y2="29.999999999999996" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line></g><g id="SvgjsG2361" class="apexcharts-gridlines-vertical" style="display: none;"></g><line id="SvgjsLine2371" x1="0" y1="30" x2="178" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line><line id="SvgjsLine2370" x1="0" y1="1" x2="0" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line></g><g id="SvgjsG2340" class="apexcharts-line-series apexcharts-plot-series"><g id="SvgjsG2341" class="apexcharts-series" seriesName="سریx1" data:longestSeries="true" rel="1" data:realIndex="0"><path id="SvgjsPath2349" d="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" fill="none" fill-opacity="1" stroke="url(#SvgjsLinearGradient2344)" stroke-opacity="1" stroke-linecap="butt" stroke-width="3" stroke-dasharray="0" class="apexcharts-line" index="0" clip-path="url(#gridRectMaskgid6xkoh)" pathTo="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" pathFrom="M -1 42.857142857142854L -1 42.857142857142854L 35.6 42.857142857142854L 71.2 42.857142857142854L 106.8 42.857142857142854L 142.4 42.857142857142854L 178 42.857142857142854"></path><g id="SvgjsG2342" class="apexcharts-series-markers-wrap" data:realIndex="0"></g></g><g id="SvgjsG2343" class="apexcharts-datalabels" data:realIndex="0"></g></g><line id="SvgjsLine2372" x1="0" y1="0" x2="178" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine2373" x1="0" y1="0" x2="178" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line><g id="SvgjsG2374" class="apexcharts-yaxis-annotations"></g><g id="SvgjsG2375" class="apexcharts-xaxis-annotations"></g><g id="SvgjsG2376" class="apexcharts-point-annotations"></g></g><rect id="SvgjsRect2336" width="0" height="0" x="0" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fefefe"></rect><g id="SvgjsG2358" class="apexcharts-yaxis" rel="0" transform="translate(-18, 0)"></g><g id="SvgjsG2334" class="apexcharts-annotations"></g></svg><div class="apexcharts-legend" style="max-height: 20px;"></div></div></div>
+                        <div class="resize-triggers"><div class="expand-trigger"><div style="width: 315px; height: 56px;"></div></div><div class="contract-trigger"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card">
+                <div class="card-body overflow-hidden">
+                    <div class="d-flex justify-content-between" style="position: relative;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar">
+                                <span class="avatar-initial rounded-circle bg-label-warning"><i class="bx bx-dollar fs-4"></i></span>
+                            </div>
+                            <div class="card-info">
+                                <h5 class="card-title mb-0 me-2 primary-font"> @Balance</h5>
+                                <small class="text-muted">قابل پرداخت</small>
+                            </div>
+                        </div>
+                        <div id="incomeChart" style="min-height: 40px;"><div id="apexchartsgid6xkoh" class="apexcharts-canvas apexchartsgid6xkoh apexcharts-theme-light" style=" height: 40px;"><svg id="SvgjsSvg2331" height="40" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><g id="SvgjsG2333" class="apexcharts-inner apexcharts-graphical" transform="translate(10, 10)"><defs id="SvgjsDefs2332"><clipPath id="gridRectMaskgid6xkoh"><rect id="SvgjsRect2338" width="185" height="33" x="-3.5" y="-1.5" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMaskgid6xkoh"></clipPath><clipPath id="nonForecastMaskgid6xkoh"></clipPath><clipPath id="gridRectMarkerMaskgid6xkoh"><rect id="SvgjsRect2339" width="182" height="34" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><linearGradient id="SvgjsLinearGradient2344" x1="0" y1="1" x2="1" y2="1"><stop id="SvgjsStop2345" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="0"></stop><stop id="SvgjsStop2346" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.3"></stop><stop id="SvgjsStop2347" stop-opacity="0.9" stop-color="rgba(253,172,65,0.9)" offset="0.7"></stop><stop id="SvgjsStop2348" stop-opacity="0" stop-color="rgba(254,214,160,0)" offset="1"></stop></linearGradient></defs><line id="SvgjsLine2337" x1="0" y1="0" x2="0" y2="30" stroke="#b6b6b6" stroke-dasharray="3" stroke-linecap="butt" class="apexcharts-xcrosshairs" x="0" y="0" width="1" height="30" fill="#b1b9c4" filter="none" fill-opacity="0.9" stroke-width="1"></line><g id="SvgjsG2350" class="apexcharts-xaxis" transform="translate(0, 0)"><g id="SvgjsG2351" class="apexcharts-xaxis-texts-g" transform="translate(0, -4)"></g></g><g id="SvgjsG2359" class="apexcharts-grid"><g id="SvgjsG2360" class="apexcharts-gridlines-horizontal" style="display: none;"><line id="SvgjsLine2362" x1="0" y1="0" x2="178" y2="0" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2363" x1="0" y1="4.285714285714286" x2="178" y2="4.285714285714286" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2364" x1="0" y1="8.571428571428571" x2="178" y2="8.571428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2365" x1="0" y1="12.857142857142858" x2="178" y2="12.857142857142858" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2366" x1="0" y1="17.142857142857142" x2="178" y2="17.142857142857142" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2367" x1="0" y1="21.428571428571427" x2="178" y2="21.428571428571427" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2368" x1="0" y1="25.71428571428571" x2="178" y2="25.71428571428571" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine2369" x1="0" y1="29.999999999999996" x2="178" y2="29.999999999999996" stroke="#e0e0e0" stroke-dasharray="0" stroke-linecap="butt" class="apexcharts-gridline"></line></g><g id="SvgjsG2361" class="apexcharts-gridlines-vertical" style="display: none;"></g><line id="SvgjsLine2371" x1="0" y1="30" x2="178" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line><line id="SvgjsLine2370" x1="0" y1="1" x2="0" y2="30" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line></g><g id="SvgjsG2340" class="apexcharts-line-series apexcharts-plot-series"><g id="SvgjsG2341" class="apexcharts-series" seriesName="سریx1" data:longestSeries="true" rel="1" data:realIndex="0"><path id="SvgjsPath2349" d="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" fill="none" fill-opacity="1" stroke="url(#SvgjsLinearGradient2344)" stroke-opacity="1" stroke-linecap="butt" stroke-width="3" stroke-dasharray="0" class="apexcharts-line" index="0" clip-path="url(#gridRectMaskgid6xkoh)" pathTo="M 0 25.71428571428571C 12.459999999999999 25.71428571428571 23.14 12.857142857142858 35.6 12.857142857142858C 48.06 12.857142857142858 58.74 26.57142857142857 71.2 26.57142857142857C 83.66 26.57142857142857 94.34 4.285714285714285 106.8 4.285714285714285C 119.26 4.285714285714285 129.94 25.71428571428571 142.4 25.71428571428571C 154.86 25.71428571428571 165.54 15 178 15" pathFrom="M -1 42.857142857142854L -1 42.857142857142854L 35.6 42.857142857142854L 71.2 42.857142857142854L 106.8 42.857142857142854L 142.4 42.857142857142854L 178 42.857142857142854"></path><g id="SvgjsG2342" class="apexcharts-series-markers-wrap" data:realIndex="0"></g></g><g id="SvgjsG2343" class="apexcharts-datalabels" data:realIndex="0"></g></g><line id="SvgjsLine2372" x1="0" y1="0" x2="178" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine2373" x1="0" y1="0" x2="178" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line><g id="SvgjsG2374" class="apexcharts-yaxis-annotations"></g><g id="SvgjsG2375" class="apexcharts-xaxis-annotations"></g><g id="SvgjsG2376" class="apexcharts-point-annotations"></g></g><rect id="SvgjsRect2336" width="0" height="0" x="0" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fefefe"></rect><g id="SvgjsG2358" class="apexcharts-yaxis" rel="0" transform="translate(-18, 0)"></g><g id="SvgjsG2334" class="apexcharts-annotations"></g></svg><div class="apexcharts-legend" style="max-height: 20px;"></div></div></div>
+                        <div class="resize-triggers"><div class="expand-trigger"><div style="width: 315px; height: 56px;"></div></div><div class="contract-trigger"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive text-nowrap height-vh80">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ردیف</th>
+                        <th>
+                            عملیات
+                        </th>
+                        <th>تاریخ</th>
+                        <th>شماره بارنامه</th>
+                        <th>طرف حساب</th>
+                        <th>نوع تسویه</th>
+                        <th>مبلغ حمل بار</th>
+                        <th>جمع هزینه ها</th>
+                        <th>تخفیفات</th>
+                        <th>ارزش افزوده</th>
+                        <th>مبلغ بارنامه</th>
+                        <th>پرداخت شده</th>
+                        <th>باقیمانده</th>
+                        <th>شغبه صادر کننده</th>
+                        <th>کاربر صادر کننده</th>
+                        <th>فرستنده</th>
+                        <th>گیرنده</th>
+                        <th>مبـدأ</th>
+                        <th>مقصد</th>
+                        <th>وضعیت بارنامه</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.BillsPagin.Items.Count() > 0)
+                    {
+                        int rowNo = 1;
+
+                        foreach (var x in Model.BillsPagin.Items)
+                        {
+                            <tr>
+                                <td class="text-center">@rowNo</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ...
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
+                                            <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-eye me-3 text-black"></i> مشاهده</a>
+                                            <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3 text-black"></i>چاپ بارنامه</a>
+                                            @if (x.Payed > 0)
+                                            {
+                                                <a href="javascript:void(0)" class="dropdown-item callform" data-url="@Url.Action("BillPaymentRecords", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa fa-credit-card me-3"></i>سوابق پرداخت</a>
+                                            }
+                                            @if (x.Balance > 0)
+                                            {
+                                                <a href="javascript:void(0)" class="dropdown-item callform" data-url="@Url.Action("ChangeSettelmenttype", "Billoflading", new { Area = "Courier", id = x.Id })">
+                                                    <i class="fa fa  fa-exchange me-3"></i>تغییر روش تسویه
+                                                </a>
+                                            }
+                                            <a href="javascript:void(0)" class="dropdown-item callform" data-url="@Url.Action("ChangeBillParty", "AccSaleManagement", new { Area = "Accounting",billnumber=x.Number, Id = x.Id, sender = x.SenderName, reciver = x.ReciverName, party = x.PartyName, price = x.FinalPrice })">
+                                                <i class="fa fa  fa-exchange me-3"></i>تغییر طرف حساب
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <td>@x.Date.LatinToPersian()</td>
+                                <td>@x.Number</td>
+                                <td>@x.PartyName</td>
+
+                                <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                <td>@x.BasePrice.ToPrice()</td>
+                                <td>@x.TotalCost.ToPrice()</td>
+                                <td>@x.TotalDiscount.ToPrice()</td>
+                                <td>@x.VatPrice.ToPrice()</td>
+                                <td>@x.FinalPrice.ToPrice()</td>
+                                <td>@x.Payed.ToPrice()</td>
+                                <td>@(x.statusId == 15 ? "0" : x.Balance.ToPrice())</td>
+                                <td>@x.IssuerBranch</td>
+                                <td>@x.IssuerUserName</td>
+                                <td>@x.SenderName</td>
+                                <td>@x.ReciverName</td>
+                                <td>@x.OriginCityName</td>
+                                <td>@x.DestinationCityName</td>
+                                <td>@x.statusId.ToBillStatusName()</td>
+                            </tr>
+                            rowNo++;
+                        }
+                    }
+                </tbody>
+                @*  <tfoot>
+                    <tr>
+                        <td colspan="6" class="text-center"> جمع :</td>
+                        <td>
+                            <strong>@Model.Bills.Sum(n => n.BasePrice).ToPrice()</strong>
+                         </td>
+                        <td><strong>@Model.Bills.Sum(n => n.TotalCost).ToPrice()</strong></td>
+                        <td><strong>@Model.Bills.Sum(n => n.TotalDiscount).ToPrice()</strong></td>
+                        <td><strong>@Model.Bills.Sum(n => n.VatPrice).ToPrice()</strong></td>
+                        <td><strong>@Model.Bills.Sum(n => n.FinalPrice).ToPrice()</strong></td>
+                        <td><strong>@Model.Bills.Sum(n => n.Payed).ToPrice()</strong></td>
+                        <td><strong>@Model.Bills.Sum(n => n.Balance).ToPrice()</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tfoot> *@
+            </table>
+
+        </div>
+        <div class="card-footer alert-secondary">
+            @if (Model.BillsPagin.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="pagin mt-3">
+                    <ul class="pagination pagination-sm text-center">
+                        @if (Model.BillsPagin.HasPreviousPage)
+                        {
+                            <li class="page-item prev">
+                                <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.BillsPagin.CurrentPage - 1)">
+                                    <i class="tf-icon bx bx-chevrons-left"></i>
+                                </a>
+                            </li>
+                        }
+
+                        @{
+                            int totalPages = Model.BillsPagin.TotalPages;
+                            int currentPage = Model.BillsPagin.CurrentPage;
+                            int pageRange = 3; // تعداد صفحات قبل و بعد از صفحه فعلی
+
+                            int startPage = Math.Max(1, currentPage - pageRange);
+                            int endPage = Math.Min(totalPages, currentPage + pageRange);
+
+                            if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="1">1</a>
+                                </li>
+                                if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            for (int i = startPage; i <= endPage; i++)
+                            {
+                                string strActive = currentPage == i ? "active" : "";
+                                <li class="page-item @strActive">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@i">@i</a>
+                                </li>
+                            }
+
+                            if (endPage < totalPages)
+                            {
+                                if (endPage < totalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@totalPages">@totalPages</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.BillsPagin.HasNextPage)
+                        {
+                            <li class="page-item next">
+                                <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.BillsPagin.CurrentPage + 1)">
+                                    <i class="tf-icon bx bx-chevrons-right"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+
+            }
+        </div>
+    </div>
+</div>
+
+

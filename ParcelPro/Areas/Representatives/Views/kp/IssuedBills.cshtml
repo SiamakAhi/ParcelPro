@@ -1,0 +1,735 @@
+﻿  @model VmBranchUserPanel
+@{
+    ViewData["Title"] = "کیهان پست هاب ";
+    Layout = "~/Views/Shared/_AppRepLayout.cshtml";
+
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="quickAccessMenu_container">
+
+                <div class="quickAccessMenu_item card border-primary">
+                    <a asp-action="CreateBillofladingHeader" asp-controller="Billoflading" asp-area="Courier" >
+                        <i class="bx bx-cart text-primary"></i>
+                        <h4>صدرو بارنامه</h4>
+                    </a>
+                </div>
+                <div class="quickAccessMenu_item card border-primary">
+                    <a asp-action="Members" asp-controller="Kp" asp-asp-area="Representatives">
+                        <i class="bx bx-group text-light"></i>
+                        <h4>مشترکین</h4>
+                    </a>
+                </div>
+                <div class="quickAccessMenu_item card border-primary active">
+                    <a>
+                        <i class="bx bxs-up-arrow-square text-primary"></i>
+                        <h4>بارهای صادره</h4>
+                    </a>
+                </div>
+                @if (User.IsInRole("CourierMan"))
+                {
+                    <div class="quickAccessMenu_item card border-primary">
+                        <a asp-action="IncomingBills" asp-controller="Kp" asp-asp-area="Representatives">
+                            <i class="bx bxs-down-arrow-square text-light"></i>
+                            <h4>بارهای وارده</h4>
+                        </a>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+        <div class="col-md-12 search-box">
+            <h4 class="card-title">جستجوی در بارنامه های شعبه</h4>
+            <form asp-action="IssuedBills" asp-controller="kp" asp-area="Representatives" method="get" id="frmBillFilter">
+                <input type="hidden" asp-for="filter.PageSize" value="10000" />
+                <input type="hidden" asp-for="filter.CurrentPage" value="1" />
+                <div class="row">
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">شماره بارنامه</label>
+                        <input type="text" asp-for="filter.BiilOdLadingNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">مسیـر</label>
+                        <select asp-for="filter.RoutId" class="form-select" asp-items="@ViewBag.Routes">
+                            <option value="null"> همه</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">از تاریخ</label>
+                        <input type="text" asp-for="filter.strFromDate" class="form-control flatpickr-input" />
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">تا تاریخ</label>
+                        <input type="text" asp-for="filter.strUntilDate" class="form-control flatpickr-input" />
+                    </div>
+
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">نوع تسویه حساب</label>
+                        <select asp-for="filter.SettelmentType" class="form-select">
+                            <option value="null"> همه</option>
+                            <option value="1">نقدی</option>
+                            <option value="2">پسکرایه</option>
+                            <option value="3">اعتباری</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <label class="form-label">وضعیت پرداخت</label>
+                        <select asp-for="filter.PaymentStatus" class="form-select">
+                            <option value="null"> همه</option>
+                            <option value="1">پرداخت شده</option>
+                            <option value="2">پرداخت نشده</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label class="form-label">فرستنده</label>
+                        <select asp-for="filter.SenderId" class="form-select select2" asp-items="@ViewBag.Persen">
+                            <option value="null"> همه</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label class="form-label">گیرنده</label>
+                        <select asp-for="filter.ReciverId" class="form-select select2" asp-items="@ViewBag.Persen">
+                            <option value="null"> همه</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 col-12 d-grid p-2 mt-3">
+                        <input type="submit" class="btn btn-danger" value="جستجـو" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<section class="currentJobs-section p-4">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="output-tab" data-bs-toggle="tab" data-bs-target="#outputbill" type="button" role="tab" aria-controls="home" aria-selected="true">
+                در حال صدور
+                <span class="badge bg-info ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 1).Count()</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="input-tab" data-bs-toggle="tab" data-bs-target="#inpoutputbill" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                در انتظار پرداخت
+                <span class="badge bg-light ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 2).Count()</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="Deliverd-tab" data-bs-toggle="tab" data-bs-target="#deliverdBill" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                در انتظار جمع آوری
+                <span class="badge bg-danger ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).Count()</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="step5-tab" data-bs-toggle="tab" data-bs-target="#step5" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                آماده رهسپاری
+                <span class="badge bg-danger ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 5).Count()</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="step11-tab" data-bs-toggle="tab" data-bs-target="#step11" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                تحویل شده
+                <span class="badge bg-danger ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).Count()</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="step15-tab" data-bs-toggle="tab" data-bs-target="#step15" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                باطل شده
+                <span class="badge bg-warning ms-1">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 15).Count()</span>
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <!-------------------------------------------------------- در حال صدور------------------------------------------------------>
+        <div class="tab-pane fade show active" id="outputbill" role="tabpanel" aria-labelledby="output-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-light">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال / عملیات</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>مبلغ بارنامه</th>
+                            <th>نوع تسویه حساب</th>
+                            <th>وضعیت پرداهت</th>
+                            <th>وضعیت</th>
+                            <th>کاربر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 1).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 1).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light @(x.IsSetteled ?"":"bg-warning")">@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a asp-action="Billoflading" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupDrop5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop5" style="">
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-show me-3"></i> مشاهده</a>
+                                                    <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
+                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3"></i>حذف</a>
+                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3"></i>حذف</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td class="text-left me-1">@x.BillPrice.ToPrice()</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                    <td>@x.LastStatusDescription</td>
+                                    <td class="text-secondary">@x.CreatedBy</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-------------------------------------------------------- در انتظار پرداخت ------------------------------------------------------>
+        <div class="tab-pane fade" id="inpoutputbill" role="tabpanel" aria-labelledby="input-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-light">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال / عملیات</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>شماره گیرنده</th>
+                            <th>آدرس گیرنده</th>
+                            <th>وزن</th>
+                            <th>نوع تسویه حساب</th>
+                            <th>وضعیت پرداخت</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 2).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 2).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light @(x.IsSetteled ?"":"bg-warning")">@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a asp-action="Billoflading" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupDrops2" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrops2" style="">
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
+                                                    @if (!x.IsSetteled && User.IsInRole("Seller"))
+                                                    {
+                                                        <a class="dropdown-item callform" href="javascript:void(0)"
+                                                        data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                            <i class="fa fa-credit-card me-3 text-light"></i>
+                                                            پرداخت
+                                                        </a>
+                                                    }
+                                                    <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3 text-light"></i>چاپ بارنامه</a>
+                                                    <a class="dropdown-item callform" href="javascript:void(0)"
+                                                       data-url="@Url.Action("CancelationBill", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                        <i class="fa fa-times me-3 text-danger"></i>
+                                                        ابطال بارنامه
+                                                    </a>
+                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3 text-danger"></i>حذف</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td><a href="tel:@x.ReceiverPhone">@x.ReceiverPhone</a></td>
+                                    <td>@x.ReceiverAddress</td>
+                                    <td>@x.TotalWeight.ToString("0.##")</td>
+                                    <td class="text-left me-1">@x.BillPrice.ToPrice()</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-------------------------------------------------------- در انتظار جمع آوری ------------------------------------------------------>
+        <div class="tab-pane fade" id="deliverdBill" role="tabpanel" aria-labelledby="Deliverd-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-success">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال / عملیات</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>مبلغ بارنامه</th>
+                            <th>نوع تسویه</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light @(x.IsSetteled ?"":"bg-warning")">@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a asp-action="Billoflading" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupDrops3" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrops3" style="">
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" ><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
+                                                    @if (User.IsInRole("Seller"))
+                                                    {
+                                                        <a class="dropdown-item callform" href="javascript:void(0)"
+                                                        data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                            <i class="fa fa-credit-card me-3 text-light"></i>
+                                                            پرداخت
+                                                        </a>
+                                                    }
+                                                    <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3 text-light"></i>چاپ بارنامه</a>
+                                                    <a class="dropdown-item callform" href="javascript:void(0)"
+                                                       data-url="@Url.Action("CancelationBill", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                        <i class="fa fa-times me-3 text-danger"></i>
+                                                        ابطال بارنامه
+                                                    </a>
+                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3 text-danger"></i>حذف</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td>@x.BillPrice.ToPrice()</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7" class="text-left me-2"></td>
+                            <td colspan="3" class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).ToList().Sum(b=>b.BillPrice).ToPrice() </td>
+                        </tr>
+                    </tfoot>
+                </table>
+               
+            </div>
+        </div>
+
+        <!-------------------------------------------------------- آماده رهسپاری ------------------------------------------------------>
+        <div class="tab-pane fade" id="step5" role="tabpanel" aria-labelledby="step5-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-success">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال / عملیات</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>زمان تحویل</th>
+                            <th>تحویل گیرنده</th>
+                            <th>کاربر تحویل دهنده</th>
+                            <th>وضعیت پرداخت</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 5).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 5).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light @(x.IsSetteled ?"":"bg-warning")">@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a asp-action="Billoflading" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupDrops5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrops5" style="">
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" ><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
+                                                    @if (!x.IsSetteled && User.IsInRole("Seller"))
+                                                    {
+                                                        <a class="dropdown-item callform" href="javascript:void(0)"
+                                                           data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                            <i class="fa fa-credit-card me-3 text-light"></i>
+                                                            پرداخت
+                                                        </a>
+                                                    }
+                                                    <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3 text-light"></i>چاپ بارنامه</a>
+                                                    @if (!x.IsSetteled && User.IsInRole("BranchManager"))
+                                                    {
+                                                        <a class="dropdown-item callform" href="javascript:void(0)"
+                                                           data-url="@Url.Action("CancelationBill", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                            <i class="fa fa-times me-3 text-danger"></i>
+                                                            ابطال بارنامه
+                                                        </a>
+                                                    }
+                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3 text-danger"></i>حذف</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td>@x.tg_DeliveryDate?.LatinToPersian()</td>
+                                    <td>@x.tg_Name</td>
+                                    <td>@x.tg_CourierManUserName</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+                <div class="pagin-box">
+                    @if (Model.Bills.TotalPages > 1)
+                    {
+                        <ul class="pagination text-center">
+                            @if (Model.Bills.HasPreviousPage)
+                            {
+                                <li class="page-item prev">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage - 1)">
+                                        <i class="tf-icon bx bx-chevrons-left"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @{
+                                int IntotalPages = Model.Bills.TotalPages;
+                                int incurrentPage = Model.Bills.CurrentPage;
+                                int pageRange = 3;
+
+                                int instartPage = Math.Max(1, incurrentPage - pageRange);
+                                int inendPage = Math.Min(IntotalPages, incurrentPage + pageRange);
+
+                                if (instartPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="1">1</a>
+                                    </li>
+                                    if (instartPage > 2)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+                                }
+
+                                for (int i = instartPage; i <= inendPage; i++)
+                                {
+                                    string strActive = incurrentPage == i ? "active" : "";
+                                    <li class="page-item @strActive">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="@i">@i</a>
+                                    </li>
+                                }
+
+                                if (inendPage < IntotalPages)
+                                {
+                                    if (inendPage < IntotalPages - 1)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+                                    <li class="page-item">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="@IntotalPages">@IntotalPages</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (Model.Bills.HasNextPage)
+                            {
+                                <li class="page-item next">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage + 1)">
+                                        <i class="tf-icon bx bx-chevrons-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-------------------------------------------------------- تحویل شده ------------------------------------------------------>
+        <div class="tab-pane fade" id="step11" role="tabpanel" aria-labelledby="step11-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-success">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال / عملیات</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>زمان تحویل</th>
+                            <th>تحویل گیرنده</th>
+                            <th>کاربر تحویل دهنده</th>
+                            <th>وزن</th>
+                            <th>وضعیت پرداخت</th>
+                            <th>مبلغ بارنامه</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light @(x.IsSetteled ?"":"bg-warning")">@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                            <div class="btn-group" role="group">
+                                                <button id="btnGroupDrops11" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrops11" style="">
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-eye me-3"></i> مشاهده</a>
+                                                    @if (User.IsInRole("Seller"))
+                                                    {
+                                                        <a class="dropdown-item callform" href="javascript:void(0)"
+                                                           data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                            <i class="fa fa-credit-card me-3"></i>
+                                                            پرداخت
+                                                        </a>
+                                                    }
+                                                    <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
+                                                  
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td>@x.tg_DeliveryDate?.LatinToPersian()</td>
+                                    <td>@x.tg_Name</td>
+                                    <td>@x.tg_CourierManUserName</td>
+                                    <td>@x.TotalWeight.ToString("0.##")</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-left me-1">@x.BillPrice.ToPrice()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="10" class="text-left me-2"></td>
+                            <td  class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList().Sum(b => b.TotalWeight).ToPrice() </td>
+                            <td colspan="2" class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList().Sum(b => b.BillPrice).ToPrice() </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="pagin-box">
+                    @if (Model.Bills.TotalPages > 1)
+                    {
+                        <ul class="pagination text-center">
+                            @if (Model.Bills.HasPreviousPage)
+                            {
+                                <li class="page-item prev">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage - 1)">
+                                        <i class="tf-icon bx bx-chevrons-left"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @{
+                                int IntotalPages = Model.Bills.TotalPages;
+                                int incurrentPage = Model.Bills.CurrentPage;
+                                int pageRange = 3;
+
+                                int instartPage = Math.Max(1, incurrentPage - pageRange);
+                                int inendPage = Math.Min(IntotalPages, incurrentPage + pageRange);
+
+                                if (instartPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="1">1</a>
+                                    </li>
+                                    if (instartPage > 2)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+                                }
+
+                                for (int i = instartPage; i <= inendPage; i++)
+                                {
+                                    string strActive = incurrentPage == i ? "active" : "";
+                                    <li class="page-item @strActive">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="@i">@i</a>
+                                    </li>
+                                }
+
+                                if (inendPage < IntotalPages)
+                                {
+                                    if (inendPage < IntotalPages - 1)
+                                    {
+                                        <li class="page-item disabled">
+                                            <span class="page-link">...</span>
+                                        </li>
+                                    }
+                                    <li class="page-item">
+                                        <a class="page-link" data-formid="frmBillFilter" data-currentpage="@IntotalPages">@IntotalPages</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (Model.Bills.HasNextPage)
+                            {
+                                <li class="page-item next">
+                                    <a class="page-link" data-formid="frmBillFilter" data-currentpage="@(Model.Bills.CurrentPage + 1)">
+                                        <i class="tf-icon bx bx-chevrons-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-------------------------------------------------------- باطل شده ------------------------------------------------------>
+        <div class="tab-pane fade" id="step15" role="tabpanel" aria-labelledby="step15-tab">
+            <div class="table-responsive h-500">
+                <table class="table table-hover table-bordered tbl-success">
+                    <thead>
+                        <tr class="table-light">
+                            <th>#</th>
+                            <th class="w-150">سریال</th>
+                            <th>تاریخ صدور</th>
+                            <th>زمان صدور</th>
+                            <th>مسیر</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>وزن</th>
+                            <th>مبلغ بارنامه</th>
+                            <th>نوع تسویه</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 15).Any())
+                        {
+                            int row = 1;
+
+                            foreach (var x in Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 15).ToList())
+                            {
+                                string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                                <tr>
+                                    <td class="text-center text-light>@row</td>
+                                    <td class="w-150">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <a href="javascript:void(0)" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                        
+                                        </div>
+                                    </td>
+                                    <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
+                                    <td class="td-time">@x.IssuanceTime</td>
+                                    <td>@x.RouteName</td>
+                                    <td>@x.SenderName</td>
+                                    <td>@x.ReceiverName</td>
+                                    <td>@x.TotalWeight.ToString("0.##")</td>
+
+                                    <td>@x.BillPrice.ToPrice()</td>
+                                    <td>@x.SettelmentTypeId.ToSettelmentTypeName()</td>
+                                    <td class="text-light @(x.IsSetteled ?"":"bg-warning")">@(x.IsSetteled ? "پرداخت شده" : "پرداخت نشده")</td>
+                                </tr>
+                                row++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+

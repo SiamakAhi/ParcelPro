@@ -1,0 +1,81 @@
+﻿@model List<WaybillLabelDto>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>چاپ لیبل بارنامه | کیهان پست </title>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link href="~/css/waybilllabelstyle.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/font.css" rel="stylesheet" />
+</head>
+<body>
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var label = Model[i];
+        var barcodeId = $"barcode{i}";
+        var qrId = $"qrcode{i}";
+        <div class="label">
+            <div class="header">
+                <h2>کیهان پست</h2>
+                <div class="tracking">@label.WaybillNimber</div>
+                <div class="barcode">
+                    <svg id="@barcodeId"></svg>
+                </div>
+            </div>
+            <div class="info">
+                <div class="info-item"> <label>مبدأ:</label> <strong>@label.OriginCity</strong></div>
+                <div class="info-item"> <label>مقصد:</label> <strong>@label.Destination</strong></div>
+            </div>
+            <div class="footer">
+                <div class="footer-item">
+                   <div>
+                        <label>تعداد </label><br />
+                        <strong> @label.ParcelNumber / @label.TotalCountParcel</strong>
+                   </div>
+                    <div>
+                        <label>وزن </label><br />
+                        <strong> @label.weight Kg </strong>
+                    </div>
+                </div>
+                <div class="qr footer-item">
+                    <div id="@qrId"></div>
+                </div>
+              
+            </div>
+            <small>htts://keyhanpost.ir </small>
+        </div>
+        if (i < Model.Count - 1)
+        {
+            <div class="page-break"></div>
+        }
+    }
+
+    <script>
+        const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        labels.forEach((item, index) => {
+            JsBarcode(`#barcode${index}`, item.WaybillNimber, {
+                format: "CODE128",
+                displayValue: false,
+                height: 40,
+                margin: 0
+            });
+
+            new QRCode(`qrcode${index}`, {
+                text: "https://keyhanpost.ir",
+                width: 80,
+                height: 80,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+
+        window.onload = function () {
+            window.print();
+        };
+    </script>
+</body>
+</html>

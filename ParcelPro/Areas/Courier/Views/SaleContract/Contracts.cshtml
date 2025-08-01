@@ -1,0 +1,80 @@
+﻿@model List<SaleContractDto>
+@{
+    ViewData["Title"] = "قرارادهای همکاری | کیهان پست";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card card-panel">
+        <div class="card-panel-header">
+            <div><span class="card-panel-title">قراردادهای همکاری  لجستیک</span></div>
+            <div class="card-panel-navbar-container">
+                <ul class="card-panel-navbar">
+                    <li>
+                        <a href="javascript:void(0)" data-url="@Url.Action("AddSaleContract", "SaleContract", new { Area = "Courier" })" class="quickaccess-link callform">
+                            <i class="bx bx-plus"></i>
+                            <span>تعریف قرارداد جدید</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body card-table">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered ">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="row-chb">
+                                #
+                            </th>
+                            <th>عنوان همکاری</th>
+                            <th>طرف حساب</th>
+                            <th>تاریخ شروع همکاری</th>
+                            <th>وضعیت گنل کاربری</th>
+                            <th>فعال/غیرفعال</th>
+                            <th>اقدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (Model!=null && Model.Any())
+                        {
+                            int row = 1;
+                            foreach (var x in Model)
+                            {
+                                <tr>
+                                    <td class="row-chb">
+                                        @row
+                                    </td>
+                                    <td>@x.Title</td>
+                                    <td>@x.PartyName</td>
+                                    <td>@x.StartDate.LatinToPersian()</td>
+                                    <td>@(x.AccounIstActive ?"فعال":"غیرفعال")</td>
+                                    <td>@(x.IsActive ? "فعال" : "غیرفعال")</td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+
+                                row++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                               <td colspan="7"><h5 class="text-center py-3 text-info">اطلاعاتی برای نمایش وجود ندارد</h5></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class=" alert-secondary">
+            
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

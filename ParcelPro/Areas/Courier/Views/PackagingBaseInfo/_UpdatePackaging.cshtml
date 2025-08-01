@@ -1,0 +1,49 @@
+﻿@model PackagingDto
+<div class="modal-dialog dataentry-modal">
+    <div class="modal-content dataentry">
+        <div class="dataentry-title">
+            <span class=""> ویرایش بسته‌بندی</span>
+        </div>
+        <form asp-action="UpdatePackaging" asp-controller="PackagingBaseInfo" asp-area="Courier" method="post">
+            <div class="row dataentry-controls">
+                <div class="col-md-6 garnet-section garnet-section-info">
+                    <div class="garnet-section-header">
+                        <h6>اطلاعات بسته‌بندی</h6>
+                    </div>
+                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                    <input type="hidden" asp-for="SellerId" value="@Model.SellerId" />
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="PackageCode" class="form-label">کد بسته‌بندی</label>
+                        <input type="text" class="form-control form-control-sm" asp-for="PackageCode" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="Name" class="form-label">نام بسته‌بندی</label>
+                        <input type="text" class="form-control form-control-sm" asp-for="Name" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="Price" class="form-label">قیمت</label>
+                        <input type="number" class="form-control form-control-sm" asp-for="Price" />
+                    </div>
+                    <div class="col-md-6 mb-1">
+                        <label asp-for="ForExport" class="form-label">برای بار خارجی</label>
+                        <input type="checkbox" class="form-check-input" asp-for="ForExport" />
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label asp-for="WarehouseProductCategoryId" class="form-label">دسته‌بندی انبار</label>
+                        <select asp-for="WarehouseProductCategoryId" class="form-select form-select-sm" asp-items="@ViewBag.WarehouseCategories">
+                            <option value="">انتخاب دسته‌بندی ...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="dataentry-buttons-container container-row">
+                <div class="dataentry-buttons">
+                    <a href="javascript:void(0)" class="btn btn-primary accAjaxSubmit"> ذخیره</a>
+                    <button type="reset" class="btn btn-warning" data-bs-dismiss="modal" aria-label="Close">
+                        انصراف
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+﻿  @model SmsServiceSetting
+@{
+    ViewData["Title"] = "PersiaFavaSetting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <form>
+        <div class="card ">
+            <h4 class="card-header text-warning">
+                تنظیمات سرویس پیامکی <strong> پرشیا فاوا</strong>
+            </h4>
+            <div class="card-body alert-secondary">
+                <div class="p-3">
+                     <div class="row">
+                         <div class="col-md-4">
+                             <label class="form-label" asp-for="ProviderName"></label>
+                            <input type="text" class="form-control" asp-for="ProviderName" value="پرشیا فاوا" placeholder="نام سرویس دهنده" />
+                         </div>
+                        <div class="col-md-6">
+                            <label class="form-label" asp-for="WebsiteAddress"></label>
+                            <input type="text" class="form-control" asp-for="WebsiteAddress" value="https://sms.persiafava.com/" placeholder="آدرس پنل سرویس دهنده" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" asp-for="SupportContact"></label>
+                            <input type="text" class="form-control" asp-for="SupportContact" placeholder="شماره تماس پشتیبان" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" asp-for="UserName"></label>
+                            <input type="text" class="form-control" asp-for="UserName" value="payamkeyhanpars" placeholder="نام کاربری ورود به پنل" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" asp-for="Password"></label>
+                            <input type="text" class="form-control" asp-for="Password" value="p@123" placeholder="رمز عبور ورود به پنل" />
+                        </div>
+                        <div class="divider divider-warning text-start">
+                            <span class="divider-text">اطلاعات API</span>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" asp-for="ApiUrl"></label>
+                            <input type="text" class="form-control" asp-for="ApiUrl" value="195:65465daab29bd" placeholder="آدرس API" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" asp-for="Method">روش ارسال</label>
+                            <select asp-for="Method" class="form-select">
+                                <option value="Post">Post</option>
+                                <option value="Get">Get</option>
+                            </select>
+                        </div>
+                     </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="col-md-8"></div>
+                <div class="col-md-2 d-grid p-2">
+                    <input type="submit" class="btn btn-secondary" value="ذخیــره" />
+                </div>
+                <div class="col-md-2 d-grid p-2">
+                    <a asp-action="SendSms" asp-controller="SmsServiceSettings" asp-area="" class="btn btn-info">تست ارسال</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+</div>
+

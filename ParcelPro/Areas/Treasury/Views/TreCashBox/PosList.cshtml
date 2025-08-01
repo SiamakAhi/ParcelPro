@@ -1,0 +1,83 @@
+﻿@model List<ParcelPro.Areas.Treasury.Dto.TreBankPosUcDto>
+@{
+    ViewData["Title"] = "مدیریت دستگاه‌های پوز";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header-search">
+        <h5 class="card-header heading-color">
+            مدیریت دستگاه‌های پوز
+        </h5>
+        <div class="btn-toolbar demo-inline-spacing" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group" role="group">
+                <a href="#" data-url="@Url.Action("AddPosDevice", "TreCashBox", new { Area = "Treasury" })" class="btn btn-primary iconpng callform">
+                    <i class="tf-icons bx bx-plus"></i>
+                    جدید
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body card-table">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">ردیف</th>
+                        <th>نام</th>
+                        <th>شماره ترمینال</th>
+                        <th>حساب بانک</th>
+                        <th>ارز</th>
+                        <th>فعال</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (Model.Any())
+                    {
+                        int row = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@row</td>
+                                <td>@item.Name</td>
+                                <td>@item.TerminalNumber</td>
+                                <td>@item.BankAccountName</td>
+                                <td>@item.CurrencyName</td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <i class="bx bx-check text-success"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bx bx-x text-danger"></i>
+                                    }
+                                </td>
+                                <td class="row-btns text-center">
+                                    <a class="callform" href="#" data-url="@Url.Action("EditPosDevice", "TreCashBox", new { Area = "Treasury", id = item.Id })">
+                                        <i class="bx bx-edit-alt text-info" title="ویرایش"></i>
+                                    </a>
+                                    <a class="callform" href="#" data-url="@Url.Action("DeletePosDevice", "TreCashBox", new { Area = "Treasury", id = item.Id })">
+                                        <i class="bx bx-trash-alt text-warning" title="حذف"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            row++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="alert alert-primary my-3 text-center" role="alert">
+                                    دستگاه پوز در سیستم تعریف نشده است. برای تعریف دستگاه از دکمه <strong class="text-warning p-1">جدید</strong> استفاده نمایید.
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

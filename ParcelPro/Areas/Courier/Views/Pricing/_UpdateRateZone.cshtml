@@ -1,0 +1,47 @@
+﻿@model RateZoneDto
+
+<div class="modal-dialog dataentry-modal">
+    <div class="modal-content dataentry">
+        <div class="dataentry-title">
+            <span class="">تعریف ماهیت جدید</span>
+        </div>
+        <form asp-action="UpdateRateZone" asp-controller="Pricing" asp-area="Courier" method="post">
+
+            <input type="hidden" class="form-control form-control-sm" asp-for="ZoneId" value="@Model.ZoneId"/>
+            <input type="hidden" class="form-control form-control-sm" asp-for="SellerId" value="@Model.SellerId"/>
+
+            <div class="row dataentry-controls">
+                <!-- بخش مشخصات -->
+                <div class="col-md-6 garnet-section garnet-section-info">
+                    <div class="garnet-section-header">
+                        <h6>مشخصات</h6>
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input type="text" class="form-control form-control-sm" asp-for="Name" />
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <label asp-for="PriceBaseFactor" class="form-label"></label>
+                        <input type="text" class="form-control form-control-sm" asp-for="PriceBaseFactor" />
+                    </div>
+                    <div class="col-md-12 mb-1">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" asp-for="IsSatellite" />
+                            <label class="form-check-label" asp-for="IsSatellite"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 garnet-section dataentry-buttons-container mt-3">
+                    <div class="dataentry-buttons">
+                        <a href="javascript:void(0)" class="btn btn-primary accAjaxSubmit">ذخیـره</a>
+                        <button type="reset" class="btn btn-warning" data-bs-dismiss="modal" aria-label="Close">انصراف</button>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model List<SaleContractUserDto>
+
+@{
+    ViewData["Title"] = "کاربران مشتریان اعتباری | کیهان پست";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card card-panel">
+        <div class="card-panel-header">
+            <div><span class="card-panel-title">کاربران مشتری</span></div>
+            <div class="card-panel-navbar-container">
+                <ul class="card-panel-navbar">
+                    <li>
+                        <a href="javascript:void(0)" data-url="@Url.Action("AddClientUser", "SaleContract", new { Area = "Courier" })" class="quickaccess-link callform">
+                            <i class="bx bx-plus"></i>
+                            <span>تعریف کاربر جدید</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-body card-table">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped  ">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="row-chb">
+                                #
+                            </th>
+                            <th>طرف قرارداد</th>
+                            <th>نام کاربر</th>
+                            <th>نام کاربری</th>
+                            <th>ایمیل</th>
+                            <th>موبایل</th>
+                            <th>تاریخ ایجاد</th>
+                            <th>اقدام</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @if (Model != null && Model.Any())
+                        {
+                            int row = 1;
+                            foreach (var x in Model)
+                            {
+                                <tr>
+                                    <td class="row-chb">
+                                        @row
+                                    </td>
+                                    <td>
+                                        <p>@x.PartyName</p>
+                                        <small>@x.ContractTitle</small>
+                                    </td>
+                                    <td>@x.Name</td>
+                                    <td>@x.userName</td>
+                                    <td>@x.Email</td>
+                                    <td>@x.Mobile</td>
+                                    <td>@x.CreateAt.LatinToPersian()</td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                row++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-3 text-info"><h5>کاربری تعریف نشده است</h5></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class=" alert-secondary">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

@@ -43,7 +43,7 @@ namespace ParcelPro.Areas.Representatives.Controllers
             return StiNetCoreViewer.ViewerEventResult(this);
         }
 
-        public ActionResult RpWaybills()
+        public IActionResult RpWaybills()
         {
             return View();
         }

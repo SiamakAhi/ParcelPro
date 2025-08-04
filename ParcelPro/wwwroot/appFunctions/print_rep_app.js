@@ -5,7 +5,8 @@
 $(document).on('click', '.getprint_app', function () {
 
     // ploder.style.display = "block";
-    let frm = $(this).parents('form');
+    let formId = $(this).data('frmid');
+    let frm = $(document).find(formId);
     let actionUrl = $(this).data('url');
 
     let ReciverId = frm.find('select[name="filter.ReciverId"]').val();
@@ -48,7 +49,7 @@ $(document).on('click', '.getprint_app', function () {
         newWindow.document.write(data);
         newWindow.document.close();
     }).always(function () {
-        ploder.style.display = "none";
+        //ploder.style.display = "none";
     });
 });
 

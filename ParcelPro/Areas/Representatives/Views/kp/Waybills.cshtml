@@ -1,4 +1,4 @@
-﻿  @model VmBranchUserPanel
+﻿@model VmBranchUserPanel
 @{
     ViewData["Title"] = "کیهان پست هاب ";
     Layout = "~/Views/Shared/_AppRepLayout.cshtml";
@@ -136,7 +136,7 @@
 
                             </select>
                         </div>
-                       
+
                     </div>
                 </div>
 
@@ -153,10 +153,16 @@
                         {
                             <div class="col-md-12 col-6 d-grid p-1 mt-3">
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                    <a href="#" class="btn btn-secondary">اقدامات گروهی</a>
+                                    <a href="#" class="btn btn-secondary">اقدامات </a>
                                     <div class="btn-group" role="group">
                                         <button id="btnGroupDrop5" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop5" style="">
+                                            <a class="dropdown-item getprint_app" href="javascript:void(0)"
+                                               data-frmid="#frmBillFilter"
+                                               data-url="@Url.Action("RpWaybills", "BranchReports", new { Area = "Representative" })">
+                                                <i class="fa fa-list me-3"></i>
+                                                چاپ گزارش
+                                            </a>
                                             <a class="dropdown-item bulkAction-callmodal" href="javascript:void(0)" data-tableid="tblBills"
                                                data-url="@Url.Action("ChangeDestributer", "Billoflading", new { Area = "Courier" })">
                                                 <i class="fa fa-list me-3"></i>
@@ -167,7 +173,7 @@
                                 </div>
                             </div>
                         }
-                     
+
                     </div>
                 </div>
             </div>
@@ -183,7 +189,7 @@
                     <tr class="table-light">
                         <th>
                             <input type="checkbox" id="selectTblRows" />
-                            </th>
+                        </th>
                         <th>#</th>
                         <th class="w-150">سریال / عملیات</th>
                         <th>تاریخ صدور</th>

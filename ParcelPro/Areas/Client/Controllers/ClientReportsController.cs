@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParcelPro.Areas.Client.ClientInterfacses;
+using ParcelPro.Areas.Courier.Models.Entities;
 using ParcelPro.Services;
 using Stimulsoft.Base;
+using Stimulsoft.Report.Components;
 using Stimulsoft.Report.Mvc;
 
 namespace ParcelPro.Areas.Client.Controllers
@@ -26,11 +29,30 @@ namespace ParcelPro.Areas.Client.Controllers
             return StiNetCoreViewer.ViewerEventResult(this);
         }
 
-        public ActionResult RpWaybillsByRecivers()
+        public IActionResult RpWaybillsByRecivers()
         {
             return View();
         }
+        public IActionResult GetReport_RpWaybillsBtyRecivers(
+            long? _ReciverId
+            ,int? _RoutId
+            ,Guid? _Distributer
+            ,int? _OriginCityId
+            ,int? _DestinationCityId
+            ,short? _SettelmentType
+            ,short? _BillStatus
+            ,short? _PaymentStatus
+            ,string? _IssuerUserName
+            ,string? _BiilOdLadingNumber
+            ,string? _strFromDate
+            ,string? _strUntilDate
+            ,bool? _ShowCancelation
+            ,short? _personSearchtype
+            )
+        {
 
+            return View();
+        }
 
     }
 }

@@ -60,7 +60,6 @@ namespace ParcelPro.Areas.Client.ClientServices
                 )).Select(n => new { id = n.Id, name = n.Name }).ToListAsync();
 
             return new SelectList(ClientCustomers, "id", "name");
-
         }
         public async Task<SelectList> SelectList_ClientUsedProvincesAsync(long partyId)
         {

@@ -3565,5 +3565,13 @@ td > .btn-group > button {
     padding: 8px 10px;
     border-radius: 5px;
 }
-
+.btn-group-col-2{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:4px;
+}
+.btn-success {
+    background-color:#33ad71 !important;
+    border-color:#33ad71 !important;
+}
 

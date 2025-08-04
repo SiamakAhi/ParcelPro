@@ -46,21 +46,28 @@
                         <input type="text" class="form-control form-control-sm flatpickr-input" asp-for="filter.strEndDate" />
                     </div>
 
-                    <div class="col-md-12 d-flex flex-wrap gap-1 p-2">
-                        <button type="submit" class="btn btn-secondary flex-grow-1">
+                    <div class="col-md-12 btn-group-col-2 mt-2">
+                        <button type="submit" class="btn btn-secondary">
                             <i class="bx bx-list mx-1"></i>
                             مشاهده
                         </button>
-                        <a href="javascript:void(0)" class="btn btn-primary mb-1 billPrint"
+                        <a href="javascript:void(0)" data-formid="frmBillFilter" class="btn btn-success submitCustomForm"
+                           data-url="@Url.Action("ExportMoadianBill", "AccSaleManagement", new { Area = "Accounting" })">
+                            <i class="bx bx-file mx-1"></i>
+                            خروجی سامانه مودیان
+                        </a>
+                        <a href="javascript:void(0)" class="btn btn-primary billPrint"
                            data-url="@Url.Action("PrintCreditCustomerBill", "AccPrint", new { Area = "Accounting" })">
                             <i class="bx bx-printer mx-1"></i>
                             چاپ صورتحساب
                         </a>
-                        <a href="javascript:void(0)" data-formid="frmBillFilter" class="btn btn-primary mb-1 submitCustomForm"
-                           data-url="@Url.Action("ExportMoadianBill", "AccSaleManagement", new { Area = "Accounting" })">
+                       
+                        <a href="javascript:void(0)" class="btn btn-primary billPrint"
+                           data-url="@Url.Action("PrintBillsReciversGrouped", "AccPrint", new { Area = "Accounting" })">
                             <i class="bx bx-printer mx-1"></i>
-                            خروجی برای سامانه مودیان
+                            صورتحساب به تفکیک گیرنده
                         </a>
+                       
                     </div>
                 </div>
             </form>

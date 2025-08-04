@@ -614,6 +614,8 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 .Include(n => n.MoneyTransactions)
                  .Include(n => n.BillOfLading).ThenInclude(n => n.Route).ThenInclude(n => n.OriginCity)
                  .Include(n => n.BillOfLading).ThenInclude(n => n.Route).ThenInclude(n => n.DestinationCity)
+                 .Include(n => n.BillOfLading).ThenInclude(n => n.Sender)
+                 .Include(n => n.BillOfLading).ThenInclude(n => n.Receiver)
                 .AsQueryable();
 
 
@@ -653,6 +655,9 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 DestinationCityName = n.BillOfLading.Route.DestinationCity.PersianName,
                 OriginCityId = n.BillOfLading.Route.OriginCityId,
                 OriginCityName = n.BillOfLading.Route.OriginCity.PersianName,
+                ReciverId = n.BillOfLading.ReceiverId,
+                ReciverName = n.BillOfLading.Receiver.Name,
+                SenderName = n.BillOfLading.Sender.Name,
 
             }).OrderBy(n => n.Date).ToListAsync();
 

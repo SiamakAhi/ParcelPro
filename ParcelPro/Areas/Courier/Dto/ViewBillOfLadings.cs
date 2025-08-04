@@ -16,7 +16,8 @@ namespace ParcelPro.Areas.Courier.Dto
 
         [Display(Name = "تاریخ صدور")]
         public DateTime IssuanceDate { get; set; }
-        public TimeSpan IssuanceTime { get; set; }
+        public string? strIssuanceDate => IssuanceDate.LatinToPersian();
+        public TimeSpan IssuanceTime { get; set; }// => new TimeSpan(IssuanceDate.Hour, IssuanceDate.Minute, IssuanceDate.Second);
 
         [Display(Name = " مبدأ")]
         public string OriginCity { get; set; }
@@ -59,9 +60,10 @@ namespace ParcelPro.Areas.Courier.Dto
         // 2- اعتباری
         // 3- پسکرایه
         [Display(Name = " نوع پرداخت")]
-        public string? SettelmentTypeName { get; set; }
+        public string? SettelmentTypeName => SettelmentTypeId.ToSettelmentTypeName();
         public short? SettelmentTypeId { get; set; }
         public bool IsSetteled { get; set; }
+        public string SettelStatus => IsSetteled ? "پرداخت شده" : "پرداخت نشده";
         public string? LastStatusDescription { get; set; }
 
         [Display(Name = " وضعیت بارنامه")]

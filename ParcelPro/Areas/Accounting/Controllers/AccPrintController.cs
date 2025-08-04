@@ -587,6 +587,7 @@ namespace ParcelPro.Areas.Accounting.Controllers
 
         //// Credit customer bills
 
+        //PrintBillsReciversGrouped
         public IActionResult PrintCreditCustomerBill()
         {
             return View();
@@ -616,6 +617,47 @@ namespace ParcelPro.Areas.Accounting.Controllers
             var data = await _courierFinancialService.GetPartyBillsAsync(filter);
             var party = await _persen.GetPersonDtoAsync(personId);
             string path = StiNetCoreHelper.MapPath(this, @"wwwroot/Reports/acc/Acc_partyBill.mrt");
+
+            report.Load(path);
+            report.RegBusinessObject("bill", data);
+            report.RegData("person", party);
+            StiVariable CompanyName = new StiVariable("CompanyName", userSett.ActiveSellerName);
+            StiVariable rpDate = new StiVariable("ReportDate", DateTime.Now.LatinToPersian());
+            report.Dictionary.Variables.Add(CompanyName);
+            report.Dictionary.Variables.Add(rpDate);
+
+            return StiNetCoreViewer.GetReportResult(this, report);
+        }
+
+        public IActionResult PrintBillsReciversGrouped()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetReport_PrintBillsReciversGrouped(
+            string startDate,
+            string endDate,
+            long personId
+            )
+        {
+
+            string userName = User.Identity.Name;
+            var userSett = await _gs.GetUserSettingAsync(userName);
+            if (userSett == null || !userSett.ActiveSellerPeriod.HasValue) { return BadRequest(); }
+
+            PartyBillsFilterDto filter = new PartyBillsFilterDto
+            {
+                SellerId = userSett.ActiveSellerId.Value,
+                IsPayed = false,
+                PartyId = personId,
+                strEndDate = endDate,
+                strStartDate = startDate,
+            };
+
+            StiReport report = new StiReport();
+            var data = await _courierFinancialService.GetPartyBillsAsync(filter);
+            var party = await _persen.GetPersonDtoAsync(personId);
+            string path = StiNetCoreHelper.MapPath(this, @"wwwroot/Reports/acc/Cu_partyBillReciverGrouped.mrt");
 
             report.Load(path);
             report.RegBusinessObject("bill", data);

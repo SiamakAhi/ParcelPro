@@ -12,6 +12,7 @@ namespace ParcelPro.Areas.Courier.Dto
 
         [Display(Name = "شماره بارنامه مرجع")]
         public string? ReferenceNumber { get; set; }
+        public string? CustomerKeyword { get; set; }
 
         [Display(Name = "تاریخ صدور")]
         public DateTime IssuanceDate { get; set; }

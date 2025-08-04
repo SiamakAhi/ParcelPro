@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using ParcelPro.Areas.Courier.Classes;
 using ParcelPro.Areas.Courier.CuurierInterfaces;
 using ParcelPro.Areas.Courier.Dto;
 using ParcelPro.Areas.Courier.Dto.FinancialDtos;
@@ -871,38 +870,10 @@ namespace ParcelPro.Areas.Courier.Controllers
             return Json(result.ToJsonResult());
         }
 
-        [HttpPost]
         public async Task<IActionResult> WaybillLabel(Guid id)
         {
-            try
-            {
-                var dtos = await _bill.WaybillLabelsAsync(id);
-
-                foreach (var dto in dtos)
-                {
-                    var zpl = GenerateZPL(dto);
-                    bool success = RawPrinterHelper.SendStringToPrinter("BIXLON", zpl);
-
-                    if (!success)
-                    {
-                        return Json(new
-                        {
-                            success = false,
-                            message = $"چاپ لیبل برای بارنامه {dto.WaybillNimber} ناموفق بود"
-                        });
-                    }
-                }
-
-                return Json(new { success = true }); // موفقیت بی‌نیاز از پیام
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    success = false,
-                    message = "خطای سیستمی: " + ex.Message
-                });
-            }
+            var dtos = await _bill.WaybillLabelsAsync(id);
+            return View(dtos);
         }
 
         private string GenerateZPL(WaybillLabelDto dto)

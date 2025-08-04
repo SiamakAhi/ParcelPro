@@ -96,10 +96,15 @@
                     <label class="form-label">آدرس</label>
                     <textarea rows="4" asp-for="BillOfLading.bill.ReceiverAddress" id="reciverAddress" class="form-control gonext"></textarea>
                 </div>
+               
             </div>
             <div class="col-md-4 mb-2 mt-2 createBill-desc">
                 <h5 class="card-header mb-4"> توضیحات</h5>
                 <textarea rows="8" asp-for="BillOfLading.bill.Description" class="form-control mt-3 gonext"></textarea>
+                <div>
+                    <label class="form-label">کد اختصاصی مشتری <small class="mx-2 text-muted">اعلامی توسط مشتری</small> </label>
+                    <input type="text" asp-for="BillOfLading.bill.CustomerKeyword" class="form-control gonext" />
+                </div>
                 <div class="d-grid p-2 mt-3">
                     <input type="button" class="btn btn-danger accAjaxSubmit" value="ثبت و افزودن مرسولات" />
                 </div>

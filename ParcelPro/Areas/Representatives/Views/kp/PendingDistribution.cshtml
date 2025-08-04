@@ -184,7 +184,8 @@
                                                     <i class="fa fa-credit-card me-3"></i>
                                                     پرداخت
                                                 </a>
-                                            }
+                                            }  
+                                            <a class="dropdown-item" asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank"><i class="fa fa-tag me-3"></i>چاپ لیبل</a>
                                             <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
                                         </div>
                                     </div>

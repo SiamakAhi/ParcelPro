@@ -11,7 +11,7 @@
             <div class="quickAccessMenu_container">
 
                 <div class="quickAccessMenu_item card border-primary">
-                    <a asp-action="CreateBillofladingHeader" asp-controller="Billoflading" asp-area="Courier" >
+                    <a asp-action="CreateBillofladingHeader" asp-controller="Billoflading" asp-area="Courier">
                         <i class="bx bx-cart text-primary"></i>
                         <h4>صدرو بارنامه</h4>
                     </a>
@@ -179,9 +179,12 @@
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupDrop5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop5" style="">
+                                                    @if (x.BillOfLadingStatusId > 1)
+                                                    {
+                                                        <a class="dropdown-item" asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank"><i class="fa fa-tag me-3"></i>چاپ لیبل</a>
+                                                    }
                                                     <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-show me-3"></i> مشاهده</a>
                                                     <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
-                                                    <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3"></i>حذف</a>
                                                     <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3"></i>حذف</a>
                                                 </div>
                                             </div>
@@ -248,7 +251,7 @@
                                                     @if (!x.IsSetteled && User.IsInRole("Seller"))
                                                     {
                                                         <a class="dropdown-item callform" href="javascript:void(0)"
-                                                        data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                           data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
                                                             <i class="fa fa-credit-card me-3 text-light"></i>
                                                             پرداخت
                                                         </a>
@@ -319,11 +322,11 @@
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupDrops3" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrops3" style="">
-                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" ><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
                                                     @if (User.IsInRole("Seller"))
                                                     {
                                                         <a class="dropdown-item callform" href="javascript:void(0)"
-                                                        data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
+                                                           data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = x.Id })">
                                                             <i class="fa fa-credit-card me-3 text-light"></i>
                                                             پرداخت
                                                         </a>
@@ -356,11 +359,11 @@
                     <tfoot>
                         <tr>
                             <td colspan="7" class="text-left me-2"></td>
-                            <td colspan="3" class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).ToList().Sum(b=>b.BillPrice).ToPrice() </td>
+                            <td colspan="3" class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 3).ToList().Sum(b => b.BillPrice).ToPrice() </td>
                         </tr>
                     </tfoot>
                 </table>
-               
+
             </div>
         </div>
 
@@ -400,7 +403,7 @@
                                             <div class="btn-group" role="group">
                                                 <button id="btnGroupDrops5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrops5" style="">
-                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" ><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
+                                                    <a class="dropdown-item" asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id"><i class="fa fa-eye me-3 text-light"></i> مشاهده</a>
                                                     @if (!x.IsSetteled && User.IsInRole("Seller"))
                                                     {
                                                         <a class="dropdown-item callform" href="javascript:void(0)"
@@ -559,7 +562,7 @@
                                                         </a>
                                                     }
                                                     <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
-                                                  
+
                                                 </div>
                                             </div>
                                         </div>
@@ -585,7 +588,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="10" class="text-left me-2"></td>
-                            <td  class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList().Sum(b => b.TotalWeight).ToPrice() </td>
+                            <td class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList().Sum(b => b.TotalWeight).ToPrice() </td>
                             <td colspan="2" class="text-white text-center">@Model.Bills.Items.Where(n => n.BillOfLadingStatusId == 11).ToList().Sum(b => b.BillPrice).ToPrice() </td>
                         </tr>
                     </tfoot>
@@ -690,10 +693,10 @@
                                 string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
                                 <tr>
                                     <td class="text-center text-light>@row</td>
-                                    <td class="w-150">
+                            <td class="w-150">
                                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                             <a href="javascript:void(0)" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
-                                        
+
                                         </div>
                                     </td>
                                     <td class="td-date">@x.IssuanceDate.LatinToPersian()</td>
@@ -726,9 +729,9 @@
 
 
 
- 
- 
- 
+
+
+
 
 
 

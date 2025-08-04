@@ -1,7 +1,7 @@
 ﻿
 @media print {
     @page {
-        size: 8cm 8cm;
+        size: 72mm 72mm;
         margin: 0;
     }
 
@@ -11,14 +11,16 @@
 }
 
 body {
+    width:72mm;
+    height:72mm;
     margin: 0;
     padding: 0;
     font-family: Tahoma, sans-serif;
 }
 
 .label {
-    width: 8cm;
-    height: 8cm;
+    width: 71mm;
+    height: 71mm;
     box-sizing: border-box;
     border: 2px solid #000;
     border-radius: 5px;
@@ -51,7 +53,7 @@ body {
 }
 .info-item {
     flex-grow: 1;
-    padding-block: 15px;
+    padding-block: 5px;
     border-bottom: 1px solid #000;
     width: 50%;
     max-width: 50%;

@@ -673,7 +673,7 @@ body.dark-mode {
 /* Heade Box */
 .headerbox {
     background: linear-gradient(135deg, var(--primary-dark), #287dcc);
-    padding: 25px 25px 75px;
+    padding: 25px 25px 40px;
     color: white;
     position: relative;
     overflow: hidden;

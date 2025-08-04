@@ -28,5 +28,6 @@
         public string Issuer { get; set; }
 
         public short? SimpleStatus { get; set; } = null;
+        public string? CustomerKeyword { get; set; } = null;
     }
 }

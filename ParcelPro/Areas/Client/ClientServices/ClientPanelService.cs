@@ -156,6 +156,9 @@ namespace ParcelPro.Areas.Client.ClientServices
             if (!string.IsNullOrEmpty(filter.BiilOdLadingNumber))
                 query = query.Where(n => n.WaybillNumber.Contains(filter.BiilOdLadingNumber));
 
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
+
             if (!string.IsNullOrEmpty(filter.strFromDate))
             {
                 DateTime date = filter.strFromDate.PersianToLatin();
@@ -184,6 +187,8 @@ namespace ParcelPro.Areas.Client.ClientServices
             if (filter.DestinationCityId.HasValue)
                 query = query.Where(n => n.Route.DestinationCityId == filter.DestinationCityId.Value);
 
+
+
             if (filter.SimpleStatus.HasValue)
             {
                 if (filter.SimpleStatus == 1)
@@ -202,6 +207,7 @@ namespace ParcelPro.Areas.Client.ClientServices
                 WaybillNumber = n.WaybillNumber,
                 IssuanceDate = n.IssuanceDate,
                 IssuanceTime = n.IssuanceTime,
+                CustomerKeyword = n.CustomerKeyword,
                 SenderId = n.SenderId,
                 ReceiverId = n.ReceiverId,
                 ReceiverName = n.Receiver.Name,

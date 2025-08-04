@@ -129,6 +129,7 @@ namespace ParcelPro.Areas.Courier.Models.Entities
         public Guid? DistributerBranchId { get; set; } = Guid.Empty;
         public virtual Cu_Branch? DistributerBranch { get; set; }
 
+        public string? CustomerKeyword { get; set; }
         public long partnerId { get; set; } = 0;
         // مرسوله ها
         public virtual ICollection<Cu_Consignment> Consignments { get; set; } = new List<Cu_Consignment>();

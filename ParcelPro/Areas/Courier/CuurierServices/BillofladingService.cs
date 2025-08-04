@@ -116,6 +116,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             bill.WayBillType = bill.WayBillType;
             bill.WaybillNumber = billNumber;
             bill.IssuanceDate = DateTime.Now;
+            bill.CustomerKeyword = dto.CustomerKeyword;
 
             bill.RouteId = dto.RouteId;
             bill.ServiceId = dto.ServiceId;
@@ -370,6 +371,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             billHeader.SellerId = bill.SellerId;
             billHeader.WaybillNumber = bill.WaybillNumber;
             billHeader.ReferenceCode = bill.ReferenceCode;
+            billHeader.CustomerKeyword = bill.CustomerKeyword;
             billHeader.IssuanceDate = bill.IssuanceDate;
             billHeader.RouteId = bill.RouteId;
             billHeader.OriginCity = bill.Route.OriginCity.PersianName;
@@ -539,6 +541,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 SellerId = bill.SellerId,
                 WaybillNumber = bill.WaybillNumber,
                 IssuanceDate = bill.IssuanceDate,
+                CustomerKeyword = bill.CustomerKeyword,
                 RouteId = bill.RouteId,
                 OriginCity = bill.Route.OriginCity.PersianName,
                 DestinationCity = bill.Route.DestinationCity.PersianName,
@@ -797,6 +800,11 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 hasDateFilter = true;
             }
 
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+            {
+                query = query.Where(b => b.CustomerKeyword.Contains(filter.CustomerKeyword));
+            }
+
             // شرط پیش‌فرض فقط زمانی اعمال شود که هیچ فیلتری وجود ندارد
             if (!hasDateFilter && string.IsNullOrEmpty(filter.BiilOdLadingNumber))
             {
@@ -821,6 +829,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 OriginBranchName = b.IssuingBranch.BranchName,
                 OriginCity = b.Route.OriginCity.PersianName,
                 DestinationCity = b.Route.DestinationCity.PersianName,
+                CustomerKeyword = b.CustomerKeyword,
                 ServiceName = b.Service.ServiceName,
                 SenderName = b.Sender.Name,
                 ReceiverName = b.Receiver.Name,
@@ -929,7 +938,8 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             if (!string.IsNullOrEmpty(filter.IssuerUserName))  // کاربر صادرکننده
                 query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
 
-
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
 
             if (!string.IsNullOrEmpty(filter.strFromDate))
             {
@@ -1080,6 +1090,10 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 query = query.Where(n => n.Route.DestinationCityId == filter.DestinationCityId.Value);
             if (!string.IsNullOrEmpty(filter.IssuerUserName))  // کاربر صادرکننده
                 query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
+
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
+
 
             if (!string.IsNullOrEmpty(filter.strFromDate))
             {
@@ -1244,6 +1258,9 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 query = query
                     .Where(n => n.FinancialTransactions != null ? (short)n.FinancialTransactions.Where(f => f.OperationId == 1)
                     .FirstOrDefault().SettlementTypeId == filter.SettelmentType : false);
+
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
 
             if (filter.PaymentStatus.HasValue)
             {
@@ -1532,6 +1549,10 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             if (!string.IsNullOrEmpty(filter.IssuerUserName))  // کاربر صادرکننده
                 query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
 
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
+
+
             if (!string.IsNullOrEmpty(filter.strWayBillDate))
             {
                 DateTime date = filter.strWayBillDate.PersianToLatin();
@@ -1668,6 +1689,9 @@ namespace ParcelPro.Areas.Courier.CuurierServices
 
             if (filter.BillStatus?.Length > 0)
                 query = query.Where(n => filter.BillStatus.Contains(n.BillOfLadingStatusId));
+
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
 
             if (filter.SettelmentType.HasValue)
                 query = query
@@ -1880,6 +1904,8 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 DateTime date = filter.strUntilDate.PersianToLatin();
                 query = query.Where(n => n.IssuanceDate.Date <= date.Date);
             }
+            if (!string.IsNullOrEmpty(filter.CustomerKeyword))
+                query = query.Where(n => n.CustomerKeyword.Contains(filter.CustomerKeyword));
 
             if (filter.RoutId.HasValue) // بر اساس مسیر
                 query = query.Where(n => n.RouteId == filter.RoutId);

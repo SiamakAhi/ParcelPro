@@ -12,6 +12,7 @@ namespace ParcelPro.Areas.Courier.Dto
         [Display(Name = "شماره بارنامه")]
         public string WaybillNumber { get; set; }
         public string? ReferenceCode { get; set; }
+        public string? CustomerKeyword { get; set; }
 
         [Display(Name = "تاریخ صدور")]
         [Required(ErrorMessage = "تاریخ بارنامه نامشخص است")]

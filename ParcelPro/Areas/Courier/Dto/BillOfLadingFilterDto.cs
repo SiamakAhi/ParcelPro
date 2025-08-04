@@ -15,6 +15,7 @@
         public int? BranchCityId { get; set; }
         public int? DestinationCityId { get; set; }
         public string? IssuerUserName { get; set; }
+        public string? CustomerKeyword { get; set; }
         public string? strFromDate { get; set; }
         public string? strUntilDate { get; set; }
         public string? strWayBillDate { get; set; }

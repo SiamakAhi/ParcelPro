@@ -171,10 +171,8 @@
                                                         پرداخت
                                                     </a>
                                                 }
-                                                @if (x.BillOfLadingStatusId > 1)
-                                                {
-                                                    <a class="dropdown-item" asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank"><i class="fa fa-tag me-3"></i>چاپ لیبل</a>
-                                                }
+                                               
+                                                <a class="dropdown-item" asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@x.Id" target="_blank"><i class="fa fa-tag me-3"></i>چاپ لیبل</a>
                                                 <a class="dropdown-item" asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@x.Id" target="_blank"><i class="fa fa-print me-3"></i>چاپ بارنامه</a>
                                                 <a href="#" class="dropdown-item callform" data-url="@Url.Action("CancelationBill", "Billoflading", new { Area = "Courier", billId = x.Id })"><i class="fa fa-x me-3"></i>ابطال</a>
                                                 <a href="#" class="dropdown-item callform" data-url="@Url.Action("DellBill", "Billoflading", new { Area = "Courier", id = x.Id })"><i class="fa fa-trash-alt me-3"></i>حذف</a>

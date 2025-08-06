@@ -17,10 +17,9 @@
 
 </head>
 <body>
+   
     @for (int i = 0; i < Model.Count; i++)
     {
-       
-
         var label = Model[i];
         var barcodeId = $"barcode{i}";
         var qrId = $"qrcode{i}";
@@ -28,11 +27,11 @@
             <div class="header">
                 <img src="~/img/Logos/2.png" />
                 <h2>کیهان پست</h2>
-                <div class="barcode">
+                <span class="tracking">
                     @label.WaybillNimber
-                </div>
+                </span>
                 <div class="barcode">
-                    <svg id="@barcodeId"></svg>
+                    <svg id="@barcodeId" style="width:145px;"></svg>
                 </div>
             </div>
             <div class="info">
@@ -55,8 +54,8 @@
                 <div>
                     <ul>
                         <li><span>گیرنده :</span> <strong>@label.ReciverName</strong></li>
-                        <li><span>تلفن :</span> <strong>@label.ReciverTel</strong></li>
                         <li><span>آدرس :</span> <strong>@label.ReciverAddress</strong></li>
+                        <li><span>تلفن :</span> <strong>@label.ReciverTel</strong></li>
                     </ul>
                 </div>
                 <div class="qr">
@@ -64,7 +63,7 @@
                 </div>
 
             </div>
-            <small>htts://keyhanpost.ir </small>
+            <small class="">htts://keyhanpost.ir </small>
         </div>
         if (i < Model.Count - 1)
         {
@@ -84,8 +83,8 @@
 
             new QRCode(`qrcode${index}`, {
                 text: "https://hub.keyhanpost.ir/Courier/GeneralBill/PrintBill?billOfladingId="+"@billId",
-                width: 45,
-                height: 45,
+                width:90 ,
+                height: 90,
                 correctLevel: QRCode.CorrectLevel.H
             });
         });

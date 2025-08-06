@@ -118,7 +118,7 @@
 	
   <ItemGroup>
     <Reference Include="BitPayDll">
-      <HintPath>C:\Users\Siamak Developer\Downloads\BitPayDll.dll</HintPath>
+      <HintPath>D:\BitPayDll.dll</HintPath>
     </Reference>
   </ItemGroup>
 	

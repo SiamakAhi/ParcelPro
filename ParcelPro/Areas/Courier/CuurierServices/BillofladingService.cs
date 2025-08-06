@@ -1994,14 +1994,14 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 .Include(n => n.Consignments)
                 .Include(n => n.Route).ThenInclude(n => n.OriginCity)
                 .Include(n => n.Route).ThenInclude(n => n.DestinationCity)
-                .Include(n=>n.Receiver)
+                .Include(n => n.Receiver)
                 .Where(n => n.Id == id)
                 .Select(n => new
                 {
-                    billId=n.Id,
-                    reciver=n.Receiver.Name,
-                    reciverphone=n.ReceiverPhone,
-                    reciverAddress=n.ReceiverAddress,
+                    billId = n.Id,
+                    reciver = n.Receiver.Name,
+                    reciverphone = n.ReceiverPhone,
+                    reciverAddress = n.ReceiverAddress,
                     number = n.WaybillNumber,
                     origin = n.Route.OriginCity.PersianName,
                     destination = n.Route.DestinationCity.PersianName,
@@ -2010,7 +2010,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                 }).FirstOrDefaultAsync();
 
             var billLabales = new List<WaybillLabelDto>();
-            if (data != null)
+            if (data != null && data.parcelscount > 0)
             {
                 for (int i = 1; i <= data.parcelscount; i++)
                 {
@@ -2028,6 +2028,22 @@ namespace ParcelPro.Areas.Courier.CuurierServices
                     billLabales.Add(label);
                 }
             }
+            else
+            {
+                WaybillLabelDto label = new WaybillLabelDto();
+                label.BillId = data.billId;
+                label.ReciverName = data.reciver;
+                label.ReciverAddress = data.reciverAddress;
+                label.ReciverTel = data.reciverphone;
+                label.WaybillNimber = data.number;
+                label.OriginCity = data.origin;
+                label.Destination = data.destination;
+                label.TotalCountParcel = 1;
+                label.ParcelNumber = 1;
+                label.weight = data.weight.ToString("0.##");
+                billLabales.Add(label);
+            }
+
             return billLabales;
 
         }

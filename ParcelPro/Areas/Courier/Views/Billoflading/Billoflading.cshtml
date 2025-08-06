@@ -265,32 +265,51 @@
                         <div class="row g-1">
                             <div class="col-sm-6">
                                 <a class="btn btn-secondary w-100 callform"
-                                   data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = Model.BillOfLading.bill.Id })">
+                                data-url="@Url.Action("BillCashSettelment", "Billoflading", new { Area = "Courier", billId = Model.BillOfLading.bill.Id })">
                                     پرداخت
                                 </a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-light w-100 callform"
-                                   data-url="@Url.Action("SendPayment", "Billoflading", new { area = "Courier", id = Model.BillOfLading.bill.Id, trackingCode = Model.BillOfLading.bill.WaybillNumber, reciverNumber = ReciverNum })">
+                                data-url="@Url.Action("SendPayment", "Billoflading", new { area = "Courier", id = Model.BillOfLading.bill.Id, trackingCode = Model.BillOfLading.bill.WaybillNumber, reciverNumber = ReciverNum })">
                                     ارسال لینک پرداخت
                                 </a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-light w-100"
-                                   asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
+                                asp-action="PrintBill" asp-controller="GeneralBill" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
                                     چاپ بارنامه
                                 </a>
                             </div>
                             <div class="col-sm-6">
                                 <a class="btn btn-secondary w-100"
-                                   asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
+                                asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@Model.BillOfLading.bill.Id">
                                     مشاهده بارنامه
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <a class="btn btn-secondary w-100"
+                                asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@Model.BillOfLading.bill.Id">
+                                    چاپ لیبل
                                 </a>
                             </div>
                         </div>
                     </div>
 
                 }
+            }
+            else
+            {
+                <div class="container p-2">
+                    <div class="row g-1">
+                        <div class="col-sm-6">
+                            <a class="btn btn-secondary w-100"
+                               asp-action="WaybillLabel" asp-controller="Billoflading" asp-area="Courier" asp-route-id="@Model.BillOfLading.bill.Id">
+                                چاپ لیبل
+                            </a>
+                        </div>
+                    </div>
+                </div>
             }
 
         </div>

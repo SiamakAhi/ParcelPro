@@ -11,6 +11,9 @@
 }
 
 body {
+    display:flex;
+    justify-content:center;
+    align-items:center;
     width:72mm;
     height:72mm;
     margin: 0;
@@ -27,62 +30,88 @@ body {
     box-sizing: border-box;
     border: 2px solid #000;
     border-radius: 5px;
+    margin:auto;
 }
 img {
     display: block;
     max-width: 90px;
-    margin-inline: auto;
+    margin-right:40px;
     margin-top: 2px;
 }
     .header h2 {
         padding: 0;
-        text-align: center;
-        margin:0;
-        margin-top:-5px;
+        text-align: right;
+        margin-right:35px;
+        margin-top:-12px;
     }
     .qr{
         position:absolute;
-        top:5px;
-        left:5px;
+        top:3px;
+        left:3px;
     }
 .tracking {
-    text-align: center;
+    display: block;
+    text-align: right;
     font-size: 15px;
     font-weight: bold;
-    letter-spacing: 5px;
+    letter-spacing: 7px;
     margin-bottom: 0;
+    margin-top: -18px
 }
 
 .barcode {
-    text-align: center;
+    text-align: right;
+    margin-top:-3px;
 }
+    .barcode svg {
+        width: 145px !important;
+        margin-right: 11px;
+        margin-top: -4px
+    }
 
 .info {
-    display:flex;
+    display: flex;
     font-size: 13px;
     text-align: center;
-    flex-wrap:nowrap;
+    flex-wrap: nowrap;
 }
 .info-item {
     flex-grow: 1;
-    padding-block: 5px;
-    border-bottom: 1px solid #000;
+    padding-block: 0px;
+    border-bottom: 1px dashed #000;
+    border-top: 1px dashed #000;
     width: 50%;
     max-width: 50%;
 }
     .info-item:first-child {
-        border-right: 1px solid #000;
+        border-left: 1px dashed #000;
     }
 
 .footer {
-   font-size:11px;
+   font-size:10px;
 }
     .footer ul{
+        margin:5px;
         list-style:none;
+        padding-right:0;
+            padding-top:5px;
     }
+        .footer ul li{
+            margin-bottom:3px;
+        }
+        .footer ul li > span {
+            display: inline-block;
+            width: 40px;
+            text-align: left;
+        }
 
-    small {
-        text-align: center;
-        display: block;
-    }
+        small {
+            position: absolute;
+            bottom: 1px;
+            left: 5px;
+            text-align: center;
+            display: block;
+            color:gray;
+            font-size:10px;
+        }
 

@@ -1,6 +1,8 @@
 ﻿@model List<WaybillLabelDto>
 @{
     Layout = null;
+
+    var billId = Model.FirstOrDefault()?.BillId;
 }
 <!DOCTYPE html>
 <html>
@@ -12,40 +14,55 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <link href="~/css/waybilllabelstyle.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/font.css" rel="stylesheet" />
+
 </head>
 <body>
     @for (int i = 0; i < Model.Count; i++)
     {
+       
+
         var label = Model[i];
         var barcodeId = $"barcode{i}";
         var qrId = $"qrcode{i}";
         <div class="label">
             <div class="header">
+                <img src="~/img/Logos/2.png" />
                 <h2>کیهان پست</h2>
-                <div class="tracking">@label.WaybillNimber</div>
+                <div class="barcode">
+                    @label.WaybillNimber
+                </div>
                 <div class="barcode">
                     <svg id="@barcodeId"></svg>
                 </div>
             </div>
             <div class="info">
-                <div class="info-item"> <label>مبدأ:</label> <strong>@label.OriginCity</strong></div>
-                <div class="info-item"> <label>مقصد:</label> <strong>@label.Destination</strong></div>
-            </div>
-            <div class="footer">
-                <div class="footer-item">
-                   <div>
-                        <label>تعداد </label><br />
-                        <strong> @label.ParcelNumber / @label.TotalCountParcel</strong>
-                   </div>
+                <div class="info-item">
+                    <div class=""> <label>مبدأ:</label> <strong>@label.OriginCity</strong></div>
+                    <div class=""> <label>مقصد:</label> <strong>@label.Destination</strong></div>
+                </div>
+                <div class="info-item">
                     <div>
-                        <label>وزن </label><br />
+                        <label class="me-1">تعداد </label>
+                        <strong> @label.ParcelNumber / @label.TotalCountParcel</strong>
+                    </div>
+                    <div>
+                        <label class="me-1">وزن </label>
                         <strong> @label.weight Kg </strong>
                     </div>
                 </div>
-                <div class="qr footer-item">
+            </div>
+            <div class="footer">
+                <div>
+                    <ul>
+                        <li><span>گیرنده :</span> <strong>@label.ReciverName</strong></li>
+                        <li><span>تلفن :</span> <strong>@label.ReciverTel</strong></li>
+                        <li><span>آدرس :</span> <strong>@label.ReciverAddress</strong></li>
+                    </ul>
+                </div>
+                <div class="qr">
                     <div id="@qrId"></div>
                 </div>
-              
+
             </div>
             <small>htts://keyhanpost.ir </small>
         </div>
@@ -61,14 +78,14 @@
             JsBarcode(`#barcode${index}`, item.WaybillNimber, {
                 format: "CODE128",
                 displayValue: false,
-                height: 40,
+                height: 25,
                 margin: 0
             });
 
             new QRCode(`qrcode${index}`, {
-                text: "https://keyhanpost.ir",
-                width: 80,
-                height: 80,
+                text: "https://hub.keyhanpost.ir/Courier/GeneralBill/PrintBill?billOfladingId="+"@billId",
+                width: 45,
+                height: 45,
                 correctLevel: QRCode.CorrectLevel.H
             });
         });

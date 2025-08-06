@@ -16,25 +16,38 @@ body {
     margin: 0;
     padding: 0;
     font-family: Tahoma, sans-serif;
+    direction:rtl;
+    text-align:right;
 }
 
 .label {
+    position:relative;
     width: 71mm;
     height: 71mm;
     box-sizing: border-box;
     border: 2px solid #000;
     border-radius: 5px;
 }
-
+img {
+    display: block;
+    max-width: 90px;
+    margin-inline: auto;
+    margin-top: 2px;
+}
     .header h2 {
         padding: 0;
         text-align: center;
-        margin: 5px 0;
+        margin:0;
+        margin-top:-5px;
     }
-
+    .qr{
+        position:absolute;
+        top:5px;
+        left:5px;
+    }
 .tracking {
     text-align: center;
-    font-size: 22px;
+    font-size: 15px;
     font-weight: bold;
     letter-spacing: 5px;
     margin-bottom: 0;
@@ -42,7 +55,6 @@ body {
 
 .barcode {
     text-align: center;
-    border-bottom: 1px solid #000;
 }
 
 .info {
@@ -63,32 +75,14 @@ body {
     }
 
 .footer {
-    display: flex;
-    flex-direction:row-reverse;
-    justify-content:center;
+   font-size:11px;
 }
-.footer-item {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 13px;
-    padding-top: 10px;
-    max-width: 50%;
-}
-    .footer-item > div {
-        display: flex;
-        justify-content: space-around;
-        direction: rtl;
+    .footer ul{
+        list-style:none;
     }
-        
-        .footer-item > div > label, .footer-item > div > strong {
-            padding: 5px
-        }
-        .footer-item:first-child {
-            border-left: 1px solid #000;
-        }
 
-    small{
-        text-align:center;
-        display:block;
+    small {
+        text-align: center;
+        display: block;
     }
 

@@ -30,7 +30,7 @@ namespace ParcelPro.Areas.Treasury.TreasuryServices
         public string GenerateTrackingLink(Guid billId)
         {
 
-            string trackingLink = $"https://hub.keyhanpost.ir/Courier/Billoflading/Bill?billOfladingId={billId}";
+            string trackingLink = $"https://hubkeyhanpost.ir/Courier/Billoflading/Bill?billOfladingId={billId}";
             return trackingLink;
         }
 

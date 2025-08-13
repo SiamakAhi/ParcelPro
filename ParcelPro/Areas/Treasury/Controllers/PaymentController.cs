@@ -39,7 +39,8 @@ namespace ParcelPro.Areas.Treasury.Controllers
                 string url = Request.Headers["Referer"].ToString();
                 Response.Redirect(url);
             }
-            string Redirect = @"https://hub.keyhanpost.ir" + Url.Action("PaymentCallback", "Payment", new { Area = "Treasury" });
+            string Redirect = @"https://hubkeyhanpost.ir" + Url.Action("PaymentCallback", "Payment", new { Area = "Treasury" });
+            //string Redirect = @"https://hub.keyhanpost.ir" + Url.Action("PaymentCallback", "Payment", new { Area = "Treasury" });
             //string Redirect = @"https://localhost:44353" + Url.Action("PaymentCallback", "Payment", new { Area = "Treasury" });
 
             string result = _bitpay.SendPayment(amount.ToString(), FactorId, Redirect, Name, Email, Description);
@@ -107,7 +108,7 @@ namespace ParcelPro.Areas.Treasury.Controllers
 
             if (model.OperationId == 601)
             {
-                string payLink = "https://hub.keyhanpost.ir" + Url.Action("RequestPayment", "Payment", new { Area = "Treasury", Amount = model.DebitAmount.ToString(), FactorId = model.BillNumber, Name = "", Email = "", Description = "" });
+                string payLink = "https://hubkeyhanpost.ir" + Url.Action("RequestPayment", "Payment", new { Area = "Treasury", Amount = model.DebitAmount.ToString(), FactorId = model.BillNumber, Name = "", Email = "", Description = "" });
 
                 result = await _moneyTransactionService.SendPaymentLinkAsync(model, payLink);
                 if (result.Success)

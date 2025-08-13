@@ -119,7 +119,9 @@ namespace ParcelPro.Areas.Accounting.AccountingServices
 
         public async Task<List<ReperesentativeSalaryDto>> ReperesentativeSalaryAsync(RepresentativeSalaryFilterDto filter)
         {
-            var query = _db.Cu_BillOfLadings.AsNoTracking().Include(n => n.BillCosts).Include(n => n.DistributerBranch)
+            var query = _db.Cu_BillOfLadings.AsNoTracking()
+                .Include(n => n.BillCosts).Include(n => n.DistributerBranch)
+                .Include(n => n.FinancialTransactions).ThenInclude(n => n.MoneyTransactions)
                 .Where(n => n.SellerId == filter.SellerId && n.BillOfLadingStatusId > 1).AsQueryable();
 
             if (filter.BranchId != null)
@@ -138,19 +140,47 @@ namespace ParcelPro.Areas.Accounting.AccountingServices
             if (filter.JustDelivered)
                 query = query.Where(n => n.BillOfLadingStatusId == 11);
 
-            var data = await query.Select(n => new ReperesentativeSalaryDto
+            List<ReperesentativeSalaryDto> salaryList = new List<ReperesentativeSalaryDto>();
+            var data = await query.ToListAsync();
+
+            foreach (var n in data)
             {
-                BillId = n.Id,
-                BranchId = n.DistributerBranchId ?? null,
-                BranchName = n.DistributerBranch.BranchName ?? "مشخص نشده",
-                BillNumber = n.WaybillNumber,
-                BillDate = n.IssuanceDate,
-                BillAmount = n.BillOfLadingStatusId <= 11 ? n.BillCosts.Where(x => x.CostTypeId == 1).Sum(x => x.Amount) : 0,
-                DestributionRate = n.DistributerBranch.DistShare ?? 0,
+                ReperesentativeSalaryDto bill = new ReperesentativeSalaryDto();
+                bill.BillId = n.Id;
+                bill.BranchId = n.DistributerBranchId ?? null;
+                bill.BranchName = n.DistributerBranch.BranchName ?? "مشخص نشده";
+                bill.BillNumber = n.WaybillNumber;
+                bill.BillDate = n.IssuanceDate;
+                bill.BillAmount = n.BillOfLadingStatusId <= 11 ? n.BillCosts.Where(x => x.CostTypeId == 1).Sum(x => x.Amount) : 0;
+                bill.DestributionRate = n.DistributerBranch.DistShare ?? 0;
 
-            }).ToListAsync();
+                if (n.FinancialTransactions != null && n.FinancialTransactions.Any())
+                {
+                    var fc = n.FinancialTransactions.Where(s => s.OperationId == 1).FirstOrDefault();
+                    bill.SettelmentTypeId = fc.SettlementTypeId;
 
-            return data;
+                    if (fc.SettlementTypeId == 2)
+                    {
+                        if (fc.MoneyTransactions == null)
+                        {
+                            bill.RepDebit = fc.Amount;
+                        }
+                        else if (fc.MoneyTransactions != null)
+                        {
+                            long electronicPayed = fc.MoneyTransactions.Where(s => s.OperationId == 6).Sum(x => x.CreditAmount);
+                            bill.RepDebit = fc.Amount - electronicPayed;
+                        }
+                    }
+                }
+                else
+                {
+                    bill.RepDebit = 0;
+                }
+                salaryList.Add(bill);
+            }
+
+
+            return salaryList;
         }
 
     }

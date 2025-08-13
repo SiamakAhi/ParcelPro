@@ -31,6 +31,37 @@
                 </div>
             </form>
         </div>
+        <div class="row cards-info alert-secondary mb-2">
+            <div class="col-md-3 grid">
+                <div class="card-info">
+                    <p>تعداد بارنامه ها</p>
+                    <h5> @Model.ReposrtDetails?.Count() </h5>
+                    <small>بارنامه</small>
+                </div>
+            </div>
+            <div class="col-md-3 grid">
+                <div class="card-info">
+                    <p>سهم نماینده از توزیع بارنامه ها</p>
+                    <h5> @Model.ReposrtDetails?.Sum(n => n.DestributionShareAmount).ToPrice() </h5>
+                    <small>ريال</small>
+                </div>
+            </div>
+            <div class="col-md-3 grid">
+                <div class="card-info">
+                    <p>مبالغ دریافتی از پسکرایه</p>
+                    <h5>  @Model.ReposrtDetails?.Sum(n => n.RepDebit).ToPrice()</h5>
+                    <small>ريال</small>
+                </div>
+            </div>
+
+            <div class="col-md-3 grid">
+                <div class="card-info">
+                    <p>مبلغ بدهکاری / بستانکاری نماینده</p>
+                    <h5> @Model.ReposrtDetails?.Sum(n => n.DebBalance).ToPrice() </h5>
+                    <small>ريال</small>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="card-body">
@@ -40,12 +71,15 @@
                     <tr>
                         <th>ردیف</th>
                         <th></th>
-                        <th>نماینده</th>
                         <th>شماره بارنامه</th>
                         <th>تاریخ بارنامه</th>
                         <th>مبلغ بارنامه</th>
                         <th>درصد نماینده</th>
-                        <th>شهم نماینده</th>
+                        <th>سهم نماینده</th>
+                        <th>نوع تسویه</th>
+                        <th style="width:120px;">بدهی دریافت پسکرایه</th>
+                        <th>بد/بس نماینده</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -62,7 +96,7 @@
                                             ...
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                                          @*   <a class="dropdown-item"
+                                            @*   <a class="dropdown-item"
                                                asp-route-id=""
                                                asp-action="thePartyBills"
                                                asp-controller="AccSaleManagement"
@@ -73,12 +107,15 @@
 
                                     </div>
                                 </td>
-                                <td>@x.BranchName</td>
+                                @*  <td>@x.BranchName</td> *@
                                 <td>@x.BillNumber</td>
                                 <td>@x.BillDate.LatinToPersian()</td>
                                 <td>@x.BillAmount.ToPrice()</td>
                                 <td>@x.DestributionRate.ToString("0.#")</td>
                                 <td>@x.DestributionShareAmount.ToPrice()</td>
+                                <td>@x.SettelmentTypeName</td>
+                                <td style="width:120px;">@x.RepDebit.ToPrice()</td>
+                                <td>@x.DebBalance.ToPrice()</td>
                             </tr>
                             rowNo++;
                         }
@@ -86,15 +123,17 @@
                 </tbody>
                 <tfoot>
                     <tr lass="table-secondary">
-                        <td colspan="8"></td>
-                        <td class="text-center"><strong>@Model.Reposrt?.Sum(n => n.BranchShareAmount).ToPrice()</strong></td>
+                        <td colspan="6"></td>
+                        <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.DestributionShareAmount).ToPrice()</strong></td>
+                        <td></td>
+                        <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.RepDebit).ToPrice()</strong></td>
+                        <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.DebBalance).ToPrice()</strong></td>
                     </tr>
                 </tfoot>
             </table>
 
         </div>
         <div class="card-footer alert-secondary">
-           
         </div>
     </div>
 </div>

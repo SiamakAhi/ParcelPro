@@ -3575,3 +3575,34 @@ td > .btn-group > button {
     border-color:#33ad71 !important;
 }
 
+.cards-info .grid{
+    padding-block:20px;
+}
+    .cards-info .card-info {
+        padding:10px;
+        text-align:center;
+        border-right:3px solid #f79009;
+    }
+.cards-info .grid:first-child .card-info {
+    border-right: none;
+}
+        .cards-info .card-info p {
+            margin: 0;
+        }
+        .cards-info .card-info h5 {
+            margin: 0;
+            direction:ltr;
+            margin-bottom:-5px;
+        }
+
+        .card{
+            overflow:hidden;
+        }
+
+.cards-info .card-info small{
+    font-size:13px;
+    display:inline-block;
+    color:#201e50;
+    margin-top:-15px;
+}
+

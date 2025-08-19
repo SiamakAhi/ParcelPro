@@ -135,6 +135,11 @@ namespace ParcelPro.Areas.Courier.Controllers
                 return Json(result.ToJsonResult());
             }
             //----
+            if (dto.SettelmentType == 0)
+            {
+                result.Message = "نوع تسویه حساب بارنامه را مشحص کنید";
+                return Json(result.ToJsonResult());
+            }
             if (dto.SettelmentType == 3 && dto.PartyId == 0)
             {
                 result.Message = "اگر بارنامه اعتباری است، باید طرف حساب را مشخص کنید";

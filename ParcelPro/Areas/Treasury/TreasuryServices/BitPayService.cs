@@ -8,6 +8,7 @@ namespace ParcelPro.Areas.Treasury.TreasuryServices
         {
             BitPay bitpay = new BitPay();
             string url = "https://bitpay.ir/payment/gateway-send";
+
             string api = "fe41e-9df61-908ef-2e9dc-9b7ba7e0bc328dc169c3cee17b93";
             //Test Api
             // string api = "adxcv-zzadq-polkjsad-opp13opoz-1sdf455aadzmck1244567";
@@ -32,7 +33,7 @@ namespace ParcelPro.Areas.Treasury.TreasuryServices
             int result = bitpay.Get(url, api, transId, idGet);
 
             return result;
-           
+
         }
     }
 }

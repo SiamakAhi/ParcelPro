@@ -291,117 +291,259 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             return lst;
 
         }
+        //public IQueryable<AccBillViewModel> GetBillsFinanceAsQuery(AccSalesFilterDto filter)
+        //{
+
+        //    var query = _db.Cu_BillOfLadings.AsNoTracking()
+
+        //        .Include(n => n.IssuingBranch)
+        //        .Include(n => n.BillOfLadingStatus)
+        //        .Include(n => n.BillCosts).ThenInclude(n => n.CostType)
+        //        .Include(n => n.FinancialTransactions).ThenInclude(n => n.MoneyTransactions)
+        //         .Include(n => n.FinancialTransactions).ThenInclude(n => n.Party)
+        //         .Include(n => n.TreTransactions)
+        //         .Include(n => n.Route).ThenInclude(n => n.OriginCity)
+        //         .Include(n => n.Route).ThenInclude(n => n.DestinationCity)
+        //         .Include(n => n.Sender)
+        //         .Include(n => n.Receiver)
+        //        .Where(n => n.SellerId == filter.SellerId && !n.IsDeleted && n.FinancialTransactions.Any())
+        //        .AsQueryable();
+
+        //    if (!string.IsNullOrEmpty(filter.BiilOdLadingNumber)) // فیلتر بر اساس بحشی از شماره بارنامه
+        //        query = query.Where(n => n.WaybillNumber.Contains(filter.BiilOdLadingNumber));
+        //    if (filter.OriginBranchId.HasValue)  // بر اساس شعبه صادرکننده
+        //        query = query.Where(n => n.OriginBranchId == filter.OriginBranchId);
+        //    if (!string.IsNullOrEmpty(filter.IssuerUserName))  // کاربر صادرکننده
+        //        query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
+
+
+        //    if (!string.IsNullOrEmpty(filter.strFromDate))
+        //    {
+        //        DateTime date = filter.strFromDate.PersianToLatin();
+        //        query = query.Where(n => n.IssuanceDate.Date >= date.Date);
+        //    }
+        //    else if (string.IsNullOrEmpty(filter.strFromDate) && string.IsNullOrEmpty(filter.BiilOdLadingNumber) && !filter.PartyId.HasValue)
+        //    {
+        //        query = query.Where(n => n.BillOfLadingStatusId < 11 || (!n.FinancialTransactions.Where(f => f.OperationId == 1).FirstOrDefault().IsSettled && n.FinancialTransactions.Where(f => f.OperationId == 1).FirstOrDefault().SettlementTypeId != 3));
+        //    }
+        //    if (!string.IsNullOrEmpty(filter.strUntilDate))
+        //    {
+        //        DateTime date = filter.strUntilDate.PersianToLatin();
+        //        query = query.Where(n => n.IssuanceDate.Date <= date.Date);
+        //    }
+
+
+        //    if (filter.BillStatus?.Length > 0)
+        //        query = query.Where(n => filter.BillStatus.Contains(n.BillOfLadingStatusId));
+
+        //    if (filter.PaymentStatus.HasValue)
+        //    {
+        //        bool IsPayed = filter.PaymentStatus.Value == 1 ? true : false;
+        //        query = query
+        //           .Where(n => n.FinancialTransactions != null ? n.FinancialTransactions.Where(f => f.OperationId == 1)
+        //           .FirstOrDefault().IsSettled == IsPayed : false);
+        //    }
+        //    if (filter.PartyId.HasValue)
+        //        query = query.Where(n => n.FinancialTransactions.FirstOrDefault(x => x.OperationId == 1).AccountPartyId == filter.PartyId.Value);
+
+        //    if (filter.SettelmentType.HasValue)
+        //        query = query.Where(n => n.FinancialTransactions.FirstOrDefault(x => x.OperationId == 1).SettlementTypeId == filter.SettelmentType.Value);
+
+        //    if (!string.IsNullOrEmpty(filter.Issuer))
+        //        query = query.Where(n => n.CreatedBy == filter.Issuer);
+
+        //    if (filter.OriginCityId.HasValue)
+        //        query = query.Where(n => n.Route.OriginCityId == filter.OriginCityId);
+
+        //    if (filter.DestinationCityId.HasValue)
+        //        query = query.Where(n => n.Route.DestinationCityId == filter.DestinationCityId);
+
+        //    if (filter.PersonId.HasValue)
+        //    {
+        //        if (filter.personSearchtype == 1)
+        //        {
+        //            query = query.Where(n => n.SenderId == filter.PersonId.Value || n.ReceiverId == filter.PersonId.Value);
+        //        }
+        //        else if (filter.personSearchtype == 2)
+        //        {
+        //            query = query.Where(n => n.ReceiverId == filter.PersonId.Value);
+        //        }
+        //        else if (filter.personSearchtype == 3)
+        //        {
+        //            query = query.Where(n => n.SenderId == filter.PersonId.Value);
+        //        }
+        //    }
+
+        //    var result = query.Select(n => new AccBillViewModel
+        //    {
+        //        Id = n.Id,
+        //        Number = n.WaybillNumber,
+        //        Date = n.IssuanceDate,
+        //        IssuerBranchId = n.OriginBranchId,
+        //        IssuerBranch = n.IssuingBranch.BranchName,
+        //        IssuerUserName = n.CreatedBy,
+        //        PartyId = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().AccountPartyId,
+        //        PartyName = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().Party.Name,
+        //        SettelmentTypeId = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().SettlementTypeId,
+        //        BasePrice = n.BillCosts.Where(n => n.CostType.CostCode == "101").Sum(n => n.Amount),
+        //        TotalCost = n.BillCosts.Where(n => n.CostType.CostCode != "101" && n.CostType.CostCode != "105").Sum(n => n.Amount),
+        //        VatPrice = n.BillCosts.Where(n => n.CostType.CostCode == "105").Sum(n => n.Amount),
+        //        TotalDiscount = n.Consignments.Sum(d => d.Discount),
+        //        Payed = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().MoneyTransactions.Where(x => !x.IsDeleted).Sum(x => x.CreditAmount),
+        //        DestinationCityId = n.Route.DestinationCityId,
+        //        DestinationCityName = n.Route.DestinationCity.PersianName,
+        //        OriginCityId = n.Route.OriginCityId,
+        //        OriginCityName = n.Route.OriginCity.PersianName,
+
+        //        SenderId = n.SenderId,
+        //        SenderName = n.Sender.Name,
+        //        ReciverId = n.ReceiverId,
+        //        ReciverName = n.Receiver.Name,
+        //        statusId = n.BillOfLadingStatusId,
+
+        //    }).AsQueryable();
+
+        //    return result;
+        //}
+
         public IQueryable<AccBillViewModel> GetBillsFinanceAsQuery(AccSalesFilterDto filter)
         {
-
             var query = _db.Cu_BillOfLadings.AsNoTracking()
+                .Where(n =>
+                n.SellerId == filter.SellerId
+                && !n.IsDeleted && n.FinancialTransactions.Any()
+                ).AsQueryable();
 
-                .Include(n => n.IssuingBranch)
-                .Include(n => n.BillOfLadingStatus)
-                .Include(n => n.BillCosts).ThenInclude(n => n.CostType)
-                .Include(n => n.FinancialTransactions).ThenInclude(n => n.MoneyTransactions)
-                 .Include(n => n.FinancialTransactions).ThenInclude(n => n.Party)
-                 .Include(n => n.TreTransactions)
-                 .Include(n => n.Route).ThenInclude(n => n.OriginCity)
-                 .Include(n => n.Route).ThenInclude(n => n.DestinationCity)
-                 .Include(n => n.Sender)
-                 .Include(n => n.Receiver)
-                .Where(n => n.SellerId == filter.SellerId && !n.IsDeleted && n.FinancialTransactions.Any())
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(filter.BiilOdLadingNumber)) // فیلتر بر اساس بحشی از شماره بارنامه
+            // اعمال فیلترها
+            if (!string.IsNullOrEmpty(filter.BiilOdLadingNumber))
                 query = query.Where(n => n.WaybillNumber.Contains(filter.BiilOdLadingNumber));
-            if (filter.OriginBranchId.HasValue)  // بر اساس شعبه صادرکننده
-                query = query.Where(n => n.OriginBranchId == filter.OriginBranchId);
-            if (!string.IsNullOrEmpty(filter.IssuerUserName))  // کاربر صادرکننده
-                query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
 
+            if (filter.OriginBranchId.HasValue)
+                query = query.Where(n => n.OriginBranchId == filter.OriginBranchId);
+
+            if (!string.IsNullOrEmpty(filter.IssuerUserName))
+                query = query.Where(n => n.CreatedBy == filter.IssuerUserName);
 
             if (!string.IsNullOrEmpty(filter.strFromDate))
             {
                 DateTime date = filter.strFromDate.PersianToLatin();
                 query = query.Where(n => n.IssuanceDate.Date >= date.Date);
             }
-            else if (string.IsNullOrEmpty(filter.strFromDate) && string.IsNullOrEmpty(filter.BiilOdLadingNumber) && !filter.PartyId.HasValue)
+            else if (string.IsNullOrEmpty(filter.strFromDate) &&
+                     string.IsNullOrEmpty(filter.BiilOdLadingNumber) &&
+                     !filter.PartyId.HasValue)
             {
-                query = query.Where(n => n.BillOfLadingStatusId < 11 || (!n.FinancialTransactions.Where(f => f.OperationId == 1).FirstOrDefault().IsSettled && n.FinancialTransactions.Where(f => f.OperationId == 1).FirstOrDefault().SettlementTypeId != 3));
+                query = query.Where(n => n.BillOfLadingStatusId < 11 ||
+                    n.FinancialTransactions.Any(f => f.OperationId == 1 &&
+                        !f.IsSettled &&
+                        f.SettlementTypeId != 3));
             }
+
             if (!string.IsNullOrEmpty(filter.strUntilDate))
             {
                 DateTime date = filter.strUntilDate.PersianToLatin();
                 query = query.Where(n => n.IssuanceDate.Date <= date.Date);
             }
 
-
             if (filter.BillStatus?.Length > 0)
                 query = query.Where(n => filter.BillStatus.Contains(n.BillOfLadingStatusId));
 
             if (filter.PaymentStatus.HasValue)
             {
-                bool IsPayed = filter.PaymentStatus.Value == 1 ? true : false;
-                query = query
-                   .Where(n => n.FinancialTransactions != null ? n.FinancialTransactions.Where(f => f.OperationId == 1)
-                   .FirstOrDefault().IsSettled == IsPayed : false);
+                bool isPayed = filter.PaymentStatus.Value == 1;
+                query = query.Where(n => n.FinancialTransactions
+                    .Any(f => f.OperationId == 1 && f.IsSettled == isPayed));
             }
+
             if (filter.PartyId.HasValue)
-                query = query.Where(n => n.FinancialTransactions.FirstOrDefault(x => x.OperationId == 1).AccountPartyId == filter.PartyId.Value);
+                query = query.Where(n => n.FinancialTransactions
+                    .Any(f => f.OperationId == 1 && f.AccountPartyId == filter.PartyId.Value));
 
             if (filter.SettelmentType.HasValue)
-                query = query.Where(n => n.FinancialTransactions.FirstOrDefault(x => x.OperationId == 1).SettlementTypeId == filter.SettelmentType.Value);
+                query = query.Where(n => n.FinancialTransactions
+                    .Any(f => f.OperationId == 1 && f.SettlementTypeId == filter.SettelmentType.Value));
 
             if (!string.IsNullOrEmpty(filter.Issuer))
                 query = query.Where(n => n.CreatedBy == filter.Issuer);
 
             if (filter.OriginCityId.HasValue)
-                query = query.Where(n => n.Route.OriginCityId == filter.OriginCityId);
+                query = query.Where(n => n.Route != null && n.Route.OriginCityId == filter.OriginCityId);
 
             if (filter.DestinationCityId.HasValue)
-                query = query.Where(n => n.Route.DestinationCityId == filter.DestinationCityId);
+                query = query.Where(n => n.Route != null && n.Route.DestinationCityId == filter.DestinationCityId);
 
             if (filter.PersonId.HasValue)
             {
-                if (filter.personSearchtype == 1)
+                switch (filter.personSearchtype)
                 {
-                    query = query.Where(n => n.SenderId == filter.PersonId.Value || n.ReceiverId == filter.PersonId.Value);
-                }
-                else if (filter.personSearchtype == 2)
-                {
-                    query = query.Where(n => n.ReceiverId == filter.PersonId.Value);
-                }
-                else if (filter.personSearchtype == 3)
-                {
-                    query = query.Where(n => n.SenderId == filter.PersonId.Value);
+                    case 1:
+                        query = query.Where(n => n.SenderId == filter.PersonId.Value || n.ReceiverId == filter.PersonId.Value);
+                        break;
+                    case 2:
+                        query = query.Where(n => n.ReceiverId == filter.PersonId.Value);
+                        break;
+                    case 3:
+                        query = query.Where(n => n.SenderId == filter.PersonId.Value);
+                        break;
                 }
             }
 
+            // پروجکشن نهایی با بررسی null
             var result = query.Select(n => new AccBillViewModel
             {
                 Id = n.Id,
-                Number = n.WaybillNumber,
+                BillId = n.Id,
                 Date = n.IssuanceDate,
+                PerianDate = n.IssuanceDate.LatinToPersian(), // نیاز به پیاده سازی این متد دارید
+                Number = n.WaybillNumber,
                 IssuerBranchId = n.OriginBranchId,
-                IssuerBranch = n.IssuingBranch.BranchName,
+                IssuerBranch = n.IssuingBranch != null ? n.IssuingBranch.BranchName : "",
                 IssuerUserName = n.CreatedBy,
-                PartyId = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().AccountPartyId,
-                PartyName = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().Party.Name,
-                SettelmentTypeId = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().SettlementTypeId,
-                BasePrice = n.BillCosts.Where(n => n.CostType.CostCode == "101").Sum(n => n.Amount),
-                TotalCost = n.BillCosts.Where(n => n.CostType.CostCode != "101" && n.CostType.CostCode != "105").Sum(n => n.Amount),
-                VatPrice = n.BillCosts.Where(n => n.CostType.CostCode == "105").Sum(n => n.Amount),
-                TotalDiscount = n.Consignments.Sum(d => d.Discount),
-                Payed = n.FinancialTransactions.Where(z => z.OperationId == 1).FirstOrDefault().MoneyTransactions.Where(x => !x.IsDeleted).Sum(x => x.CreditAmount),
-                DestinationCityId = n.Route.DestinationCityId,
-                DestinationCityName = n.Route.DestinationCity.PersianName,
-                OriginCityId = n.Route.OriginCityId,
-                OriginCityName = n.Route.OriginCity.PersianName,
-
+                DestinationCityId = n.Route != null ? n.Route.DestinationCityId : 0,
+                DestinationCityName = n.Route != null && n.Route.DestinationCity != null ?
+                    n.Route.DestinationCity.PersianName : "",
+                OriginCityId = n.Route != null ? n.Route.OriginCityId : null,
+                OriginCityName = n.Route != null && n.Route.OriginCity != null ?
+                    n.Route.OriginCity.PersianName : "",
                 SenderId = n.SenderId,
-                SenderName = n.Sender.Name,
+                SenderName = n.Sender != null ? n.Sender.Name : "",
                 ReciverId = n.ReceiverId,
-                ReciverName = n.Receiver.Name,
+                ReciverName = n.Receiver != null ? n.Receiver.Name : "",
                 statusId = n.BillOfLadingStatusId,
 
-            }).AsQueryable();
+                // اطلاعات مالی با بررسی null
+                PartyId = n.FinancialTransactions != null ? n.FinancialTransactions
+                    .Where(f => f.OperationId == 1)
+                    .Select(f => f.AccountPartyId)
+                    .FirstOrDefault() : 0,
+                PartyName = n.FinancialTransactions != null ? n.FinancialTransactions
+                    .Where(f => f.OperationId == 1 && f.Party != null)
+                    .Select(f => f.Party.Name)
+                    .FirstOrDefault() : "",
+                SettelmentTypeId = n.FinancialTransactions != null ? n.FinancialTransactions
+                    .Where(f => f.OperationId == 1)
+                    .Select(f => f.SettlementTypeId)
+                    .FirstOrDefault() : 0,
+                SettelmentTypeName = "", // باید از منبع مناسب پر شود
+                BasePrice = n.BillCosts
+                    .Where(c => c.CostType != null && c.CostType.CostCode == "101")
+                    .Sum(c => c.Amount),
+                TotalCost = n.BillCosts
+                    .Where(c => c.CostType != null &&
+                               c.CostType.CostCode != "101" &&
+                               c.CostType.CostCode != "105")
+                    .Sum(c => c.Amount),
+                VatPrice = n.BillCosts
+                    .Where(c => c.CostType != null && c.CostType.CostCode == "105")
+                    .Sum(c => c.Amount),
+                TotalDiscount = n.Consignments.Sum(d => d.Discount),
+                Payed = n.FinancialTransactions
+                    .Where(f => f.OperationId == 1)
+                    .SelectMany(f => f.MoneyTransactions)
+                    .Where(m => !m.IsDeleted)
+                    .Sum(m => m.CreditAmount),
+                PartPartyType = null // باید از منبع مناسب پر شود
+            });
 
             return result;
         }

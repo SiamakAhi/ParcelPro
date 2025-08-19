@@ -3,9 +3,16 @@
     ViewData["Title"] = "امور مالی فروش";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    string totalPrice = Model.BillsPagin.Items.ToList().Sum(n => n.FinalPrice).ToPrice();
-    string Payed = Model.BillsPagin.Items.ToList().Sum(n => n.Payed).ToPrice();
-    string Balance = Model.BillsPagin.Items.ToList().Where(n => n.statusId != 15).Sum(n => n.Balance).ToPrice();
+    string totalPrice = "0";
+    string Payed = "0";
+    string Balance = "0";
+
+    if (Model.BillsPagin.Items != null && Model.BillsPagin.Items.Any())
+    {
+         totalPrice = Model.BillsPagin.Items.ToList().Sum(n => n.FinalPrice).ToPrice();
+          Payed = Model.BillsPagin.Items.ToList().Sum(n => n.Payed).ToPrice();
+         Balance = Model.BillsPagin.Items.ToList().Where(n => n.statusId != 15).Sum(n => n.Balance).ToPrice();
+    }
 }
 
 
@@ -216,7 +223,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.BillsPagin.Items.Count() > 0)
+                    @if (Model.BillsPagin.Items!=null && Model.BillsPagin.Items.Count() > 0)
                     {
                         int rowNo = 1;
 
@@ -242,7 +249,7 @@
                                                     <i class="fa fa  fa-exchange me-3"></i>تغییر روش تسویه
                                                 </a>
                                             }
-                                            <a href="javascript:void(0)" class="dropdown-item callform" data-url="@Url.Action("ChangeBillParty", "AccSaleManagement", new { Area = "Accounting",billnumber=x.Number, Id = x.Id, sender = x.SenderName, reciver = x.ReciverName, party = x.PartyName, price = x.FinalPrice })">
+                                            <a href="javascript:void(0)" class="dropdown-item callform" data-url="@Url.Action("ChangeBillParty", "AccSaleManagement", new { Area = "Accounting", billnumber = x.Number, Id = x.Id, sender = x.SenderName, reciver = x.ReciverName, party = x.PartyName, price = x.FinalPrice })">
                                                 <i class="fa fa  fa-exchange me-3"></i>تغییر طرف حساب
                                             </a>
                                         </div>
@@ -273,21 +280,7 @@
                         }
                     }
                 </tbody>
-                @*  <tfoot>
-                    <tr>
-                        <td colspan="6" class="text-center"> جمع :</td>
-                        <td>
-                            <strong>@Model.Bills.Sum(n => n.BasePrice).ToPrice()</strong>
-                         </td>
-                        <td><strong>@Model.Bills.Sum(n => n.TotalCost).ToPrice()</strong></td>
-                        <td><strong>@Model.Bills.Sum(n => n.TotalDiscount).ToPrice()</strong></td>
-                        <td><strong>@Model.Bills.Sum(n => n.VatPrice).ToPrice()</strong></td>
-                        <td><strong>@Model.Bills.Sum(n => n.FinalPrice).ToPrice()</strong></td>
-                        <td><strong>@Model.Bills.Sum(n => n.Payed).ToPrice()</strong></td>
-                        <td><strong>@Model.Bills.Sum(n => n.Balance).ToPrice()</strong></td>
-                        <td colspan="2"></td>
-                    </tr>
-                </tfoot> *@
+              
             </table>
 
         </div>

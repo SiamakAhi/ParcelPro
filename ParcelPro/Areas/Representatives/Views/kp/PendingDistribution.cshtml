@@ -121,24 +121,24 @@
         {
             <a class="status" asp-action="IssuingWaybills" asp-controller="kp" asp-area="Representatives">
                 <span>بارنامه های درحال صدور</span>
-               @*  <span class="status-badg">@Model.OverView.IssuingWaybillsCount</span> *@
+                @*  <span class="status-badg">@Model.OverView.IssuingWaybillsCount</span> *@
             </a>
             <a class="status" asp-action="AwaitingCollectionWaybills" asp-controller="kp" asp-area="Representatives">
                 <span>در انتظار جمع آوری</span>
-              @*   <span class="status-badg">@Model.OverView.AwaitingCollectionWaybillsCount</span> *@
+                @*   <span class="status-badg">@Model.OverView.AwaitingCollectionWaybillsCount</span> *@
             </a>
 
         }
         <a class="status current" href="javascript:void(0);">
             <span>وارده توزیع نشده</span>
-          @*   <span class="status-badg">@Model.OverView.ReadyForDistributionWaybillsCount</span> *@
+            @*   <span class="status-badg">@Model.OverView.ReadyForDistributionWaybillsCount</span> *@
         </a>
         <a class="status" asp-action="NoSetteledBills" asp-controller="kp" asp-area="Representatives">
             <span> تسویه نشده</span>
-          @*   <span class="status-badg">@Model.OverView.NoSetteledCount</span> *@
+            @*   <span class="status-badg">@Model.OverView.NoSetteledCount</span> *@
         </a>
     </div>
-   <div class="table-responsive">
+    <div class="table-responsive">
         <table class="table table-hover table-bordered tbl-light">
             <thead>
                 <tr class="table-light">
@@ -168,11 +168,12 @@
                     foreach (var x in Model.Bills.Items)
                     {
                         string statusClass = x.BillOfLadingStatusId.BillStatusToBtnCssClassName();
+                        string number = !string.IsNullOrEmpty(x.ReferenceNumber) ? x.ReferenceNumber : x.WaybillNumber;
                         <tr>
                             <td>@row</td>
                             <td class="w-150">
                                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                    <a asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" class="btn @statusClass btn-tr">@x.WaybillNumber</a>
+                                    <a asp-action="bill" asp-controller="Billoflading" asp-area="Courier" asp-route-billOfladingId="@x.Id" class="btn @statusClass btn-tr">@number</a>
                                     <div class="btn-group" role="group">
                                         <button id="btnGroupDrop5" type="button" class="btn @statusClass btn-tr dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop5" style="">

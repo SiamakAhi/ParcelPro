@@ -84,7 +84,7 @@ namespace ParcelPro.Areas.Courier.Controllers
             ViewBag.services = await _courier.SelectList_BranchServicesAsync(branch.Id);
             ViewBag.BillNumber = user.BranchCode + "xxxxxx";// await _bill.GenerateBillNumberAsync(_sellerId.Value, user.BranchCode);
             ViewBag.UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            // ViewBag.Distributers = await _branchServic.SelectList_DestributerAsync(_sellerId.Value);
+            ViewBag.Distributers = await _branchServic.SelectList_DestributerAsync(_sellerId.Value);
             return View(model);
         }
 

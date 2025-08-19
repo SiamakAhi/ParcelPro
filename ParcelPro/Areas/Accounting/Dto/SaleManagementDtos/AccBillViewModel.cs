@@ -22,15 +22,15 @@
         public Guid? DestributerBranchId { get; set; }
         public long BasePrice { get; set; } = 0;
         public long TotalCost { get; set; }
-        public long TotalPriceBeforDiscount => BasePrice + TotalCost;
         public long TotalDiscount { get; set; } = 0;
-        public long TotalPriceAfterDiscount => statusId <= 11 ? BasePrice + TotalCost - TotalDiscount : 0;
         public long VatPrice { get; set; } = 0;
-        public long FinalPrice => TotalPriceAfterDiscount + VatPrice;
 
         public int SettelmentTypeId { get; set; }
         public string SettelmentTypeName { get; set; } = "";
         public long Payed { get; set; } = 0;
+        public long TotalPriceBeforDiscount => BasePrice + TotalCost;
+        public long TotalPriceAfterDiscount => statusId <= 11 ? BasePrice + TotalCost - TotalDiscount : 0;
+        public long FinalPrice => TotalPriceAfterDiscount + VatPrice;
         public long Balance => statusId <= 11 ? FinalPrice - Payed : 0;
         public short? PartPartyType { get; set; }
         public short statusId { get; set; } = 1;

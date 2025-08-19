@@ -57,6 +57,7 @@ namespace ParcelPro.Areas.Accounting.Controllers
 
             var Allbills = _courierFinancialService.GetBillsFinanceAsQuery(filter);
             model.BillsPagin = Pagination<AccBillViewModel>.Create(Allbills, filter.CurrentPage, filter.PageSize);
+
             return View(model);
         }
 

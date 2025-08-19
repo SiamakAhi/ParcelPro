@@ -31,7 +31,7 @@
                 </div>
             </form>
         </div>
-        <div class="row cards-info alert-secondary mb-2">
+        <div class="row cards-info alert-light mb-2">
             <div class="col-md-3 grid">
                 <div class="card-info">
                     <p>تعداد بارنامه ها</p>
@@ -70,7 +70,6 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ردیف</th>
-                        <th></th>
                         <th>شماره بارنامه</th>
                         <th>تاریخ بارنامه</th>
                         <th>مبلغ بارنامه</th>
@@ -90,24 +89,6 @@
                         {
                             <tr>
                                 <td class="text-center">@rowNo</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            ...
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
-                                            @*   <a class="dropdown-item"
-                                               asp-route-id=""
-                                               asp-action="thePartyBills"
-                                               asp-controller="AccSaleManagement"
-                                               asp-area="Accounting"><i class="fa fa-eye me-3 text-warning"></i>صورتحساب</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ارسال صورتحساب الکترونیکی</a>
-                                            <a class="dropdown-item" href="#"><i class="fa fa-print me-3 text-warning"></i>ثبت تسویه حساب</a> *@
-                                        </div>
-
-                                    </div>
-                                </td>
-                                @*  <td>@x.BranchName</td> *@
                                 <td>@x.BillNumber</td>
                                 <td>@x.BillDate.LatinToPersian()</td>
                                 <td>@x.BillAmount.ToPrice()</td>
@@ -121,7 +102,7 @@
                         }
                     }
                 </tbody>
-                <tfoot>
+               @*  <tfoot>
                     <tr lass="table-secondary">
                         <td colspan="6"></td>
                         <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.DestributionShareAmount).ToPrice()</strong></td>
@@ -129,7 +110,7 @@
                         <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.RepDebit).ToPrice()</strong></td>
                         <td class="text-center"><strong>@Model.ReposrtDetails?.Sum(n => n.DebBalance).ToPrice()</strong></td>
                     </tr>
-                </tfoot>
+                </tfoot> *@
             </table>
 
         </div>

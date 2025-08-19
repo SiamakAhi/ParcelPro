@@ -43,7 +43,8 @@
             </div>
             <div class="col-md-3 col-xs-6 mb-2">
                 <label class="form-label">نماینده توزیع</label>
-                <select class="form-select form-select-sm select2" id="select-distributers" asp-for="BillOfLading.bill.DistributerRepresentativeId" asp-items="ViewBag.Distributers">
+                <select class="form-select form-select-sm select2"
+                        asp-for="BillOfLading.bill.DistributerRepresentativeId" asp-items="@ViewBag.Distributers">
                     <option value="@Guid.Empty">نماینده توزیع ..</option>
                 </select>
             </div>
@@ -96,7 +97,7 @@
                     <label class="form-label">آدرس</label>
                     <textarea rows="4" asp-for="BillOfLading.bill.ReceiverAddress" id="reciverAddress" class="form-control gonext"></textarea>
                 </div>
-               
+
             </div>
             <div class="col-md-4 mb-2 mt-2 createBill-desc">
                 <h5 class="card-header mb-4"> توضیحات</h5>

@@ -399,7 +399,14 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             }
             else if (bill.FinancialTransactions != null && bill.FinancialTransactions.Any())
             {
-                billHeader.SettelmentType = bill.FinancialTransactions != null ? (short)bill.FinancialTransactions.Where(f => f.OperationId == 1)?.FirstOrDefault()?.SettlementTypeId : null;
+                if (bill.FinancialTransactions != null)
+                {
+                    var settel = bill.FinancialTransactions.Where(n => n.OperationId == 1).FirstOrDefault();
+                    if (settel == null)
+                        billHeader.SettelmentType = null;
+                    else
+                        billHeader.SettelmentType = (short)settel.SettlementTypeId;
+                }
                 billHeader.Setteled = bill.FinancialTransactions.Where(n => n.IsSettled && n.OperationId == 1).Any();
             }
 

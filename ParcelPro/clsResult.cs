@@ -9,6 +9,7 @@
         public string? updateTargetId { get; set; }  //#My_Element 
         public bool ShowMessage { get; set; } = true;
         public Guid? Id { get; set; }
+        public object? ReturnData { get; set; } = null;
 
     }
 }

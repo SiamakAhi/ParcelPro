@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ParcelPro.Areas.Courier.Dto;
+using ParcelPro.Areas.Courier.Dto.ManifestDtos;
 
 namespace ParcelPro.Areas.Courier.CuurierInterfaces
 {
@@ -24,7 +25,9 @@ namespace ParcelPro.Areas.Courier.CuurierInterfaces
         Task<clsResult> DeleteDriverAsync(int id);
 
         //========================================================== MANIFEST =====================
-
+        Task<string> GenerateManifestNumberAsync(long SellerId);
+        SelectList SelectList_TransportType();
+        Task<clsResult> AddManifestHeaderAsync(ManifestDto dto);
 
     }
 }

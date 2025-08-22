@@ -1,15 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ParcelPro.Areas.Courier.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
-namespace ParcelPro.Areas.Courier.Models.Entities
+namespace ParcelPro.Areas.Courier.Dto.ManifestDtos
 {
-    public class Cu_CargoManifest
+    public class ManifestDto
     {
         public long Id { get; set; }
         public long SellerId { get; set; }
 
         [Display(Name = "تاریخ ایجاد")]
         public DateTime Date { get; set; }
-        public string ManifetNumber { get; set; }
 
         [Display(Name = "تاریخ رهسپاری")]
         public DateTime? TransportDate { get; set; }
@@ -95,8 +95,5 @@ namespace ParcelPro.Areas.Courier.Models.Entities
 
         [Display(Name = "تاریخ و زمان رسیدن به هاب مقصد")]
         public DateTime? ArrivalTime { get; set; }
-
-        public virtual ICollection<Cu_Consignment> Parcels { get; set; }
     }
-
 }

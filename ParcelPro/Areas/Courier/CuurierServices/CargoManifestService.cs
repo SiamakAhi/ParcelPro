@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ParcelPro.Areas.Courier.CuurierInterfaces;
 using ParcelPro.Areas.Courier.Dto;
+using ParcelPro.Areas.Courier.Dto.ManifestDtos;
 using ParcelPro.Areas.Courier.Models.Entities;
 using ParcelPro.Models;
 using ParcelPro.Services;
@@ -24,7 +25,6 @@ namespace ParcelPro.Areas.Courier.CuurierServices
         }
 
         // ===================== Vehicle Methods =========================================================
-
         public async Task<SelectList> SelectList_VehiclesAsync(long sellerId, bool onlyActive = true)
         {
             var vehicles = await _db.Cu_Vehicles
@@ -215,9 +215,7 @@ namespace ParcelPro.Areas.Courier.CuurierServices
             return result;
         }
 
-
         // ===================== Driver Methods ========================================================
-
         public async Task<SelectList> SelectList_DriversAsync(long sellerId)
         {
             var Drivers = await _db.Cu_Drivers
@@ -232,7 +230,6 @@ namespace ParcelPro.Areas.Courier.CuurierServices
 
             return new SelectList(Drivers, "Id", "Text");
         }
-
         public async Task<List<DriverDto>> GetDriversAsync(long sellerId, bool onlyActive = false)
         {
             return await _db.Cu_Drivers
@@ -411,7 +408,76 @@ namespace ParcelPro.Areas.Courier.CuurierServices
 
         //====================== Cargo Manifest Methods =======================================
 
+        public async Task<string> GenerateManifestNumberAsync(long SellerId)
+        {
+            int number = 1;
+            var mqty = await _db.Cu_CargoManifests.Where(n =>
+            n.SellerId == SellerId
+            && n.Date.Year == DateTime.Now.Year).CountAsync();
+            if (mqty > 0)
+                number = mqty + 1;
+            string yy = DateTime.Now.Year.ToString().Substring(2);
+            string mm = DateTime.Now.Month.ToString("00");
+            string dd = DateTime.Now.Day.ToString("00");
 
+            return yy + mm + dd + number.ToString("0000");
+        }
+
+        public SelectList SelectList_TransportType()
+        {
+            List<SelectListItem> items = new List<SelectListItem>
+            {
+                new SelectListItem("زمینی با ناوگان حمل داخلی","1")
+                , new SelectListItem("زمینی (برون سپاری)","2")
+                , new SelectListItem("هوایی","3")
+                , new SelectListItem("ریلی","4")
+
+            };
+
+            return new SelectList(items);
+
+        }
+
+
+        public async Task<clsResult> AddManifestHeaderAsync(ManifestDto dto)
+        {
+            clsResult result = new clsResult();
+            result.Success = false;
+
+            if (dto.SellerId == null || dto.SellerId == 0)
+            {
+                result.Message = "اطلاعات شرکت شناسایی نشد. لازم است از نرم افزار خارج شوید و مجددا وارد شوید";
+                return result;
+            }
+
+            Cu_CargoManifest m = new Cu_CargoManifest();
+            m.SellerId = dto.SellerId;
+            m.Date = dto.Date;
+            m.ManifetNumber = await GenerateManifestNumberAsync(dto.SellerId);
+            m.TransportType = dto.TransportType;
+            m.OriginHubId = dto.OriginHubId;
+            m.DestinationHubId = dto.DestinationHubId;
+            m.VehicleId = dto.VehicleId;
+            m.DriverId = dto.DriverId;
+            m.IssuerDescription = dto.IssuerDescription;
+            m.Status = 1;
+
+            _db.Cu_CargoManifests.Add(m);
+            try
+            {
+                await _db.SaveChangesAsync();
+                result.ReturnData = m; result.Success = true;
+                result.Message = "مانیفست با موفقیت ایجاد شد";
+
+            }
+            catch
+            {
+                result.Success = false;
+                result.Message = "خطایی در ایجاد مانیفست رخ داده است";
+            }
+            return result;
+
+        }
 
     }
 }

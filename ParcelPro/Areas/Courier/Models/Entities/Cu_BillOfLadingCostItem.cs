@@ -41,6 +41,8 @@ namespace ParcelPro.Areas.Courier.Models.Entities
         [Display(Name = "شناسه حساب تفصیلی")]
         public long? AccountTafsilId { get; set; }
 
+
+
         public virtual ICollection<Cu_BillCost> BillCosts { get; set; }
     }
 }
